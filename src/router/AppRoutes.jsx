@@ -8,6 +8,7 @@ import DashboardPage from '../pages/DashboardPage';
 import AccountsPage from '../pages/AccountsPage';
 import CreatePostPage from '../pages/CreatePostPage';
 import PostsPage from '../pages/PostsPage';
+import ForgotPasswordPage from '../pages/ForgotPasswordPage';
 
 const AppRoutes = () => {
   return (
@@ -15,6 +16,7 @@ const AppRoutes = () => {
       <Route element={<PublicRoute />}>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       </Route>
 
       <Route element={<PrivateRoute />}>
@@ -26,7 +28,7 @@ const AppRoutes = () => {
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
         </Route>
       </Route>
-      
+
       {/* Catch all */}
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>

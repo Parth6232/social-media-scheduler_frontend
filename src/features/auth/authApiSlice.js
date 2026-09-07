@@ -19,6 +19,20 @@ const authApi = createApi({
         body: userData,
       }),
     }),
+    forgotPassword: qb.mutation({
+      query: (data) => ({
+        url: '/auth/forgot-password',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    resetPassword: qb.mutation({
+      query: (data) => ({
+        url: '/auth/reset-password',
+        method: 'POST',
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -28,4 +42,6 @@ export const authApiAction = {
   reducerPath: authApi.reducerPath,
   login: authApi.useLoginMutation,
   signup: authApi.useSignupMutation,
+  forgotPassword: authApi.useForgotPasswordMutation,
+  resetPassword: authApi.useResetPasswordMutation,
 };

@@ -102,9 +102,14 @@ const LoginContainer = () => {
 
               {/* Password */}
               <Box sx={{ mb: 3 }}>
-                <Typography variant="caption" sx={{ color: 'text.secondary', mb: 0.5, display: 'block' }}>
-                  Password
-                </Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
+                  <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                    Password
+                  </Typography>
+                  <Link component={RouterLink} to="/forgot-password" sx={{ color: 'primary.light', fontSize: '0.75rem', textDecoration: 'none' }}>
+                    Forgot password?
+                  </Link>
+                </Box>
                 <Box sx={{
                   display: 'flex', alignItems: 'center',
                   border: `1px solid ${errors.password ? '#f44336' : 'rgba(255,255,255,0.1)'}`,

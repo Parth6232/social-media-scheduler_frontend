@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Typography, Grid, Switch, Chip, Tooltip, TextField, LinearProgress } from '@mui/material';
+import { Box, Card, CardContent, Typography, Grid, Switch, Chip, Tooltip, TextField, LinearProgress, Checkbox, FormControlLabel, FormGroup } from '@mui/material';
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
@@ -18,9 +18,11 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { showToast } from '../../store/redux/slices/toastSlice';
 import { postApiAction } from './postApiSlice';
 import { accountsApiAction } from '../accounts/accountsApiSlice';
+import { aiApiAction } from '../ai/aiApiSlice';
 import Button from '../../common/Button';
 
 const PLATFORM_ICONS = {
@@ -53,6 +55,69 @@ const CreatePostContainer = () => {
   const { data: accounts } = accountsApiAction.getMyAccounts();
 
   const connectedPlatforms = (accounts || []).map((a) => a.platform);
+
+  // AI Composer State & Hooks
+  const [aiTopic, setAiTopic] = useState('');
+  const [aiOptions, setAiOptions] = useState({ caption: true, hashtags: true, image: false });
+  const [generateCaption, { isLoading: isGeneratingCaption }] = aiApiAction.generateCaption();
+  const [generateImage, { isLoading: isGeneratingImage }] = aiApiAction.generateImage();
+
+  const handleGenerateAI = async () => {
+    if (!aiTopic.trim()) {
+      dispatch(showToast({ message: 'Please enter a topic or idea for AI.', variant: 'warning' }));
+      return;
+    }
+    if (!aiOptions.caption && !aiOptions.hashtags && !aiOptions.image) {
+      dispatch(showToast({ message: 'Please select at least one AI option (Caption, Hashtags, Image).', variant: 'warning' }));
+      return;
+    }
+
+    try {
+      let successMessage = 'AI Generation complete! 🪄';
+      
+      if (aiOptions.caption || aiOptions.hashtags) {
+        const res = await generateCaption({
+          topic: aiTopic,
+          platforms: selectedPlatforms,
+          includeCaption: aiOptions.caption,
+          includeHashtags: aiOptions.hashtags,
+        }).unwrap();
+        
+        let newContent = content;
+        if (newContent && !newContent.endsWith('\n\n') && !newContent.endsWith('\n')) {
+          newContent += '\n\n';
+        } else if (newContent && newContent.endsWith('\n') && !newContent.endsWith('\n\n')) {
+          newContent += '\n';
+        }
+        
+        if (res.caption) {
+          newContent += res.caption;
+        }
+        if (res.hashtags && res.hashtags.length > 0) {
+          const tagsString = res.hashtags.map(t => `#${t}`).join(' ');
+          if (res.caption) newContent += '\n\n';
+          newContent += tagsString;
+        }
+        
+        setContent(newContent.slice(0, 2200));
+      }
+
+      if (aiOptions.image) {
+        const res = await generateImage({ topic: aiTopic }).unwrap();
+        if (res.image) {
+          const fetchRes = await fetch(res.image);
+          const blob = await fetchRes.blob();
+          const generatedFile = new File([blob], 'ai-generated-image.jpg', { type: blob.type });
+          setFile(generatedFile);
+          setPreview(URL.createObjectURL(generatedFile));
+        }
+      }
+      
+      dispatch(showToast({ message: successMessage, variant: 'success' }));
+    } catch (err) {
+      dispatch(showToast({ message: 'AI generation failed. Please try again.', variant: 'error' }));
+    }
+  };
 
   const onDrop = useCallback((acceptedFiles) => {
     const f = acceptedFiles[0];
@@ -125,6 +190,55 @@ const CreatePostContainer = () => {
       <Grid container spacing={3}>
         {/* Left column */}
         <Grid size={{ xs: 12, lg: 7 }}>
+          
+          {/* AI Composer Card */}
+          <Card sx={{ mb: 3, borderRadius: 3, border: '1px solid rgba(124, 58, 237, 0.3)', background: 'rgba(10, 15, 30, 0.4)', position: 'relative', overflow: 'hidden' }}>
+            <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, #7C3AED, #2563EB)' }} />
+            <CardContent sx={{ p: 3 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                <AutoAwesomeIcon sx={{ color: '#A78BFA' }} />
+                <Typography variant="subtitle2" fontWeight={600} sx={{ color: '#A78BFA' }}>AI Composer</Typography>
+              </Box>
+              
+              <TextField
+                fullWidth
+                size="small"
+                placeholder="Topic or idea (e.g. Diwali sale offer on shoes)..."
+                value={aiTopic}
+                onChange={(e) => setAiTopic(e.target.value)}
+                variant="outlined"
+                sx={{ mb: 2, '& .MuiOutlinedInput-root': { backgroundColor: 'rgba(255,255,255,0.02)' } }}
+              />
+
+              <FormGroup row sx={{ mb: 2 }}>
+                <FormControlLabel
+                  control={<Checkbox size="small" checked={aiOptions.caption} onChange={(e) => setAiOptions(prev => ({...prev, caption: e.target.checked}))} sx={{ color: 'rgba(255,255,255,0.3)', '&.Mui-checked': { color: '#7C3AED' } }} />}
+                  label={<Typography variant="body2" sx={{ color: 'text.secondary' }}>Caption</Typography>}
+                />
+                <FormControlLabel
+                  control={<Checkbox size="small" checked={aiOptions.hashtags} onChange={(e) => setAiOptions(prev => ({...prev, hashtags: e.target.checked}))} sx={{ color: 'rgba(255,255,255,0.3)', '&.Mui-checked': { color: '#7C3AED' } }} />}
+                  label={<Typography variant="body2" sx={{ color: 'text.secondary' }}>Hashtags</Typography>}
+                />
+                <FormControlLabel
+                  control={<Checkbox size="small" checked={aiOptions.image} onChange={(e) => setAiOptions(prev => ({...prev, image: e.target.checked}))} sx={{ color: 'rgba(255,255,255,0.3)', '&.Mui-checked': { color: '#7C3AED' } }} />}
+                  label={<Typography variant="body2" sx={{ color: 'text.secondary' }}>Image</Typography>}
+                />
+              </FormGroup>
+
+              <Button
+                variant="outlined"
+                onClick={handleGenerateAI}
+                loading={isGeneratingCaption || isGeneratingImage}
+                sx={{
+                  borderColor: '#7C3AED50', color: '#A78BFA',
+                  '&:hover': { borderColor: '#7C3AED', backgroundColor: '#7C3AED10' }
+                }}
+              >
+                🪄 Generate with AI
+              </Button>
+            </CardContent>
+          </Card>
+
           {/* Content textarea */}
           <Card sx={{ mb: 3, borderRadius: 3, border: '1px solid rgba(255,255,255,0.05)', background: 'rgba(10, 15, 30, 0.4)' }}>
             <CardContent sx={{ p: 3 }}>

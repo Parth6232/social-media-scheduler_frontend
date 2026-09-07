@@ -4,6 +4,7 @@ import rootReducer from './redux/rootReducer';
 import { authApiAction } from '../features/auth/authApiSlice';
 import { accountsApiAction } from '../features/accounts/accountsApiSlice';
 import { postApiAction } from '../features/createPost/postApiSlice';
+import { aiApiAction } from '../features/ai/aiApiSlice';
 
 // Custom storage wrapper for Vite / redux-persist compatibility
 const storage = {
@@ -30,7 +31,8 @@ export const store = configureStore({
     })
     .concat(authApiAction.middleware)
     .concat(accountsApiAction.middleware)
-    .concat(postApiAction.middleware),
+    .concat(postApiAction.middleware)
+    .concat(aiApiAction.middleware),
 });
 
 export const persistor = persistStore(store);

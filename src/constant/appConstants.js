@@ -1,5 +1,6 @@
 export const appConstants = {
-  apiBaseURL: 'http://localhost:5000/api',
+  // apiBaseURL: 'http://localhost:5000/api',
+  apiBaseURL: 'https://social-media-scheduler-backend-ttkp.onrender.com/api',
   keys: {
     TOKEN: 'socialblitz_token',
   },

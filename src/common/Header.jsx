@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../store/redux/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import MenuIcon from '@mui/icons-material/Menu';
 
 /** Capitalize the first letter of each word */
 const capitalizeName = (name = '') =>
@@ -21,7 +22,7 @@ const getInitials = (name = '') => {
   return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
 };
 
-const Header = () => {
+const Header = ({ handleDrawerToggle }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -44,18 +45,27 @@ const Header = () => {
       height: 70,
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'flex-end',
-      px: 4,
+      justifyContent: 'space-between',
+      px: { xs: 2, sm: 4 },
       borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
       backgroundColor: 'rgba(10, 15, 30, 0.4)',
       backdropFilter: 'blur(10px)',
     }}>
+      <IconButton
+        color="inherit"
+        aria-label="open drawer"
+        edge="start"
+        onClick={handleDrawerToggle}
+        sx={{ mr: 2, display: { lg: 'none' } }}
+      >
+        <MenuIcon />
+      </IconButton>
+
       <Box
         id="header-user-menu-btn"
-        sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: 1 }}
+        sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: 1, ml: 'auto' }}
         onClick={handleMenu}
       >
-        {/* Avatar: shows image if avatarUrl exists, otherwise initials */}
         <Avatar
           src={user?.avatarUrl || undefined}
           alt={displayName}
@@ -68,11 +78,10 @@ const Header = () => {
             background: user?.avatarUrl ? undefined : 'linear-gradient(135deg, #7C3AED, #2563EB)',
           }}
         >
-          {/* Fallback: rendered only when no src image */}
           {!user?.avatarUrl && initials}
         </Avatar>
 
-        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+        <Typography variant="subtitle2" sx={{ fontWeight: 600, display: { xs: 'none', sm: 'block' } }}>
           {displayName || 'User'}
         </Typography>
         <ExpandMoreIcon fontSize="small" sx={{ color: 'text.secondary' }} />

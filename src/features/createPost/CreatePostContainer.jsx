@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Typography, Grid, Switch, FormControlLabel, MenuItem, Select, FormControl, InputLabel, Chip, Tooltip, TextField, LinearProgress } from '@mui/material';
+import { Box, Card, CardContent, Typography, Grid, Switch, Chip, Tooltip, TextField, LinearProgress } from '@mui/material';
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
@@ -9,6 +9,10 @@ import { useDispatch } from 'react-redux';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import CloseIcon from '@mui/icons-material/Close';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import PermMediaIcon from '@mui/icons-material/PermMedia';
+import ShareIcon from '@mui/icons-material/Share';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
@@ -45,7 +49,6 @@ const CreatePostContainer = () => {
   const [selectedPlatforms, setSelectedPlatforms] = useState([]);
   const [scheduleEnabled, setScheduleEnabled] = useState(false);
   const [scheduledAt, setScheduledAt] = useState(null);
-  const [privacy, setPrivacy] = useState('public');
   const [createPost, { isLoading }] = postApiAction.createPost();
   const { data: accounts } = accountsApiAction.getMyAccounts();
 
@@ -84,7 +87,8 @@ const CreatePostContainer = () => {
     const formData = new FormData();
     formData.append('content', content);
     formData.append('platforms', JSON.stringify(selectedPlatforms));
-    formData.append('privacy', privacy);
+    formData.append('privacy', 'public'); // Hardcoded privacy to public silently
+
     if (scheduleEnabled && scheduledAt) {
       formData.append('scheduledAt', scheduledAt.toISOString());
     }
@@ -120,11 +124,14 @@ const CreatePostContainer = () => {
 
       <Grid container spacing={3}>
         {/* Left column */}
-        <Grid item xs={12} lg={7}>
+        <Grid size={{ xs: 12, lg: 7 }}>
           {/* Content textarea */}
-          <Card sx={{ mb: 3, borderRadius: 3 }}>
+          <Card sx={{ mb: 3, borderRadius: 3, border: '1px solid rgba(255,255,255,0.05)', background: 'rgba(10, 15, 30, 0.4)' }}>
             <CardContent sx={{ p: 3 }}>
-              <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1.5 }}>Caption / Content</Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                <EditNoteIcon sx={{ color: '#A78BFA' }} />
+                <Typography variant="subtitle2" fontWeight={600}>Caption / Content</Typography>
+              </Box>
               <TextField
                 multiline
                 rows={6}
@@ -133,7 +140,7 @@ const CreatePostContainer = () => {
                 value={content}
                 onChange={(e) => setContent(e.target.value.slice(0, charLimit))}
                 variant="outlined"
-                sx={{ mb: 1 }}
+                sx={{ mb: 1, '& .MuiOutlinedInput-root': { backgroundColor: 'rgba(255,255,255,0.02)' } }}
               />
               <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <Typography variant="caption" sx={{ color: content.length > charLimit * 0.9 ? '#F59E0B' : 'text.secondary' }}>
@@ -144,9 +151,12 @@ const CreatePostContainer = () => {
           </Card>
 
           {/* Upload box */}
-          <Card sx={{ mb: 3, borderRadius: 3 }}>
+          <Card sx={{ mb: 3, borderRadius: 3, border: '1px solid rgba(255,255,255,0.05)', background: 'rgba(10, 15, 30, 0.4)' }}>
             <CardContent sx={{ p: 3 }}>
-              <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1.5 }}>Media (Image or Video)</Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                <PermMediaIcon sx={{ color: '#60A5FA' }} />
+                <Typography variant="subtitle2" fontWeight={600}>Media (Image or Video)</Typography>
+              </Box>
 
               {preview ? (
                 <Box sx={{ position: 'relative' }}>
@@ -191,32 +201,43 @@ const CreatePostContainer = () => {
         </Grid>
 
         {/* Right column */}
-        <Grid item xs={12} lg={5}>
+        <Grid size={{ xs: 12, lg: 5 }}>
           {/* Platform selector */}
-          <Card sx={{ mb: 3, borderRadius: 3 }}>
+          <Card sx={{ mb: 3, borderRadius: 3, border: '1px solid rgba(255,255,255,0.05)', background: 'rgba(10, 15, 30, 0.4)' }}>
             <CardContent sx={{ p: 3 }}>
-              <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 2 }}>Publish To</Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                <ShareIcon sx={{ color: '#34D399' }} />
+                <Typography variant="subtitle2" fontWeight={600}>Publish To</Typography>
+              </Box>
+
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                 {AVAILABLE_PLATFORMS.map((p) => {
-                  const isConnected = connectedPlatforms.includes(p);
+                  const isConnected = connectedPlatforms.includes(p) || connectedPlatforms.includes(p === 'instagram' || p === 'facebook' ? 'facebook_instagram' : p) || (p === 'instagram' && connectedPlatforms.includes('facebook'));
+                  // We handled combo platform, now connectedPlatforms returns 'facebook', 'youtube', etc
+                  const isPlatformConnected = connectedPlatforms.includes(p) || (connectedPlatforms.includes('facebook') && p === 'instagram');
+
                   const isSelected = selectedPlatforms.includes(p);
                   const color = PLATFORM_COLORS[p];
                   return (
-                    <Tooltip key={p} title={!isConnected ? `Connect ${p} first in Accounts` : ''} arrow>
+                    <Tooltip key={p} title={!isPlatformConnected ? `Connect ${p} first in Accounts` : ''} arrow>
                       <span>
                         <Chip
-                          icon={<Box sx={{ color: isSelected ? '#fff' : (isConnected ? color : 'text.disabled'), display: 'flex' }}>{PLATFORM_ICONS[p]}</Box>}
+                          icon={<Box sx={{ color: isSelected ? '#fff' : (isPlatformConnected ? color : 'text.disabled'), display: 'flex' }}>{PLATFORM_ICONS[p]}</Box>}
                           label={p.charAt(0).toUpperCase() + p.slice(1)}
-                          clickable={isConnected}
-                          onClick={() => isConnected && togglePlatform(p)}
+                          clickable={isPlatformConnected}
+                          onClick={() => isPlatformConnected && togglePlatform(p)}
                           sx={{
                             fontWeight: 600,
                             border: `1px solid ${isSelected ? color : 'rgba(255,255,255,0.1)'}`,
-                            backgroundColor: isSelected ? `${color}20` : 'rgba(255,255,255,0.03)',
-                            color: isSelected ? '#fff' : (isConnected ? 'text.primary' : 'text.disabled'),
-                            opacity: isConnected ? 1 : 0.5,
-                            cursor: isConnected ? 'pointer' : 'not-allowed',
-                            transition: 'all 0.2s',
+                            backgroundColor: isSelected ? color : 'rgba(255,255,255,0.03)',
+                            color: isSelected ? '#fff' : (isPlatformConnected ? 'text.primary' : 'text.disabled'),
+                            opacity: isPlatformConnected ? 1 : 0.4,
+                            cursor: isPlatformConnected ? 'pointer' : 'not-allowed',
+                            transition: 'all 0.3s',
+                            boxShadow: isSelected ? `0 0 12px ${color}50` : 'none',
+                            '&:hover': {
+                              backgroundColor: isSelected ? color : 'rgba(255,255,255,0.08)'
+                            }
                           }}
                         />
                       </span>
@@ -228,7 +249,7 @@ const CreatePostContainer = () => {
                     <Chip
                       icon={<Box sx={{ color: 'text.disabled', display: 'flex' }}>{PLATFORM_ICONS[p]}</Box>}
                       label={p.charAt(0).toUpperCase() + p.slice(1)}
-                      sx={{ opacity: 0.4, border: '1px solid rgba(255,255,255,0.08)', backgroundColor: 'rgba(255,255,255,0.02)', color: 'text.disabled', cursor: 'not-allowed' }}
+                      sx={{ opacity: 0.3, border: '1px solid rgba(255,255,255,0.08)', backgroundColor: 'rgba(255,255,255,0.02)', color: 'text.disabled', cursor: 'not-allowed' }}
                     />
                   </Tooltip>
                 ))}
@@ -237,12 +258,15 @@ const CreatePostContainer = () => {
           </Card>
 
           {/* Schedule toggle */}
-          <Card sx={{ mb: 3, borderRadius: 3 }}>
+          <Card sx={{ mb: 3, borderRadius: 3, border: '1px solid rgba(255,255,255,0.05)', background: 'rgba(10, 15, 30, 0.4)' }}>
             <CardContent sx={{ p: 3 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: scheduleEnabled ? 2 : 0 }}>
                 <Box>
-                  <Typography variant="subtitle2" fontWeight={600}>Schedule for Later</Typography>
-                  <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <CalendarMonthIcon sx={{ color: '#FBBF24' }} />
+                    <Typography variant="subtitle2" fontWeight={600}>Schedule for Later</Typography>
+                  </Box>
+                  <Typography variant="caption" sx={{ color: 'text.secondary', ml: 4 }}>
                     {scheduleEnabled ? 'Pick a date & time below' : 'Post will be published instantly'}
                   </Typography>
                 </Box>
@@ -260,25 +284,32 @@ const CreatePostContainer = () => {
                     value={scheduledAt}
                     onChange={setScheduledAt}
                     disablePast
-                    slotProps={{ textField: { fullWidth: true, size: 'small' } }}
+                    slotProps={{
+                      textField: {
+                        fullWidth: true,
+                        size: 'small',
+                        sx: {
+                          '& .MuiOutlinedInput-root': {
+                            backgroundColor: 'rgba(0,0,0,0.2)',
+                            borderRadius: 2
+                          }
+                        }
+                      },
+                      popper: {
+                        sx: {
+                          '& .MuiPaper-root': {
+                            backgroundColor: 'rgba(15, 20, 35, 0.95)',
+                            backdropFilter: 'blur(10px)',
+                            border: '1px solid rgba(255,255,255,0.1)',
+                            boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+                            borderRadius: 3
+                          }
+                        }
+                      }
+                    }}
                   />
                 </LocalizationProvider>
               )}
-            </CardContent>
-          </Card>
-
-          {/* Privacy */}
-          <Card sx={{ mb: 3, borderRadius: 3 }}>
-            <CardContent sx={{ p: 3 }}>
-              <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1.5 }}>Privacy</Typography>
-              <FormControl fullWidth size="small">
-                <InputLabel>Privacy</InputLabel>
-                <Select value={privacy} label="Privacy" onChange={(e) => setPrivacy(e.target.value)}>
-                  <MenuItem value="public">🌍 Public</MenuItem>
-                  <MenuItem value="unlisted">🔗 Unlisted</MenuItem>
-                  <MenuItem value="private">🔒 Private</MenuItem>
-                </Select>
-              </FormControl>
             </CardContent>
           </Card>
 
@@ -288,7 +319,18 @@ const CreatePostContainer = () => {
             fullWidth
             loading={isLoading}
             onClick={handleSubmit}
-            sx={{ py: 1.8, fontSize: '1rem', borderRadius: 2 }}
+            sx={{
+              py: 2,
+              fontSize: '1.05rem',
+              borderRadius: 3,
+              background: 'linear-gradient(90deg, #7C3AED, #2563EB)',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 8px 20px rgba(124, 58, 237, 0.3)',
+              '&:hover': {
+                boxShadow: '0 8px 25px rgba(124, 58, 237, 0.5)',
+                transform: 'translateY(-2px)'
+              }
+            }}
           >
             {scheduleEnabled ? '📅 Schedule Post' : '🚀 Publish Now'}
           </Button>

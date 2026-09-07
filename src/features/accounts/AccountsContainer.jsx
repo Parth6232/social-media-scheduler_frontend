@@ -3,7 +3,7 @@ import LinkIcon from '@mui/icons-material/Link';
 import { accountsApiAction } from './accountsApiSlice';
 import PlatformCard from './component/PlatformCard';
 
-const PLATFORMS = ['youtube', 'facebook', 'instagram', 'linkedin', 'twitter', 'whatsapp'];
+const PLATFORMS = ['youtube', 'facebook_instagram', 'linkedin', 'twitter', 'whatsapp'];
 
 const AccountsContainer = () => {
   const { data: accounts, isLoading } = accountsApiAction.getMyAccounts();
@@ -44,18 +44,25 @@ const AccountsContainer = () => {
             <Box component="span" sx={{ color: '#A78BFA', fontWeight: 700, fontSize: '1.1rem' }}>
               {accounts.length}
             </Box>
-            {' '}of {PLATFORMS.filter(p => !['linkedin', 'twitter', 'whatsapp'].includes(p)).length} available platforms connected
+            {' '}of {3} available platforms connected
           </Typography>
         </Box>
       )}
 
       {/* Platform Grid */}
-      <Grid container spacing={2.5}>
+      <Grid container spacing={2}>
         {PLATFORMS.map((platform) => (
-          <Grid item xs={12} sm={6} md={4} key={platform}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={platform}>
             <PlatformCard
               platform={platform}
-              connectedAccount={getConnectedAccount(platform)}
+              connectedAccount={
+                platform === 'facebook_instagram' 
+                  ? {
+                      facebook: getConnectedAccount('facebook'),
+                      instagram: getConnectedAccount('instagram'),
+                    }
+                  : getConnectedAccount(platform)
+              }
               isLoading={isLoading}
             />
           </Grid>

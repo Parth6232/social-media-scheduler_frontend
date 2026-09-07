@@ -1,4 +1,4 @@
-import { Box, Typography, Button as MuiButton, Divider } from '@mui/material';
+import { Box, Typography, Button as MuiButton, Divider, Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -105,24 +105,21 @@ const DashboardContainer = () => {
         </Typography>
       </Box>
 
-      {/* KPI Cards — flex row, equal width, wraps 2-per-row on mobile */}
-      <Box
-        sx={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: 2.5,
-          mb: 4,
-          '& > *': {
-            flex: '1 1 180px',   // grow to fill space, shrink if needed, min ~180px
-            minWidth: 0,          // allow shrink below content width
-          },
-        }}
-      >
-        <CommonKpiCard label="Total Posts" value={stats.total} icon={<PostAddIcon />} color="#7C3AED" isLoading={isLoading} />
-        <CommonKpiCard label="Pending" value={stats.pending} icon={<HourglassEmptyIcon />} color="#F59E0B" isLoading={isLoading} />
-        <CommonKpiCard label="Completed" value={stats.completed} icon={<CheckCircleIcon />} color="#10B981" isLoading={isLoading} />
-        <CommonKpiCard label="Failed" value={stats.failed} icon={<ErrorIcon />} color="#EF4444" isLoading={isLoading} />
-      </Box>
+      {/* KPI Cards — explicit Grid for responsiveness */}
+      <Grid container spacing={2.5} sx={{ mb: 4 }}>
+        <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+          <CommonKpiCard label="Total Posts" value={stats.total} icon={<PostAddIcon />} color="#7C3AED" isLoading={isLoading} />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+          <CommonKpiCard label="Pending" value={stats.pending} icon={<HourglassEmptyIcon />} color="#F59E0B" isLoading={isLoading} />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+          <CommonKpiCard label="Completed" value={stats.completed} icon={<CheckCircleIcon />} color="#10B981" isLoading={isLoading} />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+          <CommonKpiCard label="Failed" value={stats.failed} icon={<ErrorIcon />} color="#EF4444" isLoading={isLoading} />
+        </Grid>
+      </Grid>
 
       {/* Quick actions */}
       <Box sx={{ display: 'flex', gap: 2, mb: 4 }}>

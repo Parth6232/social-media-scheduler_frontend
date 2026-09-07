@@ -10,6 +10,10 @@ const accountsApi = createApi({
       query: () => ({ url: '/accounts' }),
       providesTags: ['ACCOUNTS'],
     }),
+    disconnectAccount: qb.mutation({
+      query: (platform) => ({ url: `/accounts/${platform}`, method: 'DELETE' }),
+      invalidatesTags: ['ACCOUNTS'],
+    }),
   }),
 });
 
@@ -18,4 +22,5 @@ export const accountsApiAction = {
   middleware: accountsApi.middleware,
   reducerPath: accountsApi.reducerPath,
   getMyAccounts: accountsApi.useGetMyAccountsQuery,
+  disconnectAccount: accountsApi.useDisconnectAccountMutation,
 };

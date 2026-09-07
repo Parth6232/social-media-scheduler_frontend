@@ -26,12 +26,14 @@ const CommonTable = ({ columns, rows, isLoading, searchKeys = [], emptyMessage =
           placeholder="Search..."
           value={search}
           onChange={(e) => { setSearch(e.target.value); setPage(0); }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon sx={{ color: 'text.secondary', fontSize: 18 }} />
-              </InputAdornment>
-            ),
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon sx={{ color: 'text.secondary', fontSize: 18 }} />
+                </InputAdornment>
+              ),
+            },
           }}
           sx={{ maxWidth: 280 }}
         />
@@ -41,8 +43,9 @@ const CommonTable = ({ columns, rows, isLoading, searchKeys = [], emptyMessage =
         borderRadius: 2,
         border: '1px solid rgba(255,255,255,0.06)',
         backgroundColor: 'rgba(16, 24, 46, 0.4)',
+        overflowX: 'auto',
       }}>
-        <Table>
+        <Table sx={{ minWidth: { xs: 600, md: '100%' } }}>
           <TableHead>
             <TableRow>
               {columns.map((col) => (

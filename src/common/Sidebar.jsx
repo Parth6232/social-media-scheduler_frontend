@@ -1,22 +1,10 @@
-import { Box, List, ListItem, ListItemIcon, ListItemText, Typography } from '@mui/material';
+import { Box, List, ListItem, ListItemIcon, ListItemText, Typography, Drawer } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import LinkIcon from '@mui/icons-material/Link';
 import HistoryIcon from '@mui/icons-material/History';
 import { styled } from '@mui/material/styles';
-
-const DrawerContainer = styled(Box)(({ theme }) => ({
-  width: 260,
-  flexShrink: 0,
-  backgroundColor: 'rgba(10, 15, 30, 0.8)',
-  backdropFilter: 'blur(10px)',
-  borderRight: `1px solid ${theme.palette.divider}`,
-  display: 'flex',
-  flexDirection: 'column',
-  height: '100vh',
-  position: 'fixed',
-}));
 
 const LogoBox = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -58,9 +46,9 @@ const navItems = [
   { path: '/posts', label: 'Posts History', icon: <HistoryIcon /> },
 ];
 
-const Sidebar = () => {
-  return (
-    <DrawerContainer>
+const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
+  const drawerContent = (
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <LogoBox>
         <div style={{
           width: 32, height: 32, borderRadius: 8,
@@ -77,20 +65,58 @@ const Sidebar = () => {
 
       <List sx={{ flexGrow: 1, pt: 2 }}>
         {navItems.map((item) => (
-          <StyledNavLink key={item.path} to={item.path}>
+          <StyledNavLink key={item.path} to={item.path} onClick={() => { if (mobileOpen) handleDrawerToggle(); }}>
             <StyledListItem>
               <ListItemIcon sx={{ minWidth: 40, color: 'inherit' }}>
                 {item.icon}
               </ListItemIcon>
               <ListItemText 
                 primary={item.label} 
-                primaryTypographyProps={{ fontWeight: 500 }}
+                slotProps={{ primary: { fontWeight: 500 } }}
               />
             </StyledListItem>
           </StyledNavLink>
         ))}
       </List>
-    </DrawerContainer>
+    </Box>
+  );
+
+  return (
+    <Box component="nav" sx={{ width: { lg: 260 }, flexShrink: { lg: 0 } }}>
+      <Drawer
+        variant="temporary"
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        ModalProps={{ keepMounted: true }}
+        sx={{
+          display: { xs: 'block', lg: 'none' },
+          '& .MuiDrawer-paper': { 
+            boxSizing: 'border-box', 
+            width: 260, 
+            backgroundColor: 'rgba(10, 15, 30, 0.95)',
+            borderRight: '1px solid rgba(255,255,255,0.1)' 
+          },
+        }}
+      >
+        {drawerContent}
+      </Drawer>
+      <Drawer
+        variant="permanent"
+        sx={{
+          display: { xs: 'none', lg: 'block' },
+          '& .MuiDrawer-paper': { 
+            boxSizing: 'border-box', 
+            width: 260, 
+            backgroundColor: 'rgba(10, 15, 30, 0.8)', 
+            backdropFilter: 'blur(10px)', 
+            borderRight: '1px solid rgba(255,255,255,0.1)' 
+          },
+        }}
+        open
+      >
+        {drawerContent}
+      </Drawer>
+    </Box>
   );
 };
 

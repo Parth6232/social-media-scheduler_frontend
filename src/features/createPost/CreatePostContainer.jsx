@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Typography, Grid, Switch, Chip, Tooltip, TextField, LinearProgress, Checkbox, FormControlLabel, FormGroup } from '@mui/material';
+﻿import { Box, Card, CardContent, Typography, Grid, Switch, Chip, Tooltip, TextField, LinearProgress, Checkbox, FormControlLabel, FormGroup, MenuItem, Select, FormControl, InputLabel, CircularProgress } from '@mui/material';
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
@@ -19,6 +19,7 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { showToast } from '../../store/redux/slices/toastSlice';
 import { postApiAction } from './postApiSlice';
 import { accountsApiAction } from '../accounts/accountsApiSlice';
@@ -51,10 +52,41 @@ const CreatePostContainer = () => {
   const [selectedPlatforms, setSelectedPlatforms] = useState([]);
   const [scheduleEnabled, setScheduleEnabled] = useState(false);
   const [scheduledAt, setScheduledAt] = useState(null);
+
+  // NAYA: selected Facebook page ki state
+  const [selectedFbPageId, setSelectedFbPageId] = useState('');
+
+  // NAYA: selected Instagram account ki state
+  const [selectedIgAccountId, setSelectedIgAccountId] = useState('');
+
   const [createPost, { isLoading }] = postApiAction.createPost();
-  const { data: accounts } = accountsApiAction.getMyAccounts();
+  const { data: accounts, isLoading: isAccountsLoading, isError: isAccountsError, refetch: refetchAccounts } = accountsApiAction.getMyAccounts();
 
   const connectedPlatforms = (accounts || []).map((a) => a.platform);
+
+  // NAYA: user ke saare connected Facebook pages (array)
+  const facebookPages = (accounts || []).filter((a) => a.platform === 'facebook');
+
+  // NAYA: user ke saare connected Instagram business accounts (array)
+  const instagramAccounts = (accounts || []).filter((a) => a.platform === 'instagram');
+
+  // Facebook chip select/deselect karne par page selection bhi reset
+  const togglePlatform = (platform) => {
+    setSelectedPlatforms((prev) => {
+      const newSelected = prev.includes(platform)
+        ? prev.filter((p) => p !== platform)
+        : [...prev, platform];
+      // Agar Facebook deselect kiya, page selection reset karo
+      if (platform === 'facebook' && prev.includes('facebook')) {
+        setSelectedFbPageId('');
+      }
+      // Agar Instagram deselect kiya, account selection reset karo
+      if (platform === 'instagram' && prev.includes('instagram')) {
+        setSelectedIgAccountId('');
+      }
+      return newSelected;
+    });
+  };
 
   // AI Composer State & Hooks
   const [aiTopic, setAiTopic] = useState('');
@@ -73,8 +105,8 @@ const CreatePostContainer = () => {
     }
 
     try {
-      let successMessage = 'AI Generation complete! 🪄';
-      
+      let successMessage = 'AI Generation complete! 🎉';
+
       if (aiOptions.caption || aiOptions.hashtags) {
         const res = await generateCaption({
           topic: aiTopic,
@@ -82,14 +114,14 @@ const CreatePostContainer = () => {
           includeCaption: aiOptions.caption,
           includeHashtags: aiOptions.hashtags,
         }).unwrap();
-        
+
         let newContent = content;
         if (newContent && !newContent.endsWith('\n\n') && !newContent.endsWith('\n')) {
           newContent += '\n\n';
         } else if (newContent && newContent.endsWith('\n') && !newContent.endsWith('\n\n')) {
           newContent += '\n';
         }
-        
+
         if (res.caption) {
           newContent += res.caption;
         }
@@ -98,7 +130,7 @@ const CreatePostContainer = () => {
           if (res.caption) newContent += '\n\n';
           newContent += tagsString;
         }
-        
+
         setContent(newContent.slice(0, 2200));
       }
 
@@ -112,7 +144,7 @@ const CreatePostContainer = () => {
           setPreview(URL.createObjectURL(generatedFile));
         }
       }
-      
+
       dispatch(showToast({ message: successMessage, variant: 'success' }));
     } catch (err) {
       dispatch(showToast({ message: 'AI generation failed. Please try again.', variant: 'error' }));
@@ -133,11 +165,13 @@ const CreatePostContainer = () => {
     maxFiles: 1,
   });
 
-  const togglePlatform = (platform) => {
-    setSelectedPlatforms((prev) =>
-      prev.includes(platform) ? prev.filter((p) => p !== platform) : [...prev, platform]
-    );
-  };
+  // NAYA: Facebook page selection required hai kya?
+  const isFbSelected = selectedPlatforms.includes('facebook');
+  const isFbPageSelectionRequired = isFbSelected && facebookPages.length >= 2 && !selectedFbPageId;
+
+  // NAYA: Instagram account selection required hai kya?
+  const isIgSelected = selectedPlatforms.includes('instagram');
+  const isIgAccountSelectionRequired = isIgSelected && instagramAccounts.length >= 2 && !selectedIgAccountId;
 
   const handleSubmit = async () => {
     if (!content && !file) {
@@ -148,146 +182,172 @@ const CreatePostContainer = () => {
       dispatch(showToast({ message: 'Please select at least one platform.', variant: 'warning' }));
       return;
     }
+    // NAYA: Facebook page validation
+    if (isFbPageSelectionRequired) {
+      dispatch(showToast({ message: 'Please select a Facebook page to post to.', variant: 'warning' }));
+      return;
+    }
+    // NAYA: Instagram account validation
+    if (isIgAccountSelectionRequired) {
+      dispatch(showToast({ message: 'Please select an Instagram account to post to.', variant: 'warning' }));
+      return;
+    }
 
     const formData = new FormData();
     formData.append('content', content);
     formData.append('platforms', JSON.stringify(selectedPlatforms));
-    formData.append('privacy', 'public'); // Hardcoded privacy to public silently
+    formData.append('privacy', 'public');
 
     if (scheduleEnabled && scheduledAt) {
       formData.append('scheduledAt', scheduledAt.toISOString());
     }
+
+    // NAYA: facebookPageId backend ko bhejo
+    // - 1 page connected: auto-select (no dropdown shown)
+    // - 2+ pages connected: user ne dropdown se select kiya
+    if (isFbSelected && facebookPages.length > 0) {
+      const finalFbPageId = facebookPages.length === 1
+        ? facebookPages[0].platformAccountId
+        : selectedFbPageId;
+      if (finalFbPageId) {
+        formData.append('facebookPageId', finalFbPageId);
+      }
+    }
+
+    // NAYA: instagramPageId backend ko bhejo (same logic as facebookPageId)
+    if (isIgSelected && instagramAccounts.length > 0) {
+      const finalIgAccountId = instagramAccounts.length === 1
+        ? instagramAccounts[0].platformAccountId
+        : selectedIgAccountId;
+      if (finalIgAccountId) {
+        formData.append('instagramPageId', finalIgAccountId);
+      }
+    }
+
     if (file) {
-      formData.append('video', file);
+      formData.append('media', file);
     }
 
     try {
       await createPost(formData).unwrap();
-      dispatch(showToast({ message: scheduleEnabled ? 'Post scheduled! 📅' : 'Post created! 🚀', variant: 'success' }));
+      dispatch(showToast({ message: 'Post created successfully! 🚀', variant: 'success' }));
       navigate('/posts');
-    } catch {
-      // Handled by interceptor
+    } catch (err) {
+      // Error is handled by apiSliceInterceptor toast
     }
   };
-
-  const charLimit = 2200;
 
   return (
     <Box>
       {/* Header */}
-      <Box sx={{ mb: 4 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
-          <Box sx={{ width: 40, height: 40, borderRadius: 2, background: 'linear-gradient(135deg, #7C3AED 0%, #2563EB 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <AddCircleIcon sx={{ color: '#fff', fontSize: 20 }} />
-          </Box>
-          <Typography variant="h5" fontWeight={700}>Create Post</Typography>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 4 }}>
+        <Box sx={{
+          width: 40, height: 40, borderRadius: 2,
+          background: 'linear-gradient(135deg, #7C3AED 0%, #2563EB 100%)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <AddCircleIcon sx={{ color: '#fff', fontSize: 20 }} />
         </Box>
-        <Typography variant="body2" sx={{ color: 'text.secondary', ml: 7 }}>
-          Craft and schedule your content across multiple platforms
-        </Typography>
+        <Box>
+          <Typography variant="h5" fontWeight={700}>Create Post</Typography>
+          <Typography variant="caption" sx={{ color: 'text.secondary' }}>Compose and publish to your connected platforms</Typography>
+        </Box>
       </Box>
 
       <Grid container spacing={3}>
         {/* Left column */}
         <Grid size={{ xs: 12, lg: 7 }}>
-          
-          {/* AI Composer Card */}
-          <Card sx={{ mb: 3, borderRadius: 3, border: '1px solid rgba(124, 58, 237, 0.3)', background: 'rgba(10, 15, 30, 0.4)', position: 'relative', overflow: 'hidden' }}>
-            <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, #7C3AED, #2563EB)' }} />
+
+          {/* AI Composer */}
+          <Card sx={{ mb: 3, borderRadius: 3, border: '1px solid rgba(255,255,255,0.05)', background: 'rgba(10, 15, 30, 0.4)' }}>
             <CardContent sx={{ p: 3 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
                 <AutoAwesomeIcon sx={{ color: '#A78BFA' }} />
-                <Typography variant="subtitle2" fontWeight={600} sx={{ color: '#A78BFA' }}>AI Composer</Typography>
+                <Typography variant="subtitle2" fontWeight={600}>AI Content Generator</Typography>
               </Box>
-              
               <TextField
                 fullWidth
                 size="small"
-                placeholder="Topic or idea (e.g. Diwali sale offer on shoes)..."
+                placeholder="Enter a topic or idea (e.g. 'summer sale announcement')"
                 value={aiTopic}
                 onChange={(e) => setAiTopic(e.target.value)}
-                variant="outlined"
-                sx={{ mb: 2, '& .MuiOutlinedInput-root': { backgroundColor: 'rgba(255,255,255,0.02)' } }}
+                sx={{ mb: 1.5, '& .MuiOutlinedInput-root': { backgroundColor: 'rgba(0,0,0,0.2)', borderRadius: 2 } }}
               />
-
-              <FormGroup row sx={{ mb: 2 }}>
-                <FormControlLabel
-                  control={<Checkbox size="small" checked={aiOptions.caption} onChange={(e) => setAiOptions(prev => ({...prev, caption: e.target.checked}))} sx={{ color: 'rgba(255,255,255,0.3)', '&.Mui-checked': { color: '#7C3AED' } }} />}
-                  label={<Typography variant="body2" sx={{ color: 'text.secondary' }}>Caption</Typography>}
-                />
-                <FormControlLabel
-                  control={<Checkbox size="small" checked={aiOptions.hashtags} onChange={(e) => setAiOptions(prev => ({...prev, hashtags: e.target.checked}))} sx={{ color: 'rgba(255,255,255,0.3)', '&.Mui-checked': { color: '#7C3AED' } }} />}
-                  label={<Typography variant="body2" sx={{ color: 'text.secondary' }}>Hashtags</Typography>}
-                />
-                <FormControlLabel
-                  control={<Checkbox size="small" checked={aiOptions.image} onChange={(e) => setAiOptions(prev => ({...prev, image: e.target.checked}))} sx={{ color: 'rgba(255,255,255,0.3)', '&.Mui-checked': { color: '#7C3AED' } }} />}
-                  label={<Typography variant="body2" sx={{ color: 'text.secondary' }}>Image</Typography>}
-                />
+              <FormGroup row sx={{ mb: 1.5, gap: 1 }}>
+                {['caption', 'hashtags', 'image'].map((opt) => (
+                  <FormControlLabel
+                    key={opt}
+                    control={
+                      <Checkbox
+                        checked={aiOptions[opt]}
+                        onChange={(e) => setAiOptions((prev) => ({ ...prev, [opt]: e.target.checked }))}
+                        size="small"
+                        sx={{ color: '#A78BFA', '&.Mui-checked': { color: '#A78BFA' } }}
+                      />
+                    }
+                    label={<Typography variant="caption" sx={{ textTransform: 'capitalize' }}>{opt}</Typography>}
+                  />
+                ))}
               </FormGroup>
-
+              {(isGeneratingCaption || isGeneratingImage) && <LinearProgress sx={{ mb: 1, borderRadius: 1, backgroundColor: 'rgba(167,139,250,0.2)', '& .MuiLinearProgress-bar': { backgroundColor: '#A78BFA' } }} />}
               <Button
                 variant="outlined"
                 onClick={handleGenerateAI}
                 loading={isGeneratingCaption || isGeneratingImage}
-                sx={{
-                  borderColor: '#7C3AED50', color: '#A78BFA',
-                  '&:hover': { borderColor: '#7C3AED', backgroundColor: '#7C3AED10' }
-                }}
+                sx={{ borderColor: '#A78BFA40', color: '#A78BFA', '&:hover': { borderColor: '#A78BFA', backgroundColor: '#A78BFA10' } }}
               >
-                🪄 Generate with AI
+                ✨ Generate with AI
               </Button>
             </CardContent>
           </Card>
 
-          {/* Content textarea */}
+          {/* Content editor */}
           <Card sx={{ mb: 3, borderRadius: 3, border: '1px solid rgba(255,255,255,0.05)', background: 'rgba(10, 15, 30, 0.4)' }}>
             <CardContent sx={{ p: 3 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                <EditNoteIcon sx={{ color: '#A78BFA' }} />
-                <Typography variant="subtitle2" fontWeight={600}>Caption / Content</Typography>
+                <EditNoteIcon sx={{ color: '#60A5FA' }} />
+                <Typography variant="subtitle2" fontWeight={600}>Post Content</Typography>
               </Box>
               <TextField
+                fullWidth
                 multiline
                 rows={6}
-                fullWidth
-                placeholder="What's on your mind? Write your post caption here..."
+                placeholder="Write your post content here..."
                 value={content}
-                onChange={(e) => setContent(e.target.value.slice(0, charLimit))}
-                variant="outlined"
-                sx={{ mb: 1, '& .MuiOutlinedInput-root': { backgroundColor: 'rgba(255,255,255,0.02)' } }}
+                onChange={(e) => setContent(e.target.value.slice(0, 2200))}
+                sx={{ '& .MuiOutlinedInput-root': { backgroundColor: 'rgba(0,0,0,0.2)', borderRadius: 2 } }}
               />
-              <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <Typography variant="caption" sx={{ color: content.length > charLimit * 0.9 ? '#F59E0B' : 'text.secondary' }}>
-                  {content.length} / {charLimit}
-                </Typography>
-              </Box>
+              <Typography variant="caption" sx={{ color: content.length > 2000 ? '#F87171' : 'text.secondary', display: 'block', textAlign: 'right', mt: 0.5 }}>
+                {content.length}/2200
+              </Typography>
             </CardContent>
           </Card>
 
-          {/* Upload box */}
-          <Card sx={{ mb: 3, borderRadius: 3, border: '1px solid rgba(255,255,255,0.05)', background: 'rgba(10, 15, 30, 0.4)' }}>
+          {/* Media upload */}
+          <Card sx={{ borderRadius: 3, border: '1px solid rgba(255,255,255,0.05)', background: 'rgba(10, 15, 30, 0.4)' }}>
             <CardContent sx={{ p: 3 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                <PermMediaIcon sx={{ color: '#60A5FA' }} />
-                <Typography variant="subtitle2" fontWeight={600}>Media (Image or Video)</Typography>
+                <PermMediaIcon sx={{ color: '#F59E0B' }} />
+                <Typography variant="subtitle2" fontWeight={600}>Media</Typography>
               </Box>
-
               {preview ? (
-                <Box sx={{ position: 'relative' }}>
-                  {file?.type?.startsWith('video') ? (
-                    <Box component="video" src={preview} controls sx={{ width: '100%', borderRadius: 2, maxHeight: 300 }} />
+                <Box sx={{ position: 'relative', borderRadius: 2, overflow: 'hidden' }}>
+                  {file?.type?.startsWith('video/') ? (
+                    <video src={preview} controls style={{ width: '100%', borderRadius: 8, maxHeight: 280, objectFit: 'cover' }} />
                   ) : (
-                    <Box component="img" src={preview} alt="preview" sx={{ width: '100%', maxHeight: 300, objectFit: 'contain', borderRadius: 2 }} />
+                    <img src={preview} alt="preview" style={{ width: '100%', borderRadius: 8, maxHeight: 280, objectFit: 'cover' }} />
                   )}
                   <Box
                     onClick={() => { setFile(null); setPreview(null); }}
-                    sx={{ position: 'absolute', top: 8, right: 8, width: 28, height: 28, borderRadius: '50%', backgroundColor: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', '&:hover': { backgroundColor: 'rgba(239,68,68,0.7)' } }}
+                    sx={{
+                      position: 'absolute', top: 8, right: 8, width: 28, height: 28,
+                      borderRadius: '50%', backgroundColor: 'rgba(0,0,0,0.7)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      cursor: 'pointer', '&:hover': { backgroundColor: 'rgba(0,0,0,0.9)' }
+                    }}
                   >
                     <CloseIcon sx={{ fontSize: 16, color: '#fff' }} />
                   </Box>
-                  <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mt: 1 }}>
-                    {file?.name} ({(file?.size / 1024 / 1024).toFixed(2)} MB)
-                  </Typography>
                 </Box>
               ) : (
                 <Box
@@ -324,12 +384,37 @@ const CreatePostContainer = () => {
                 <Typography variant="subtitle2" fontWeight={600}>Publish To</Typography>
               </Box>
 
+              {/* Accounts loading state */}
+              {isAccountsLoading && (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                  <CircularProgress size={16} sx={{ color: '#A78BFA' }} />
+                  <Typography variant="caption" sx={{ color: 'text.secondary' }}>Loading accounts...</Typography>
+                </Box>
+              )}
+
+              {/* Accounts error state */}
+              {isAccountsError && !isAccountsLoading && (
+                <Box sx={{
+                  display: 'flex', alignItems: 'center', gap: 1, mb: 2, p: 1.5, borderRadius: 2,
+                  backgroundColor: 'rgba(239, 68, 68, 0.08)', border: '1px solid rgba(239, 68, 68, 0.2)',
+                }}>
+                  <WarningAmberIcon sx={{ fontSize: 16, color: '#ef4444' }} />
+                  <Typography variant="caption" sx={{ color: '#ef4444', flex: 1 }}>Failed to load accounts</Typography>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={refetchAccounts}
+                    sx={{ borderColor: '#ef444440', color: '#ef4444', height: 22, fontSize: '0.65rem', px: 1, minWidth: 'unset', '&:hover': { borderColor: '#ef4444', backgroundColor: '#ef444410' } }}
+                  >
+                    Retry
+                  </Button>
+                </Box>
+              )}
+
+              {/* Platform chips */}
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                 {AVAILABLE_PLATFORMS.map((p) => {
-                  const isConnected = connectedPlatforms.includes(p) || connectedPlatforms.includes(p === 'instagram' || p === 'facebook' ? 'facebook_instagram' : p) || (p === 'instagram' && connectedPlatforms.includes('facebook'));
-                  // We handled combo platform, now connectedPlatforms returns 'facebook', 'youtube', etc
-                  const isPlatformConnected = connectedPlatforms.includes(p) || (connectedPlatforms.includes('facebook') && p === 'instagram');
-
+                  const isPlatformConnected = connectedPlatforms.includes(p);
                   const isSelected = selectedPlatforms.includes(p);
                   const color = PLATFORM_COLORS[p];
                   return (
@@ -349,9 +434,7 @@ const CreatePostContainer = () => {
                             cursor: isPlatformConnected ? 'pointer' : 'not-allowed',
                             transition: 'all 0.3s',
                             boxShadow: isSelected ? `0 0 12px ${color}50` : 'none',
-                            '&:hover': {
-                              backgroundColor: isSelected ? color : 'rgba(255,255,255,0.08)'
-                            }
+                            '&:hover': { backgroundColor: isSelected ? color : 'rgba(255,255,255,0.08)' }
                           }}
                         />
                       </span>
@@ -368,6 +451,82 @@ const CreatePostContainer = () => {
                   </Tooltip>
                 ))}
               </Box>
+
+              {/* NAYA: Facebook Page Selector */}
+              {isFbSelected && (
+                <Box sx={{ mt: 2 }}>
+                  {facebookPages.length === 0 ? (
+                    // Koi page connected nahi
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1.5, borderRadius: 2, backgroundColor: 'rgba(251, 191, 36, 0.08)', border: '1px solid rgba(251, 191, 36, 0.25)' }}>
+                      <WarningAmberIcon sx={{ fontSize: 16, color: '#FBBF24', flexShrink: 0 }} />
+                      <Typography variant="caption" sx={{ color: '#FBBF24' }}>
+                        No Facebook pages connected. Go to <Box component="span" onClick={() => navigate('/accounts')} sx={{ textDecoration: 'underline', cursor: 'pointer' }}>Accounts</Box> to connect.
+                      </Typography>
+                    </Box>
+                  ) : facebookPages.length === 1 ? (
+                    // Sirf 1 page
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1.25, borderRadius: 2, backgroundColor: 'rgba(24, 119, 242, 0.08)', border: '1px solid rgba(24, 119, 242, 0.25)' }}>
+                      <FacebookIcon sx={{ fontSize: 14, color: '#1877F2', flexShrink: 0 }} />
+                      <Typography variant="caption" sx={{ color: '#93C5FD' }}>
+                        Posting to: <Box component="span" sx={{ color: '#fff', fontWeight: 600 }}>{facebookPages[0].displayName}</Box>
+                      </Typography>
+                    </Box>
+                  ) : (
+                    // 2+ pages dropdown
+                    <FormControl fullWidth size="small" error={isFbPageSelectionRequired} sx={{ '& .MuiOutlinedInput-root': { backgroundColor: 'rgba(0,0,0,0.2)', borderRadius: 2, '& fieldset': { borderColor: isFbPageSelectionRequired ? '#ef4444' : 'rgba(24,119,242,0.4)' }, '&:hover fieldset': { borderColor: '#1877F2' }, '&.Mui-focused fieldset': { borderColor: '#1877F2' } }, '& .MuiInputLabel-root': { color: isFbPageSelectionRequired ? '#ef4444' : '#93C5FD' }, '& .MuiInputLabel-root.Mui-focused': { color: '#1877F2' }, '& .MuiSelect-icon': { color: '#93C5FD' } }}>
+                      <InputLabel id="fb-page-select-label">{isFbPageSelectionRequired ? 'Select a Facebook page *' : 'Post to which Facebook Page?'}</InputLabel>
+                      <Select labelId="fb-page-select-label" id="fb-page-select" value={selectedFbPageId} label={isFbPageSelectionRequired ? 'Select a Facebook page *' : 'Post to which Facebook Page?'} onChange={(e) => setSelectedFbPageId(e.target.value)} MenuProps={{ PaperProps: { sx: { backgroundColor: 'rgba(15, 20, 35, 0.97)', border: '1px solid rgba(24,119,242,0.2)', borderRadius: 2, boxShadow: '0 8px 32px rgba(0,0,0,0.4)' } } }}>
+                        {facebookPages.map((page) => (
+                          <MenuItem key={page.platformAccountId} value={page.platformAccountId} sx={{ '&:hover': { backgroundColor: 'rgba(24,119,242,0.12)' }, '&.Mui-selected': { backgroundColor: 'rgba(24,119,242,0.2)' }, '&.Mui-selected:hover': { backgroundColor: 'rgba(24,119,242,0.28)' } }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                              <FacebookIcon sx={{ fontSize: 16, color: '#1877F2' }} />
+                              <Typography variant="body2">{page.displayName}</Typography>
+                            </Box>
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )}
+                </Box>
+              )}
+
+              {/* NAYA: Instagram Account Selector */}
+              {isIgSelected && (
+                <Box sx={{ mt: 2 }}>
+                  {instagramAccounts.length === 0 ? (
+                    // Koi account connected nahi - warning dikhao
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1.5, borderRadius: 2, backgroundColor: 'rgba(251, 191, 36, 0.08)', border: '1px solid rgba(251, 191, 36, 0.25)' }}>
+                      <WarningAmberIcon sx={{ fontSize: 16, color: '#FBBF24', flexShrink: 0 }} />
+                      <Typography variant="caption" sx={{ color: '#FBBF24' }}>
+                        No Instagram accounts connected. Go to <Box component="span" onClick={() => navigate('/accounts')} sx={{ textDecoration: 'underline', cursor: 'pointer' }}>Accounts</Box> to connect.
+                      </Typography>
+                    </Box>
+                  ) : instagramAccounts.length === 1 ? (
+                    // Sirf 1 account - auto-select, subtle info pill dikhao
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1.25, borderRadius: 2, backgroundColor: 'rgba(225, 48, 108, 0.08)', border: '1px solid rgba(225, 48, 108, 0.25)' }}>
+                      <InstagramIcon sx={{ fontSize: 14, color: '#E1306C', flexShrink: 0 }} />
+                      <Typography variant="caption" sx={{ color: '#F9A8D4' }}>
+                        Posting to: <Box component="span" sx={{ color: '#fff', fontWeight: 600 }}>{instagramAccounts[0].displayName}</Box>
+                      </Typography>
+                    </Box>
+                  ) : (
+                    // 2+ accounts - dropdown dikhao
+                    <FormControl fullWidth size="small" error={isIgAccountSelectionRequired} sx={{ '& .MuiOutlinedInput-root': { backgroundColor: 'rgba(0,0,0,0.2)', borderRadius: 2, '& fieldset': { borderColor: isIgAccountSelectionRequired ? '#ef4444' : 'rgba(225,48,108,0.4)' }, '&:hover fieldset': { borderColor: '#E1306C' }, '&.Mui-focused fieldset': { borderColor: '#E1306C' } }, '& .MuiInputLabel-root': { color: isIgAccountSelectionRequired ? '#ef4444' : '#F9A8D4' }, '& .MuiInputLabel-root.Mui-focused': { color: '#E1306C' }, '& .MuiSelect-icon': { color: '#F9A8D4' } }}>
+                      <InputLabel id="ig-account-select-label">{isIgAccountSelectionRequired ? 'Select an Instagram account *' : 'Post to which Instagram Account?'}</InputLabel>
+                      <Select labelId="ig-account-select-label" id="ig-account-select" value={selectedIgAccountId} label={isIgAccountSelectionRequired ? 'Select an Instagram account *' : 'Post to which Instagram Account?'} onChange={(e) => setSelectedIgAccountId(e.target.value)} MenuProps={{ PaperProps: { sx: { backgroundColor: 'rgba(15, 20, 35, 0.97)', border: '1px solid rgba(225,48,108,0.2)', borderRadius: 2, boxShadow: '0 8px 32px rgba(0,0,0,0.4)' } } }}>
+                        {instagramAccounts.map((acc) => (
+                          <MenuItem key={acc.platformAccountId} value={acc.platformAccountId} sx={{ '&:hover': { backgroundColor: 'rgba(225,48,108,0.12)' }, '&.Mui-selected': { backgroundColor: 'rgba(225,48,108,0.2)' }, '&.Mui-selected:hover': { backgroundColor: 'rgba(225,48,108,0.28)' } }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                              <InstagramIcon sx={{ fontSize: 16, color: '#E1306C' }} />
+                              <Typography variant="body2">{acc.displayName}</Typography>
+                            </Box>
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )}
+                </Box>
+              )}
             </CardContent>
           </Card>
 
@@ -384,11 +543,7 @@ const CreatePostContainer = () => {
                     {scheduleEnabled ? 'Pick a date & time below' : 'Post will be published instantly'}
                   </Typography>
                 </Box>
-                <Switch
-                  checked={scheduleEnabled}
-                  onChange={(e) => setScheduleEnabled(e.target.checked)}
-                  sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: '#7C3AED' }, '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { backgroundColor: '#7C3AED' } }}
-                />
+                <Switch checked={scheduleEnabled} onChange={(e) => setScheduleEnabled(e.target.checked)} sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: '#7C3AED' }, '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { backgroundColor: '#7C3AED' } }} />
               </Box>
 
               {scheduleEnabled && (
@@ -398,29 +553,7 @@ const CreatePostContainer = () => {
                     value={scheduledAt}
                     onChange={setScheduledAt}
                     disablePast
-                    slotProps={{
-                      textField: {
-                        fullWidth: true,
-                        size: 'small',
-                        sx: {
-                          '& .MuiOutlinedInput-root': {
-                            backgroundColor: 'rgba(0,0,0,0.2)',
-                            borderRadius: 2
-                          }
-                        }
-                      },
-                      popper: {
-                        sx: {
-                          '& .MuiPaper-root': {
-                            backgroundColor: 'rgba(15, 20, 35, 0.95)',
-                            backdropFilter: 'blur(10px)',
-                            border: '1px solid rgba(255,255,255,0.1)',
-                            boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
-                            borderRadius: 3
-                          }
-                        }
-                      }
-                    }}
+                    slotProps={{ textField: { fullWidth: true, size: 'small', sx: { '& .MuiOutlinedInput-root': { backgroundColor: 'rgba(0,0,0,0.2)', borderRadius: 2 } } }, popper: { sx: { '& .MuiPaper-root': { backgroundColor: 'rgba(15, 20, 35, 0.95)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 8px 32px rgba(0,0,0,0.4)', borderRadius: 3 } } } }}
                   />
                 </LocalizationProvider>
               )}
@@ -428,26 +561,28 @@ const CreatePostContainer = () => {
           </Card>
 
           {/* Submit */}
-          <Button
-            variant="contained"
-            fullWidth
-            loading={isLoading}
-            onClick={handleSubmit}
-            sx={{
-              py: 2,
-              fontSize: '1.05rem',
-              borderRadius: 3,
-              background: 'linear-gradient(90deg, #7C3AED, #2563EB)',
-              transition: 'all 0.3s ease',
-              boxShadow: '0 8px 20px rgba(124, 58, 237, 0.3)',
-              '&:hover': {
-                boxShadow: '0 8px 25px rgba(124, 58, 237, 0.5)',
-                transform: 'translateY(-2px)'
-              }
-            }}
-          >
-            {scheduleEnabled ? '📅 Schedule Post' : '🚀 Publish Now'}
-          </Button>
+          <Tooltip title={isFbPageSelectionRequired ? 'Please select a Facebook page first' : isIgAccountSelectionRequired ? 'Please select an Instagram account first' : ''} arrow>
+            <span style={{ display: 'block', width: '100%' }}>
+              <Button
+                variant="contained"
+                fullWidth
+                loading={isLoading}
+                disabled={isFbPageSelectionRequired || isIgAccountSelectionRequired}
+                onClick={handleSubmit}
+                sx={{
+                  py: 2,
+                  fontSize: '1.05rem',
+                  borderRadius: 3,
+                  background: (isFbPageSelectionRequired || isIgAccountSelectionRequired) ? 'rgba(124, 58, 237, 0.3)' : 'linear-gradient(90deg, #7C3AED, #2563EB)',
+                  transition: 'all 0.3s ease',
+                  boxShadow: (isFbPageSelectionRequired || isIgAccountSelectionRequired) ? 'none' : '0 8px 20px rgba(124, 58, 237, 0.3)',
+                  '&:hover': (isFbPageSelectionRequired || isIgAccountSelectionRequired) ? {} : { boxShadow: '0 8px 25px rgba(124, 58, 237, 0.5)', transform: 'translateY(-2px)' }
+                }}
+              >
+                {scheduleEnabled ? '📅 Schedule Post' : '🚀 Publish Now'}
+              </Button>
+            </span>
+          </Tooltip>
         </Grid>
       </Grid>
     </Box>

@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from '@mui/material';
+﻿import { Box, Grid, Typography } from '@mui/material';
 import LinkIcon from '@mui/icons-material/Link';
 import { accountsApiAction } from './accountsApiSlice';
 import PlatformCard from './component/PlatformCard';
@@ -8,10 +8,28 @@ const PLATFORMS = ['youtube', 'facebook_instagram', 'linkedin', 'twitter', 'what
 const AccountsContainer = () => {
   const { data: accounts, isLoading } = accountsApiAction.getMyAccounts();
 
+  // Single-account platforms (YouTube, etc.) — sirf pehla match return karo
   const getConnectedAccount = (platform) => {
     if (!accounts) return null;
     return accounts.find((a) => a.platform === platform) || null;
   };
+
+  // Facebook — multiple pages ho sakte hain, isliye array return karo
+  const getFacebookPages = () => {
+    if (!accounts) return [];
+    return accounts.filter((a) => a.platform === 'facebook');
+  };
+
+  // Instagram — multiple IG business accounts ho sakte hain (har FB page ka apna IG)
+  const getInstagramAccounts = () => {
+    if (!accounts) return [];
+    return accounts.filter((a) => a.platform === 'instagram');
+  };
+
+  // Unique connected platforms count (multiple FB pages = 1 platform)
+  const uniqueConnectedPlatforms = accounts
+    ? [...new Set(accounts.map((a) => a.platform))].length
+    : 0;
 
   return (
     <Box>
@@ -42,7 +60,7 @@ const AccountsContainer = () => {
         }}>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             <Box component="span" sx={{ color: '#A78BFA', fontWeight: 700, fontSize: '1.1rem' }}>
-              {accounts.length}
+              {uniqueConnectedPlatforms}
             </Box>
             {' '}of {3} available platforms connected
           </Typography>
@@ -56,10 +74,10 @@ const AccountsContainer = () => {
             <PlatformCard
               platform={platform}
               connectedAccount={
-                platform === 'facebook_instagram' 
+                platform === 'facebook_instagram'
                   ? {
-                      facebook: getConnectedAccount('facebook'),
-                      instagram: getConnectedAccount('instagram'),
+                      facebookPages: getFacebookPages(),
+                      instagramAccounts: getInstagramAccounts(),
                     }
                   : getConnectedAccount(platform)
               }

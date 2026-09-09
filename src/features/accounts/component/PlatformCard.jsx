@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Typography, Chip, Skeleton, Tooltip } from '@mui/material';
+﻿import { Box, Card, CardContent, Typography, Chip, Skeleton, Tooltip, Divider } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import FacebookIcon from '@mui/icons-material/Facebook';
@@ -6,9 +6,9 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { useSelector } from 'react-redux';
+import { accountsApiAction } from '../accountsApiSlice';
 import { appConstants } from '../../../constant/appConstants';
 import Button from '../../../common/Button';
-import { accountsApiAction } from '../accountsApiSlice';
 
 const PLATFORM_ICONS = {
   youtube: <YouTubeIcon sx={{ fontSize: 36 }} />,
@@ -35,13 +35,21 @@ const PlatformCard = ({ platform, connectedAccount, isLoading }) => {
   const isCombo = platform === 'facebook_instagram';
   const meta = isCombo ? { name: 'Facebook & Instagram', isComingSoon: false } : appConstants.platforms[platform];
 
-  const fbAccount = isCombo ? connectedAccount?.facebook : null;
-  const igAccount = isCombo ? connectedAccount?.instagram : null;
-  const isConnected = isCombo ? !!(fbAccount || igAccount) : !!connectedAccount;
+  // Facebook — multiple pages array
+  const facebookPages = isCombo ? (connectedAccount?.facebookPages || []) : [];
+  // Instagram — multiple IG business accounts array (UPDATED from single igAccount)
+  const instagramAccounts = isCombo ? (connectedAccount?.instagramAccounts || []) : [];
+
+  const isConnected = isCombo
+    ? (facebookPages.length > 0 || instagramAccounts.length > 0)
+    : !!connectedAccount;
+
   const color = isCombo ? '#1877F2' : PLATFORM_COLORS[platform];
 
   const handleConnect = () => {
-    const userId = user?.userId || (isCombo ? (fbAccount?.userId || igAccount?.userId) : connectedAccount?.userId);
+    const userId = user?.userId || (isCombo
+      ? (facebookPages[0]?.userId || instagramAccounts[0]?.userId)
+      : connectedAccount?.userId);
     const targetPlatform = isCombo ? 'facebook' : platform;
     const endpointMap = {
       youtube: `${appConstants.apiBaseURL}/auth/youtube/connect?userId=${userId}`,
@@ -56,20 +64,29 @@ const PlatformCard = ({ platform, connectedAccount, isLoading }) => {
   const handleDisconnectSingle = async (targetPlatform) => {
     if (!window.confirm(`Are you sure you want to disconnect ${targetPlatform}?`)) return;
     try {
-      await disconnectAccount(targetPlatform).unwrap();
+      await disconnectAccount({ platform: targetPlatform }).unwrap();
     } catch (err) {
       console.error('Failed to disconnect:', err);
     }
   };
 
-  // Combined Facebook & Instagram disconnect
-  const handleDisconnectCombo = async () => {
-    if (!window.confirm('Are you sure you want to disconnect Facebook & Instagram?')) return;
+  // Per-page Facebook disconnect (specific platformAccountId)
+  const handleDisconnectFbPage = async (page) => {
+    if (!window.confirm(`Disconnect "${page.displayName}" Facebook page?`)) return;
     try {
-      if (fbAccount) await disconnectAccount('facebook').unwrap();
-      if (igAccount) await disconnectAccount('instagram').unwrap();
+      await disconnectAccount({ platform: 'facebook', accountId: page.platformAccountId }).unwrap();
     } catch (err) {
-      console.error('Disconnect failed:', err);
+      console.error('Failed to disconnect FB page:', err);
+    }
+  };
+
+  // NAYA: per-account Instagram disconnect (specific platformAccountId)
+  const handleDisconnectIgAccount = async (account) => {
+    if (!window.confirm(`Disconnect "${account.displayName}" Instagram account?`)) return;
+    try {
+      await disconnectAccount({ platform: 'instagram', accountId: account.platformAccountId }).unwrap();
+    } catch (err) {
+      console.error('Failed to disconnect IG account:', err);
     }
   };
 
@@ -84,21 +101,65 @@ const PlatformCard = ({ platform, connectedAccount, isLoading }) => {
     );
   }
 
-  // Status row (checkmark + name) — no disconnect button here for combo
-  const renderStatusRow = (acc, label) => (
-    acc ? (
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.5, mb: 0.5 }}>
-        <CheckCircleIcon sx={{ fontSize: 16, color: '#4ade80' }} />
-        <Typography variant="caption" sx={{ color: '#4ade80' }}>
-          {label ? `${label}: ` : ''}{acc.displayName || 'Connected'}
-        </Typography>
+  // Renders each FB page as a separate row with its own Disconnect button
+  const renderFacebookPages = () => {
+    if (facebookPages.length === 0) return null;
+    return (
+      <Box sx={{ width: '100%', mb: 1 }}>
+        {facebookPages.map((page, idx) => (
+          <Box key={page.platformAccountId || idx}>
+            {idx > 0 && <Divider sx={{ borderColor: 'rgba(255,255,255,0.06)', my: 0.75 }} />}
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1, py: 0.5 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, minWidth: 0 }}>
+                <CheckCircleIcon sx={{ fontSize: 14, color: '#4ade80', flexShrink: 0 }} />
+                <Typography variant="caption" sx={{ color: '#4ade80', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {page.displayName || 'Facebook Page'}
+                </Typography>
+              </Box>
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={() => handleDisconnectFbPage(page)}
+                sx={{ flexShrink: 0, borderColor: '#ef444440', color: '#ef4444', height: 24, fontSize: '0.65rem', px: 1, minWidth: 'unset', '&:hover': { borderColor: '#ef4444', backgroundColor: '#ef444410' } }}
+              >
+                Disconnect
+              </Button>
+            </Box>
+          </Box>
+        ))}
       </Box>
-    ) : (
-      <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', textAlign: 'center', mb: 0.5 }}>
-        {label ? `${label}: ` : ''}Not connected
-      </Typography>
-    )
-  );
+    );
+  };
+
+  // NAYA: renders each IG account as a separate row with its own Disconnect button
+  const renderInstagramAccounts = () => {
+    if (instagramAccounts.length === 0) return null;
+    return (
+      <Box sx={{ width: '100%', mb: 1 }}>
+        {instagramAccounts.map((acc, idx) => (
+          <Box key={acc.platformAccountId || idx}>
+            {idx > 0 && <Divider sx={{ borderColor: 'rgba(255,255,255,0.06)', my: 0.75 }} />}
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1, py: 0.5 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, minWidth: 0 }}>
+                <CheckCircleIcon sx={{ fontSize: 14, color: '#4ade80', flexShrink: 0 }} />
+                <Typography variant="caption" sx={{ color: '#4ade80', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {acc.displayName || 'Instagram Account'}
+                </Typography>
+              </Box>
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={() => handleDisconnectIgAccount(acc)}
+                sx={{ flexShrink: 0, borderColor: '#ef444440', color: '#ef4444', height: 24, fontSize: '0.65rem', px: 1, minWidth: 'unset', '&:hover': { borderColor: '#ef4444', backgroundColor: '#ef444410' } }}
+              >
+                Disconnect
+              </Button>
+            </Box>
+          </Box>
+        ))}
+      </Box>
+    );
+  };
 
   return (
     <Card sx={{
@@ -135,7 +196,7 @@ const PlatformCard = ({ platform, connectedAccount, isLoading }) => {
           />
         )}
 
-        {/* Icon(s) — center aligned */}
+        {/* Icon(s) */}
         <Box sx={{ display: 'flex', gap: 1, mb: 1.5, justifyContent: 'center', color: meta.isComingSoon ? 'text.secondary' : color }}>
           {isCombo ? (
             <>
@@ -145,63 +206,107 @@ const PlatformCard = ({ platform, connectedAccount, isLoading }) => {
           ) : PLATFORM_ICONS[platform]}
         </Box>
 
-        {/* Platform name — center aligned */}
+        {/* Platform name */}
         <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 1.5, textAlign: 'center' }}>
           {meta.name}
         </Typography>
 
         {/* Status area */}
-        <Box sx={{ flex: 1, width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: !isConnected ? 'center' : 'flex-start' }}>
+        <Box sx={{ flex: 1, width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
           {isCombo ? (
             isConnected ? (
-              <Box sx={{ width: '100%', mb: 1 }}>
-                {renderStatusRow(fbAccount, 'Facebook')}
-                {renderStatusRow(igAccount, 'Instagram')}
+              <Box sx={{ width: '100%' }}>
+                {/* FB Pages label + rows */}
+                {facebookPages.length > 0 && (
+                  <Typography variant="caption" sx={{ color: 'text.disabled', fontSize: '0.6rem', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                    Facebook {facebookPages.length > 1 ? `Pages (${facebookPages.length})` : 'Page'}
+                  </Typography>
+                )}
+                {renderFacebookPages()}
+
+                {/* Divider between FB and IG sections if both exist */}
+                {facebookPages.length > 0 && instagramAccounts.length > 0 && (
+                  <Divider sx={{ borderColor: 'rgba(255,255,255,0.08)', my: 0.75 }} />
+                )}
+
+                {/* Instagram label + rows (UPDATED: array, with count) */}
+                {instagramAccounts.length > 0 && (
+                  <>
+                    <Typography variant="caption" sx={{ color: 'text.disabled', fontSize: '0.6rem', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                      Instagram {instagramAccounts.length > 1 ? `Accounts (${instagramAccounts.length})` : 'Account'}
+                    </Typography>
+                    {renderInstagramAccounts()}
+                  </>
+                )}
               </Box>
             ) : null
           ) : (
-            isConnected ? renderStatusRow(connectedAccount, '') : null
+            isConnected ? (
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.5, mb: 0.5 }}>
+                <CheckCircleIcon sx={{ fontSize: 16, color: '#4ade80' }} />
+                <Typography variant="caption" sx={{ color: '#4ade80' }}>
+                  {connectedAccount.displayName || 'Connected'}
+                </Typography>
+              </Box>
+            ) : null
           )}
         </Box>
 
-        {/* Action button — always at bottom, centered */}
-        <Box sx={{ mt: 'auto', width: '100%' }}>
+        {/* Action button — bottom */}
+        <Box sx={{ mt: 'auto', width: '100%', pt: isConnected && isCombo ? 1 : 0 }}>
           {meta.isComingSoon ? (
-            <Box sx={{
-              py: 1, textAlign: 'center', borderRadius: 1,
-              border: '1px dashed rgba(255,255,255,0.1)',
-            }}>
+            <Box sx={{ py: 1, textAlign: 'center', borderRadius: 1, border: '1px dashed rgba(255,255,255,0.1)' }}>
               <Typography variant="caption" sx={{ color: 'text.secondary' }}>Coming soon</Typography>
             </Box>
+          ) : isCombo ? (
+            !isConnected ? (
+              <Tooltip title="Connect your Facebook & Instagram accounts">
+                <span style={{ display: 'block', width: '100%' }}>
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    onClick={handleConnect}
+                    sx={{ borderColor: '#1877F240', color: '#1877F2', '&:hover': { borderColor: '#1877F2', backgroundColor: '#1877F210' } }}
+                  >
+                    Connect
+                  </Button>
+                </span>
+              </Tooltip>
+            ) : (
+              <Tooltip title="Connect more Facebook pages or add Instagram">
+                <span style={{ display: 'block', width: '100%' }}>
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    onClick={handleConnect}
+                    sx={{ borderColor: '#1877F230', color: '#1877F2', height: 32, fontSize: '0.75rem', '&:hover': { borderColor: '#1877F2', backgroundColor: '#1877F210' } }}
+                  >
+                    + Add More Pages
+                  </Button>
+                </span>
+              </Tooltip>
+            )
           ) : isConnected ? (
-            // Disconnect button
-            <Tooltip title={isCombo ? 'Disconnect Facebook & Instagram' : `Disconnect ${meta.name}`}>
+            <Tooltip title={`Disconnect ${meta.name}`}>
               <span style={{ display: 'block', width: '100%' }}>
                 <Button
                   variant="outlined"
                   fullWidth
-                  onClick={isCombo ? handleDisconnectCombo : () => handleDisconnectSingle(platform)}
-                  sx={{
-                    borderColor: '#ef444450', color: '#ef4444', height: 32, fontSize: '0.75rem',
-                    '&:hover': { borderColor: '#ef4444', backgroundColor: '#ef444410' }
-                  }}
+                  onClick={() => handleDisconnectSingle(platform)}
+                  sx={{ borderColor: '#ef444450', color: '#ef4444', height: 32, fontSize: '0.75rem', '&:hover': { borderColor: '#ef4444', backgroundColor: '#ef444410' } }}
                 >
                   Disconnect
                 </Button>
               </span>
             </Tooltip>
           ) : (
-            // Connect button
             <Tooltip title={`Connect your ${meta.name} account`}>
               <span style={{ display: 'block', width: '100%' }}>
                 <Button
                   variant="outlined"
                   fullWidth
                   onClick={handleConnect}
-                  sx={{
-                    borderColor: `${color}60`, color,
-                    '&:hover': { borderColor: color, backgroundColor: `${color}10` }
-                  }}
+                  sx={{ borderColor: `${color}60`, color, '&:hover': { borderColor: color, backgroundColor: `${color}10` } }}
                 >
                   Connect
                 </Button>

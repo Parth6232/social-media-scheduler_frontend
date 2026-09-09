@@ -1,4 +1,4 @@
-import { createApi } from '@reduxjs/toolkit/query/react';
+﻿import { createApi } from '@reduxjs/toolkit/query/react';
 import { apiSliceInterceptor } from '../../store/redux/apiSliceInterceptor';
 
 const accountsApi = createApi({
@@ -10,8 +10,17 @@ const accountsApi = createApi({
       query: () => ({ url: '/accounts' }),
       providesTags: ['ACCOUNTS'],
     }),
+
+    // UPDATED: ab { platform, accountId? } object leta hai.
+    // Agar accountId diya gaya (specific FB/IG page) => DELETE /accounts/:platform/:accountId
+    // Agar accountId nahi diya (YouTube jaise single-account platforms) => DELETE /accounts/:platform
     disconnectAccount: qb.mutation({
-      query: (platform) => ({ url: `/accounts/${platform}`, method: 'DELETE' }),
+      query: ({ platform, accountId } = {}) => ({
+        url: accountId
+          ? `/accounts/${platform}/${accountId}`
+          : `/accounts/${platform}`,
+        method: 'DELETE',
+      }),
       invalidatesTags: ['ACCOUNTS'],
     }),
   }),

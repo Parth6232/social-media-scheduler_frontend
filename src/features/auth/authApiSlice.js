@@ -1,4 +1,4 @@
-import { createApi } from '@reduxjs/toolkit/query/react';
+﻿import { createApi } from '@reduxjs/toolkit/query/react';
 import { apiSliceInterceptor } from '../../store/redux/apiSliceInterceptor';
 
 const authApi = createApi({
@@ -17,6 +17,14 @@ const authApi = createApi({
         url: '/auth/signup',
         method: 'POST',
         body: userData,
+      }),
+    }),
+    // NAYA: naye device se login complete karne ke liye OTP verify karo
+    verifyDeviceOtp: qb.mutation({
+      query: (data) => ({
+        url: '/auth/verify-device-otp',
+        method: 'POST',
+        body: data,
       }),
     }),
     forgotPassword: qb.mutation({
@@ -42,6 +50,7 @@ export const authApiAction = {
   reducerPath: authApi.reducerPath,
   login: authApi.useLoginMutation,
   signup: authApi.useSignupMutation,
+  verifyDeviceOtp: authApi.useVerifyDeviceOtpMutation,
   forgotPassword: authApi.useForgotPasswordMutation,
   resetPassword: authApi.useResetPasswordMutation,
 };

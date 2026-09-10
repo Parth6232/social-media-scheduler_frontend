@@ -1,11 +1,13 @@
-﻿import { Box, Grid, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import LinkIcon from '@mui/icons-material/Link';
 import { accountsApiAction } from './accountsApiSlice';
 import PlatformCard from './component/PlatformCard';
+import { useTranslation } from '../../i18n/useTranslation';
 
-const PLATFORMS = ['youtube', 'facebook_instagram', 'linkedin', 'twitter', 'whatsapp'];
+const PLATFORMS = ['youtube', 'facebook', 'instagram', 'linkedin', 'twitter', 'whatsapp'];
 
 const AccountsContainer = () => {
+  const { t } = useTranslation();
   const { data: accounts, isLoading } = accountsApiAction.getMyAccounts();
 
   // Single-account platforms (YouTube, etc.) — sirf pehla match return karo
@@ -43,10 +45,10 @@ const AccountsContainer = () => {
           }}>
             <LinkIcon sx={{ color: '#fff', fontSize: 20 }} />
           </Box>
-          <Typography variant="h5" fontWeight={700}>Connected Accounts</Typography>
+          <Typography variant="h5" fontWeight={700}>{t('connectedAccounts')}</Typography>
         </Box>
         <Typography variant="body2" sx={{ color: 'text.secondary', ml: 7 }}>
-          Connect your social media accounts to start scheduling posts
+          {t('connectedAccountsSubtitle')}
         </Typography>
       </Box>
 
@@ -54,31 +56,33 @@ const AccountsContainer = () => {
       {!isLoading && accounts && (
         <Box sx={{
           mb: 4, p: 2, borderRadius: 2,
-          background: 'linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(37, 99, 235, 0.1))',
-          border: '1px solid rgba(124, 58, 237, 0.2)',
+          background: (theme) => theme.palette.mode === 'dark'
+            ? 'linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(37, 99, 235, 0.1))'
+            : 'linear-gradient(135deg, rgba(124, 58, 237, 0.06), rgba(37, 99, 235, 0.06))',
+          border: '1px solid',
+          borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(124, 58, 237, 0.25)' : 'rgba(124, 58, 237, 0.15)',
           display: 'flex', alignItems: 'center', gap: 2,
         }}>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            <Box component="span" sx={{ color: '#A78BFA', fontWeight: 700, fontSize: '1.1rem' }}>
+            <Box component="span" sx={{ color: 'primary.main', fontWeight: 700, fontSize: '1.1rem' }}>
               {uniqueConnectedPlatforms}
             </Box>
-            {' '}of {3} available platforms connected
+            {' '}{t('of')} 3 {t('availablePlatformsConnected')}
           </Typography>
         </Box>
       )}
 
       {/* Platform Grid */}
-      <Grid container spacing={2}>
+      <Grid container spacing={2.5}>
         {PLATFORMS.map((platform) => (
           <Grid size={{ xs: 12, sm: 6, md: 4 }} key={platform}>
             <PlatformCard
               platform={platform}
               connectedAccount={
-                platform === 'facebook_instagram'
-                  ? {
-                      facebookPages: getFacebookPages(),
-                      instagramAccounts: getInstagramAccounts(),
-                    }
+                platform === 'facebook'
+                  ? getFacebookPages()
+                  : platform === 'instagram'
+                  ? getInstagramAccounts()
                   : getConnectedAccount(platform)
               }
               isLoading={isLoading}

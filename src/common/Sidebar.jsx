@@ -6,6 +6,8 @@ import LinkIcon from '@mui/icons-material/Link';
 import HistoryIcon from '@mui/icons-material/History';
 import { styled } from '@mui/material/styles';
 
+import { useTranslation } from '../i18n/useTranslation';
+
 const LogoBox = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),
   display: 'flex',
@@ -16,37 +18,40 @@ const LogoBox = styled(Box)(({ theme }) => ({
 const StyledNavLink = styled(NavLink)(({ theme }) => ({
   textDecoration: 'none',
   color: theme.palette.text.secondary,
+  display: 'block',
   '&.active': {
-    color: '#fff',
+    color: theme.palette.mode === 'dark' ? '#ffffff' : theme.palette.primary.main,
     '& .MuiListItem-root': {
-      backgroundColor: 'rgba(124, 58, 237, 0.15)',
+      backgroundColor: theme.palette.mode === 'dark' ? 'rgba(124, 58, 237, 0.2)' : 'rgba(124, 58, 237, 0.08)',
       borderRight: `3px solid ${theme.palette.primary.main}`,
     },
     '& .MuiListItemIcon-root': {
       color: theme.palette.primary.main,
-      filter: 'drop-shadow(0 0 8px rgba(124, 58, 237, 0.5))',
+      filter: theme.palette.mode === 'dark' ? 'drop-shadow(0 0 8px rgba(124, 58, 237, 0.5))' : 'none',
     },
   },
 }));
 
 const StyledListItem = styled(ListItem)(({ theme }) => ({
-  margin: theme.spacing(0.5, 2),
+  margin: '4px 16px',
   width: 'calc(100% - 32px)',
   borderRadius: 8,
   transition: 'all 0.2s ease-in-out',
   '&:hover': {
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.04)',
   },
 }));
 
 const navItems = [
-  { path: '/dashboard', label: 'Dashboard', icon: <DashboardIcon /> },
-  { path: '/create', label: 'Create Post', icon: <AddCircleIcon /> },
-  { path: '/accounts', label: 'Accounts', icon: <LinkIcon /> },
-  { path: '/posts', label: 'Posts History', icon: <HistoryIcon /> },
+  { path: '/dashboard', labelKey: 'dashboard', icon: <DashboardIcon /> },
+  { path: '/create', labelKey: 'createPost', icon: <AddCircleIcon /> },
+  { path: '/accounts', labelKey: 'accounts', icon: <LinkIcon /> },
+  { path: '/posts', labelKey: 'postsHistory', icon: <HistoryIcon /> },
 ];
 
 const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
+  const { t } = useTranslation();
+
   const drawerContent = (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <LogoBox>
@@ -58,7 +63,7 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
         }}>
           S
         </div>
-        <Typography variant="h6" fontWeight="bold" sx={{ color: '#fff' }}>
+        <Typography variant="h6" fontWeight="bold" sx={{ color: 'text.primary' }}>
           SocialBlitz
         </Typography>
       </LogoBox>
@@ -71,7 +76,7 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
                 {item.icon}
               </ListItemIcon>
               <ListItemText 
-                primary={item.label} 
+                primary={t(item.labelKey)} 
                 slotProps={{ primary: { fontWeight: 500 } }}
               />
             </StyledListItem>
@@ -93,8 +98,8 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
           '& .MuiDrawer-paper': { 
             boxSizing: 'border-box', 
             width: 260, 
-            backgroundColor: 'rgba(10, 15, 30, 0.95)',
-            borderRight: '1px solid rgba(255,255,255,0.1)' 
+            backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(10, 15, 30, 0.95)' : theme.palette.background.paper,
+            borderRight: (theme) => `1px solid ${theme.palette.divider}`,
           },
         }}
       >
@@ -107,9 +112,9 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
           '& .MuiDrawer-paper': { 
             boxSizing: 'border-box', 
             width: 260, 
-            backgroundColor: 'rgba(10, 15, 30, 0.8)', 
-            backdropFilter: 'blur(10px)', 
-            borderRight: '1px solid rgba(255,255,255,0.1)' 
+            backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(10, 15, 30, 0.8)' : theme.palette.background.paper, 
+            backdropFilter: (theme) => theme.palette.mode === 'dark' ? 'blur(10px)' : 'none', 
+            borderRight: (theme) => `1px solid ${theme.palette.divider}`,
           },
         }}
         open

@@ -13,6 +13,7 @@ import { useState, useMemo } from 'react';
 import { showToast } from '../../store/redux/slices/toastSlice';
 import { authApiAction } from './authApiSlice';
 import Button from '../../common/Button';
+import { useTranslation } from '../../i18n/useTranslation';
 
 const schema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -29,9 +30,9 @@ const FieldBox = ({ icon, children, error, label }) => (
     <Typography variant="caption" sx={{ color: 'text.secondary', mb: 0.5, display: 'block' }}>{label}</Typography>
     <Box sx={{
       display: 'flex', alignItems: 'center',
-      border: `1px solid ${error ? '#f44336' : 'rgba(255,255,255,0.1)'}`,
+      border: (theme) => `1px solid ${error ? '#f44336' : theme.palette.divider}`,
       borderRadius: 2, px: 1.5, py: 0.5,
-      backgroundColor: 'rgba(255,255,255,0.03)',
+      backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
       '&:focus-within': { borderColor: '#7C3AED' }
     }}>
       <Box sx={{ color: 'text.secondary', mr: 1, display: 'flex' }}>{icon}</Box>
@@ -48,8 +49,8 @@ const InputField = ({ type = 'text', placeholder, ...rest }) => (
     placeholder={placeholder}
     sx={{
       flex: 1, border: 'none', outline: 'none', background: 'transparent',
-      color: '#F3F4F6', fontSize: '0.95rem', py: 1,
-      '&::placeholder': { color: 'rgba(255,255,255,0.3)' }
+      color: (theme) => theme.palette.text.primary, fontSize: '0.95rem', py: 1,
+      '&::placeholder': { color: (theme) => theme.palette.text.secondary, opacity: 0.7 }
     }}
     {...rest}
   />
@@ -67,9 +68,10 @@ const getPasswordStrength = (password) => {
 };
 
 const strengthColors = ['#f44336', '#ff9800', '#ff9800', '#4caf50', '#2196f3', '#2196f3'];
-const strengthLabels = ['', 'Weak', 'Fair', 'Fair', 'Good', 'Strong'];
+const strengthKeys = ['', 'strengthWeak', 'strengthFair', 'strengthFair', 'strengthGood', 'strengthStrong'];
 
 const SignupContainer = () => {
+  const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [passwordVal, setPasswordVal] = useState('');
@@ -94,7 +96,9 @@ const SignupContainer = () => {
   return (
     <Box sx={{
       minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', p: 2,
-      background: 'radial-gradient(ellipse at top left, rgba(124, 58, 237, 0.2) 0%, transparent 50%), radial-gradient(ellipse at bottom right, rgba(37, 99, 235, 0.15) 0%, transparent 50%)',
+      background: (theme) => theme.palette.mode === 'dark'
+        ? 'radial-gradient(ellipse at top left, rgba(124, 58, 237, 0.2) 0%, transparent 50%), radial-gradient(ellipse at bottom right, rgba(37, 99, 235, 0.15) 0%, transparent 50%)'
+        : 'radial-gradient(ellipse at top left, rgba(124, 58, 237, 0.08) 0%, transparent 50%), radial-gradient(ellipse at bottom right, rgba(37, 99, 235, 0.08) 0%, transparent 50%)',
     }}>
       <Box sx={{ width: '100%', maxWidth: 440 }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 4 }}>
@@ -106,24 +110,24 @@ const SignupContainer = () => {
           }}>
             <Typography variant="h4" sx={{ color: '#fff', fontWeight: 900 }}>S</Typography>
           </Box>
-          <Typography variant="h5" fontWeight={700} sx={{ color: '#fff' }}>Create your account</Typography>
+          <Typography variant="h5" fontWeight={700} sx={{ color: 'text.primary' }}>{t('createYourAccount')}</Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
-            Start scheduling posts across all platforms
+            {t('signupSubtitle')}
           </Typography>
         </Box>
 
         <Card sx={{ borderRadius: 3, p: 1 }}>
           <CardContent sx={{ p: 3 }}>
             <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
-              <FieldBox label="Full Name" icon={<PersonOutlinedIcon sx={{ fontSize: 20 }} />} error={errors.name}>
-                <InputField placeholder="John Doe" {...register('name')} />
+              <FieldBox label={t('fullName')} icon={<PersonOutlinedIcon sx={{ fontSize: 20 }} />} error={errors.name}>
+                <InputField placeholder={t('namePlaceholder')} {...register('name')} />
               </FieldBox>
 
-              <FieldBox label="Email address" icon={<EmailOutlinedIcon sx={{ fontSize: 20 }} />} error={errors.email}>
-                <InputField type="email" placeholder="you@example.com" {...register('email')} />
+              <FieldBox label={t('emailAddress')} icon={<EmailOutlinedIcon sx={{ fontSize: 20 }} />} error={errors.email}>
+                <InputField type="email" placeholder={t('emailPlaceholder')} {...register('email')} />
               </FieldBox>
 
-              <FieldBox label="Password" icon={<LockOutlinedIcon sx={{ fontSize: 20 }} />} error={errors.password}>
+              <FieldBox label={t('password')} icon={<LockOutlinedIcon sx={{ fontSize: 20 }} />} error={errors.password}>
                 <InputField
                   type={showPassword ? 'text' : 'password'}
                   placeholder="••••••••"
@@ -142,17 +146,17 @@ const SignupContainer = () => {
                     value={(strength / 5) * 100}
                     sx={{
                       height: 4, borderRadius: 2,
-                      backgroundColor: 'rgba(255,255,255,0.1)',
+                      backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)',
                       '& .MuiLinearProgress-bar': { backgroundColor: strengthColors[strength], borderRadius: 2 }
                     }}
                   />
                   <Typography variant="caption" sx={{ color: strengthColors[strength], mt: 0.5, display: 'block' }}>
-                    {strengthLabels[strength]}
+                    {strengthKeys[strength] ? t(strengthKeys[strength]) : ''}
                   </Typography>
                 </Box>
               )}
 
-              <FieldBox label="Confirm Password" icon={<LockOutlinedIcon sx={{ fontSize: 20 }} />} error={errors.confirmPassword}>
+              <FieldBox label={t('confirmPassword')} icon={<LockOutlinedIcon sx={{ fontSize: 20 }} />} error={errors.confirmPassword}>
                 <InputField
                   type={showConfirm ? 'text' : 'password'}
                   placeholder="••••••••"
@@ -170,15 +174,15 @@ const SignupContainer = () => {
                 fullWidth
                 sx={{ py: 1.5, fontSize: '1rem', borderRadius: 2 }}
               >
-                Create Account
+                {t('createAccount')}
               </Button>
             </Box>
 
-            <Divider sx={{ my: 3, borderColor: 'rgba(255,255,255,0.08)' }} />
+            <Divider sx={{ my: 3, borderColor: 'divider' }} />
             <Typography variant="body2" textAlign="center" sx={{ color: 'text.secondary' }}>
-              Already have an account?{' '}
-              <Link component={RouterLink} to="/login" sx={{ color: 'primary.light', fontWeight: 600, textDecoration: 'none' }}>
-                Sign in
+              {t('alreadyHaveAccount')}{' '}
+              <Link component={RouterLink} to="/login" sx={{ color: 'primary.main', fontWeight: 600, textDecoration: 'none' }}>
+                {t('signIn')}
               </Link>
             </Typography>
           </CardContent>

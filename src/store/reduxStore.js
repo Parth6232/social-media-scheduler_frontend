@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+﻿import { configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import rootReducer from './redux/rootReducer';
 import { authApiAction } from '../features/auth/authApiSlice';
@@ -16,7 +16,7 @@ const storage = {
 const persistConfig = {
   key: 'socialblitz_root',
   storage,
-  whitelist: ['auth'],
+  whitelist: ['auth', 'ui'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

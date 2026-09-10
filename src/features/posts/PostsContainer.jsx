@@ -1,17 +1,20 @@
+import { useMemo } from 'react';
 import { Box, Typography, Tooltip, Link, Chip } from '@mui/material';
 import { postApiAction } from '../createPost/postApiSlice';
 import CommonTable from '../../common/CommonTable';
 import StatusBadge from '../../common/StatusBadge';
 import HistoryIcon from '@mui/icons-material/History';
 import { format } from 'date-fns';
+import { useTranslation } from '../../i18n/useTranslation';
 
 const PostsContainer = () => {
+  const { t } = useTranslation();
   const { data: posts, isLoading } = postApiAction.getPosts();
 
-  const columns = [
+  const columns = useMemo(() => [
     {
       key: 'content',
-      label: 'Content',
+      label: t('colContent'),
       render: (val, row) => (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
           {row.mediaUrl && (
@@ -20,40 +23,41 @@ const PostsContainer = () => {
               src={row.mediaUrl}
               alt=""
               onError={(e) => { e.target.style.display = 'none'; }}
-              sx={{ width: 40, height: 40, borderRadius: 1, objectFit: 'cover', flexShrink: 0, border: '1px solid rgba(255,255,255,0.1)' }}
+              sx={{ width: 40, height: 40, borderRadius: 1, objectFit: 'cover', flexShrink: 0, border: '1px solid', borderColor: 'divider' }}
             />
           )}
           <Typography variant="body2" sx={{ maxWidth: 220, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            {val || <Box component="span" sx={{ color: 'text.secondary', fontStyle: 'italic' }}>Media only</Box>}
+            {val || <Box component="span" sx={{ color: 'text.secondary', fontStyle: 'italic' }}>{t('mediaOnly')}</Box>}
           </Typography>
         </Box>
       )
     },
     {
       key: 'targets',
-      label: 'Platforms',
+      label: t('colPlatforms'),
       render: (val) => (
         <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-          {(val || []).map((t, i) => (
-            <Tooltip key={i} title={t.error || (t.publishedUrl ? 'View post' : t.status)} arrow>
+          {(val || []).map((targ, i) => (
+            <Tooltip key={i} title={targ.error || (targ.publishedUrl ? t('viewPost') : targ.status)} arrow>
               <Box>
-                {t.publishedUrl ? (
-                  <Link href={t.publishedUrl} target="_blank" rel="noopener" underline="none">
+                {targ.publishedUrl ? (
+                  <Link href={targ.publishedUrl} target="_blank" rel="noopener" underline="none">
                     <Chip
-                      label={t.platform}
+                      label={targ.platform}
                       size="small"
                       sx={{ fontSize: '0.65rem', height: 20, color: '#10B981', border: '1px solid #10B98130', backgroundColor: '#10B98112', cursor: 'pointer' }}
                     />
                   </Link>
                 ) : (
                   <Chip
-                    label={t.platform}
+                    label={targ.platform}
                     size="small"
                     sx={{
                       fontSize: '0.65rem', height: 20,
-                      color: t.status === 'failed' ? '#EF4444' : 'text.secondary',
-                      border: `1px solid ${t.status === 'failed' ? '#EF444430' : 'rgba(255,255,255,0.1)'}`,
-                      backgroundColor: t.status === 'failed' ? '#EF444412' : 'rgba(255,255,255,0.05)',
+                      color: targ.status === 'failed' ? '#EF4444' : 'text.secondary',
+                      border: '1px solid',
+                      borderColor: targ.status === 'failed' ? '#EF444430' : 'divider',
+                      backgroundColor: targ.status === 'failed' ? '#EF444412' : ((theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)'),
                     }}
                   />
                 )}
@@ -65,24 +69,24 @@ const PostsContainer = () => {
     },
     {
       key: 'privacy',
-      label: 'Privacy',
-      render: (val) => <Typography variant="caption" sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>{val || 'public'}</Typography>
+      label: t('colPrivacy'),
+      render: (val) => <Typography variant="caption" sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>{val || t('public')}</Typography>
     },
     {
       key: 'scheduledAt',
-      label: 'Scheduled',
+      label: t('colScheduled'),
       render: (val) => (
         <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-          {val ? format(new Date(val), 'MMM d, yy h:mm a') : 'Instant'}
+          {val ? format(new Date(val), 'MMM d, yy h:mm a') : t('instant')}
         </Typography>
       )
     },
     {
       key: 'status',
-      label: 'Status',
+      label: t('colStatus'),
       render: (val) => <StatusBadge status={val} />
     },
-  ];
+  ], [t]);
 
   return (
     <Box>
@@ -96,10 +100,10 @@ const PostsContainer = () => {
           }}>
             <HistoryIcon sx={{ color: '#fff', fontSize: 20 }} />
           </Box>
-          <Typography variant="h5" fontWeight={700}>Posts History</Typography>
+          <Typography variant="h5" fontWeight={700}>{t('postsHistory')}</Typography>
         </Box>
         <Typography variant="body2" sx={{ color: 'text.secondary', ml: 7 }}>
-          All your scheduled and published posts across all platforms
+          {t('postsHistorySubtitle')}
         </Typography>
       </Box>
 
@@ -108,7 +112,7 @@ const PostsContainer = () => {
         rows={posts}
         isLoading={isLoading}
         searchKeys={['content', 'status', 'privacy']}
-        emptyMessage="No posts yet — create your first post to get started!"
+        emptyMessage={t('noPostsYetHistory')}
       />
     </Box>
   );

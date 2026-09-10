@@ -12,6 +12,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import PasswordIcon from '@mui/icons-material/Password';
 
 import { authApiAction } from './authApiSlice';
+import { useTranslation } from '../../i18n/useTranslation';
 
 // Zod schemas
 const emailSchema = z.object({
@@ -28,6 +29,7 @@ const resetSchema = z.object({
 });
 
 const ForgotPasswordContainer = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   
   const [step, setStep] = useState(1);
@@ -128,19 +130,19 @@ const ForgotPasswordContainer = () => {
     }
   };
 
-  // Shared dark mode field styles
+  // Shared dark/light mode field styles
   const textFieldSx = {
     mb: 2.5,
     '& .MuiOutlinedInput-root': {
-      backgroundColor: 'rgba(255,255,255,0.03)',
+      backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
       borderRadius: 2,
-      '& fieldset': { borderColor: 'rgba(255,255,255,0.1)' },
-      '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
+      '& fieldset': { borderColor: (theme) => theme.palette.divider },
+      '&:hover fieldset': { borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.25)' },
       '&.Mui-focused fieldset': { borderColor: '#7C3AED' },
     },
     '& .MuiInputLabel-root': { color: 'text.secondary' },
     '& .MuiInputLabel-root.Mui-focused': { color: '#7C3AED' },
-    '& .MuiInputBase-input': { color: '#fff' },
+    '& .MuiInputBase-input': { color: 'text.primary' },
   };
 
   return (
@@ -149,17 +151,19 @@ const ForgotPasswordContainer = () => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      background: 'radial-gradient(circle at top left, #1f1442 0%, #0A0F1E 100%)', // Subtle purple/blue gradient
+      background: (theme) => theme.palette.mode === 'dark'
+        ? 'radial-gradient(circle at top left, #1f1442 0%, #0A0F1E 100%)'
+        : 'radial-gradient(circle at top left, rgba(124, 58, 237, 0.08) 0%, #F8FAFC 100%)',
       p: 2
     }}>
       <Card sx={{
         maxWidth: 440,
         width: '100%',
-        backgroundColor: 'rgba(10, 15, 30, 0.4)',
+        backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(10, 15, 30, 0.6)' : theme.palette.background.paper,
         borderRadius: 3,
-        border: '1px solid rgba(255, 255, 255, 0.1)',
+        border: (theme) => `1px solid ${theme.palette.divider}`,
         backdropFilter: 'blur(10px)',
-        boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+        boxShadow: (theme) => theme.palette.mode === 'dark' ? '0 8px 32px rgba(0,0,0,0.4)' : '0 4px 20px rgba(0,0,0,0.06)',
       }}>
         <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
           
@@ -172,11 +176,11 @@ const ForgotPasswordContainer = () => {
             }}>
               <LockResetIcon sx={{ color: '#fff', fontSize: 32 }} />
             </Box>
-            <Typography variant="h5" fontWeight={700} sx={{ color: '#fff', mb: 1 }}>
-              Forgot Password
+            <Typography variant="h5" fontWeight={700} sx={{ color: 'text.primary', mb: 1 }}>
+              {t('forgotPassword')}
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              Step {step} of 2
+              {t('step')} {step} {t('of')} 2
             </Typography>
           </Box>
 
@@ -190,10 +194,10 @@ const ForgotPasswordContainer = () => {
           {isAccountNotFound && step === 1 && (
             <Box sx={{ mb: 3, textAlign: 'center' }}>
               <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
-                Account nahi mila?
+                {t('accountNotFound')}
               </Typography>
               <Link component={RouterLink} to="/signup" sx={{ color: '#7C3AED', fontWeight: 600, textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>
-                Create a new account
+                {t('createANewAccount')}
               </Link>
             </Box>
           )}
@@ -209,13 +213,13 @@ const ForgotPasswordContainer = () => {
             <Fade in={step === 1} timeout={500}>
               <Box component="form" onSubmit={handleSubmitEmail(onSendOtp)} noValidate>
                 <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3, textAlign: 'center' }}>
-                  Apna email address enter karein. Hum aapko ek 6-digit OTP bhejenge password reset karne ke liye.
+                  {t('step1Desc')}
                 </Typography>
                 
                 <TextField
                   fullWidth
                   id="email"
-                  label="Email Address"
+                  label={t('emailAddress')}
                   variant="outlined"
                   {...registerEmail('email')}
                   error={!!errorsEmail.email}
@@ -249,12 +253,12 @@ const ForgotPasswordContainer = () => {
                     }
                   }}
                 >
-                  {isSendingOtp ? <CircularProgress size={24} color="inherit" /> : 'Send OTP'}
+                  {isSendingOtp ? <CircularProgress size={24} color="inherit" /> : t('sendOtp')}
                 </MuiButton>
                 
                 <Box sx={{ textAlign: 'center', mt: 2 }}>
-                  <Link component={RouterLink} to="/login" sx={{ color: 'text.secondary', fontSize: '0.875rem', textDecoration: 'none', '&:hover': { color: '#fff' } }}>
-                    Back to Login
+                  <Link component={RouterLink} to="/login" sx={{ color: 'text.secondary', fontSize: '0.875rem', textDecoration: 'none', '&:hover': { color: 'primary.main' } }}>
+                    {t('backToLogin')}
                   </Link>
                 </Box>
               </Box>
@@ -266,13 +270,13 @@ const ForgotPasswordContainer = () => {
             <Fade in={step === 2} timeout={500}>
               <Box component="form" onSubmit={handleSubmitReset(onResetPassword)} noValidate>
                 <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3, textAlign: 'center' }}>
-                  OTP <strong>{emailValue}</strong> par bhej diya gaya hai. Kripya apna naya password set karein.
+                  {t('step2Desc')}
                 </Typography>
 
                 <TextField
                   fullWidth
                   id="otp"
-                  label="6-Digit OTP"
+                  label={t('sixDigitOtp')}
                   variant="outlined"
                   inputMode="numeric"
                   {...registerReset('otp')}
@@ -282,7 +286,7 @@ const ForgotPasswordContainer = () => {
                   sx={{
                     ...textFieldSx,
                     '& .MuiInputBase-input': { 
-                      color: '#fff', 
+                      color: 'text.primary', 
                       letterSpacing: '12px', 
                       fontSize: '1.25rem', 
                       fontWeight: 700, 
@@ -303,7 +307,7 @@ const ForgotPasswordContainer = () => {
                 <TextField
                   fullWidth
                   id="newPassword"
-                  label="New Password"
+                  label={t('newPassword')}
                   type={showPassword ? 'text' : 'password'}
                   variant="outlined"
                   {...registerReset('newPassword')}
@@ -332,7 +336,7 @@ const ForgotPasswordContainer = () => {
                 <TextField
                   fullWidth
                   id="confirmPassword"
-                  label="Confirm Password"
+                  label={t('confirmPassword')}
                   type={showConfirmPassword ? 'text' : 'password'}
                   variant="outlined"
                   {...registerReset('confirmPassword')}
@@ -374,7 +378,7 @@ const ForgotPasswordContainer = () => {
                     }
                   }}
                 >
-                  {isResetting ? <CircularProgress size={24} color="inherit" /> : 'Reset Password'}
+                  {isResetting ? <CircularProgress size={24} color="inherit" /> : t('resetPassword')}
                 </MuiButton>
 
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -392,16 +396,16 @@ const ForgotPasswordContainer = () => {
                       '&:hover': { textDecoration: resendTimer > 0 ? 'none' : 'underline' } 
                     }}
                   >
-                    {resendTimer > 0 ? `Resend OTP in ${resendTimer}s` : 'Resend OTP'}
+                    {resendTimer > 0 ? `${t('resendOtpIn')} ${resendTimer}s` : t('resendOtp')}
                   </Link>
 
                   <Link 
                     component="button" 
                     type="button"
                     onClick={() => { setStep(1); setInlineError(''); setInlineSuccess(''); }}
-                    sx={{ color: 'text.secondary', fontSize: '0.875rem', textDecoration: 'none', '&:hover': { color: '#fff' } }}
+                    sx={{ color: 'text.secondary', fontSize: '0.875rem', textDecoration: 'none', '&:hover': { color: 'primary.main' } }}
                   >
-                    Change Email
+                    {t('changeEmail')}
                   </Link>
                 </Box>
               </Box>
@@ -415,3 +419,4 @@ const ForgotPasswordContainer = () => {
 };
 
 export default ForgotPasswordContainer;
+

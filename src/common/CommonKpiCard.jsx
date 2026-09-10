@@ -1,11 +1,11 @@
-import { Card, CardContent, Box, Typography, Skeleton } from '@mui/material';
+﻿import { Card, CardContent, Box, Typography, Skeleton } from '@mui/material';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 
 const CommonKpiCard = ({ label, value, icon, color = '#7C3AED', isLoading = false, subtitle }) => {
   return (
     <Card sx={{
       borderRadius: 3,
-      border: `1px solid ${color}20`,
+      border: `1px solid ${color}30`,
       position: 'relative',
       overflow: 'hidden',
       transition: 'transform 0.2s, box-shadow 0.2s',
@@ -29,7 +29,7 @@ const CommonKpiCard = ({ label, value, icon, color = '#7C3AED', isLoading = fals
                 <Typography variant="caption" sx={{ color: 'text.secondary', textTransform: 'uppercase', letterSpacing: 0.8 }}>
                   {label}
                 </Typography>
-                <Typography variant="h4" fontWeight={800} sx={{ color: '#fff', lineHeight: 1.2, mt: 0.5 }}>
+                <Typography variant="h4" fontWeight={800} sx={{ color: 'text.primary', lineHeight: 1.2, mt: 0.5 }}>
                   {value ?? '—'}
                 </Typography>
                 {subtitle && (
@@ -44,7 +44,7 @@ const CommonKpiCard = ({ label, value, icon, color = '#7C3AED', isLoading = fals
 
           <Box sx={{
             width: 48, height: 48, borderRadius: 2,
-            backgroundColor: `${color}20`,
+            backgroundColor: `${color}15`,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             color,
           }}>

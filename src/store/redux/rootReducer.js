@@ -1,6 +1,7 @@
-import { combineReducers } from '@reduxjs/toolkit';
+﻿import { combineReducers } from '@reduxjs/toolkit';
 import authReducer from './slices/authSlice';
 import toastReducer from './slices/toastSlice';
+import uiReducer from './slices/uiSlice';
 import { authApiReducer, authApiAction } from '../../features/auth/authApiSlice';
 import { accountsApiReducer, accountsApiAction } from '../../features/accounts/accountsApiSlice';
 import { postApiReducer, postApiAction } from '../../features/createPost/postApiSlice';
@@ -8,6 +9,7 @@ import { aiApiReducer, aiApiAction } from '../../features/ai/aiApiSlice';
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  ui: uiReducer,
   toast: toastReducer,
   [authApiAction.reducerPath]: authApiReducer,
   [accountsApiAction.reducerPath]: accountsApiReducer,

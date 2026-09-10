@@ -1,4 +1,4 @@
-*, *::before, *::after {
+﻿*, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -12,8 +12,6 @@ body {
   font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #0A0F1E;
-  color: #F3F4F6;
 }
 
 /* Scrollbar styling */
@@ -22,7 +20,7 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.03);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
   background: rgba(124, 58, 237, 0.4);
@@ -30,13 +28,4 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(124, 58, 237, 0.7);
-}
-
-/* Input autofill override for dark theme */
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0px 1000px #10182E inset;
-  -webkit-text-fill-color: #F3F4F6;
-  transition: background-color 5000s ease-in-out 0s;
 }

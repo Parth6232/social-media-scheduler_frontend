@@ -1,4 +1,4 @@
-﻿import {
+import {
   Box, Card, CardContent, InputAdornment, IconButton,
   Typography, Divider, Link, Fade, Alert,
 } from '@mui/material';
@@ -21,6 +21,7 @@ import { localStore } from '../../store/localStore';
 import { authApiAction } from './authApiSlice';
 import { getDeviceId } from '../../utils/deviceId';
 import Button from '../../common/Button';
+import { useTranslation } from '../../i18n/useTranslation';
 
 // ── Zod schemas ──────────────────────────────────────────────────────────────
 
@@ -40,22 +41,23 @@ const otpSchema = z.object({
 
 const inputBoxSx = (hasError) => ({
   display: 'flex', alignItems: 'center',
-  border: `1px solid ${hasError ? '#f44336' : 'rgba(255,255,255,0.1)'}`,
+  border: (theme) => `1px solid ${hasError ? '#f44336' : theme.palette.divider}`,
   borderRadius: 2, px: 1.5, py: 0.5,
-  backgroundColor: 'rgba(255,255,255,0.03)',
+  backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
   transition: 'border-color 0.2s',
   '&:focus-within': { borderColor: '#7C3AED' },
 });
 
 const nativeInputSx = {
   flex: 1, border: 'none', outline: 'none', background: 'transparent',
-  color: '#F3F4F6', fontSize: '0.95rem', py: 1,
-  '&::placeholder': { color: 'rgba(255,255,255,0.3)' },
+  color: (theme) => theme.palette.text.primary, fontSize: '0.95rem', py: 1,
+  '&::placeholder': { color: (theme) => theme.palette.text.secondary, opacity: 0.7 },
 };
 
 // ── Component ────────────────────────────────────────────────────────────────
 
 const LoginContainer = () => {
+  const { t } = useTranslation();
   const dispatch  = useDispatch();
   const navigate  = useNavigate();
 
@@ -144,7 +146,9 @@ const LoginContainer = () => {
       alignItems: 'center',
       justifyContent: 'center',
       p: 2,
-      background: 'radial-gradient(ellipse at top left, rgba(124, 58, 237, 0.2) 0%, transparent 50%), radial-gradient(ellipse at bottom right, rgba(37, 99, 235, 0.15) 0%, transparent 50%)',
+      background: (theme) => theme.palette.mode === 'dark'
+        ? 'radial-gradient(ellipse at top left, rgba(124, 58, 237, 0.2) 0%, transparent 50%), radial-gradient(ellipse at bottom right, rgba(37, 99, 235, 0.15) 0%, transparent 50%)'
+        : 'radial-gradient(ellipse at top left, rgba(124, 58, 237, 0.08) 0%, transparent 50%), radial-gradient(ellipse at bottom right, rgba(37, 99, 235, 0.08) 0%, transparent 50%)',
     }}>
       <Box sx={{ width: '100%', maxWidth: 440 }}>
 
@@ -162,13 +166,13 @@ const LoginContainer = () => {
               : <SecurityIcon sx={{ color: '#fff', fontSize: 28 }} />
             }
           </Box>
-          <Typography variant="h5" fontWeight={700} sx={{ color: '#fff' }}>
-            {step === 1 ? 'Welcome back' : 'Verify Your Device'}
+          <Typography variant="h5" fontWeight={700} sx={{ color: 'text.primary' }}>
+            {step === 1 ? t('welcomeBack') : t('verifyYourDevice')}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5, textAlign: 'center' }}>
             {step === 1
-              ? 'Sign in to your SocialBlitz account'
-              : 'OTP aapke registered email par bheja gaya hai'
+              ? t('signInSubtitle')
+              : t('otpSentSubtitle')
             }
           </Typography>
         </Box>
@@ -185,7 +189,7 @@ const LoginContainer = () => {
                 {/* Email */}
                 <Box sx={{ mb: 2.5 }}>
                   <Typography variant="caption" sx={{ color: 'text.secondary', mb: 0.5, display: 'block' }}>
-                    Email address
+                    {t('emailAddress')}
                   </Typography>
                   <Box sx={inputBoxSx(!!loginErrors.email)}>
                     <EmailOutlinedIcon sx={{ color: 'text.secondary', fontSize: 20, mr: 1 }} />
@@ -193,7 +197,7 @@ const LoginContainer = () => {
                       component="input"
                       {...registerLogin('email')}
                       type="email"
-                      placeholder="you@example.com"
+                      placeholder={t('emailPlaceholder')}
                       sx={nativeInputSx}
                     />
                   </Box>
@@ -208,10 +212,10 @@ const LoginContainer = () => {
                 <Box sx={{ mb: 3 }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
                     <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                      Password
+                      {t('password')}
                     </Typography>
-                    <Link component={RouterLink} to="/forgot-password" sx={{ color: 'primary.light', fontSize: '0.75rem', textDecoration: 'none' }}>
-                      Forgot password?
+                    <Link component={RouterLink} to="/forgot-password" sx={{ color: 'primary.main', fontSize: '0.75rem', textDecoration: 'none', fontWeight: 600 }}>
+                      {t('forgotPasswordQuestion')}
                     </Link>
                   </Box>
                   <Box sx={inputBoxSx(!!loginErrors.password)}>
@@ -241,15 +245,15 @@ const LoginContainer = () => {
                   fullWidth
                   sx={{ py: 1.5, fontSize: '1rem', borderRadius: 2 }}
                 >
-                  Sign In
+                  {t('signIn')}
                 </Button>
 
-                <Divider sx={{ my: 3, borderColor: 'rgba(255,255,255,0.08)' }} />
+                <Divider sx={{ my: 3, borderColor: 'divider' }} />
 
                 <Typography variant="body2" textAlign="center" sx={{ color: 'text.secondary' }}>
-                  Don&apos;t have an account?{' '}
-                  <Link component={RouterLink} to="/signup" sx={{ color: 'primary.light', fontWeight: 600, textDecoration: 'none' }}>
-                    Create one free
+                  {t('dontHaveAccount')}{' '}
+                  <Link component={RouterLink} to="/signup" sx={{ color: 'primary.main', fontWeight: 600, textDecoration: 'none' }}>
+                    {t('createOneFree')}
                   </Link>
                 </Typography>
               </Box>
@@ -267,24 +271,24 @@ const LoginContainer = () => {
                   icon={<SecurityIcon fontSize="small" />}
                   sx={{
                     mb: 3, borderRadius: 2,
-                    backgroundColor: 'rgba(251, 191, 36, 0.08)',
+                    backgroundColor: 'rgba(251, 191, 36, 0.1)',
                     border: '1px solid rgba(251, 191, 36, 0.25)',
-                    color: '#FDE68A',
+                    color: 'text.primary',
                     '& .MuiAlert-icon': { color: '#FBBF24' },
                   }}
                 >
                   <Typography variant="caption" sx={{ fontWeight: 600, display: 'block', mb: 0.5 }}>
-                    🔐 Naya Device Detect Hua
+                    {t('newDeviceDetected')}
                   </Typography>
-                  <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.7)', wordBreak: 'break-all' }}>
-                    <strong>{otpEmail}</strong> par bheja gaya OTP daalein taaki login complete ho sake.
+                  <Typography variant="caption" sx={{ color: 'text.secondary', wordBreak: 'break-all' }}>
+                    {t('enterOtpNotice')} <strong>{otpEmail}</strong> {t('toCompleteLogin')}
                   </Typography>
                 </Alert>
 
                 {/* OTP Input */}
                 <Box sx={{ mb: 2.5 }}>
                   <Typography variant="caption" sx={{ color: 'text.secondary', mb: 0.5, display: 'block', textAlign: 'center' }}>
-                    6-Digit OTP
+                    {t('sixDigitOtp')}
                   </Typography>
                   <Box sx={{
                     ...inputBoxSx(!!otpErrors.otp || !!inlineOtpError),
@@ -340,7 +344,7 @@ const LoginContainer = () => {
                     transition: 'all 0.3s ease',
                   }}
                 >
-                  ✓ Verify &amp; Sign In
+                  {t('verifyAndSignIn')}
                 </Button>
 
                 {/* Back link */}
@@ -353,11 +357,11 @@ const LoginContainer = () => {
                       color: 'text.secondary', fontSize: '0.85rem',
                       textDecoration: 'none', display: 'inline-flex',
                       alignItems: 'center', gap: 0.5,
-                      '&:hover': { color: '#fff' },
+                      '&:hover': { color: 'primary.main' },
                     }}
                   >
                     <ArrowBackIcon sx={{ fontSize: 14 }} />
-                    Back to Login
+                    {t('backToLogin')}
                   </Link>
                 </Box>
               </Box>
@@ -369,5 +373,6 @@ const LoginContainer = () => {
     </Box>
   );
 };
+
 
 export default LoginContainer;

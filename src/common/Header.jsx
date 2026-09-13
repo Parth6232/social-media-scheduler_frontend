@@ -137,13 +137,13 @@ const Header = ({ handleDrawerToggle }) => {
         PaperProps={{
           sx: {
             mt: 1.5,
-            bgcolor: 'background.paper',
+            bgcolor: (theme) => theme.palette.mode === 'dark' ? '#0F1730' : theme.palette.background.paper,
+            backgroundImage: 'none',
             border: (theme) => `1px solid ${theme.palette.divider}`,
             minWidth: 220,
             p: 0.5,
             borderRadius: 2,
-            boxShadow: (theme) => theme.palette.mode === 'dark' ? '0 10px 30px rgba(0,0,0,0.5)' : '0 10px 30px rgba(0,0,0,0.08)',
-            backdropFilter: 'blur(12px)',
+            boxShadow: (theme) => theme.palette.mode === 'dark' ? '0 10px 30px rgba(0,0,0,0.6)' : '0 10px 30px rgba(0,0,0,0.08)',
           },
         }}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
@@ -251,11 +251,12 @@ const Header = ({ handleDrawerToggle }) => {
         PaperProps={{
           sx: {
             mt: 1.5,
-            bgcolor: 'background.paper',
+            bgcolor: (theme) => theme.palette.mode === 'dark' ? '#0F1730' : theme.palette.background.paper,
+            backgroundImage: 'none',
             border: (theme) => `1px solid ${theme.palette.divider}`,
             minWidth: 180,
             borderRadius: 2,
-            boxShadow: (theme) => theme.palette.mode === 'dark' ? '0 10px 30px rgba(0,0,0,0.5)' : '0 10px 30px rgba(0,0,0,0.08)',
+            boxShadow: (theme) => theme.palette.mode === 'dark' ? '0 10px 30px rgba(0,0,0,0.6)' : '0 10px 30px rgba(0,0,0,0.08)',
           },
         }}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}

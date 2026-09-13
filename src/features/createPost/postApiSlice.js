@@ -17,8 +17,20 @@ const postApi = createApi({
       invalidatesTags: ['POSTS'],
     }),
     getPosts: qb.query({
-      query: () => ({ url: '/posts' }),
+      query: (platform) => ({ url: platform ? `/posts?platform=${platform}` : '/posts' }),
       providesTags: ['POSTS'],
+    }),
+    getPlatformSummary: qb.query({
+      query: () => ({ url: '/posts/summary' }),
+      providesTags: ['POSTS'],
+    }),
+    refreshPostStats: qb.mutation({
+      query: (postId) => ({ url: `/posts/${postId}/refresh-stats`, method: 'POST' }),
+      invalidatesTags: ['POSTS'],
+    }),
+    deletePostTarget: qb.mutation({
+      query: ({ postId, platform }) => ({ url: `/posts/${postId}/targets/${platform}`, method: 'DELETE' }),
+      invalidatesTags: ['POSTS'],
     }),
   }),
 });
@@ -29,4 +41,7 @@ export const postApiAction = {
   reducerPath: postApi.reducerPath,
   createPost: postApi.useCreatePostMutation,
   getPosts: postApi.useGetPostsQuery,
+  getPlatformSummary: postApi.useGetPlatformSummaryQuery,
+  refreshPostStats: postApi.useRefreshPostStatsMutation,
+  deletePostTarget: postApi.useDeletePostTargetMutation,
 };

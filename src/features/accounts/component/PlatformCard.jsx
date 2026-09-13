@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Typography, Chip, Skeleton, Tooltip, Divider } from '@mui/material';
+import { Box, Card, CardContent, Typography, Chip, Skeleton, Tooltip, Divider, Avatar } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import FacebookIcon from '@mui/icons-material/Facebook';
@@ -110,7 +110,11 @@ const PlatformCard = ({ platform, connectedAccount, isLoading }) => {
             {idx > 0 && <Divider sx={{ borderColor: 'divider', my: 0.75 }} />}
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1, py: 0.5 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, minWidth: 0 }}>
-                <CheckCircleIcon sx={{ fontSize: 14, color: '#4ade80', flexShrink: 0 }} />
+                {item.profilePictureUrl ? (
+                  <Avatar src={item.profilePictureUrl} sx={{ width: 20, height: 20, flexShrink: 0 }} />
+                ) : (
+                  <CheckCircleIcon sx={{ fontSize: 14, color: '#4ade80', flexShrink: 0 }} />
+                )}
                 <Typography variant="caption" sx={{ color: '#4ade80', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {item.displayName || (platform === 'facebook' ? 'Facebook Page' : 'Instagram Account')}
                 </Typography>
@@ -193,9 +197,13 @@ const PlatformCard = ({ platform, connectedAccount, isLoading }) => {
           {isMulti ? (
             renderMultiAccounts()
           ) : isConnected ? (
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.5, mb: 0.5 }}>
-              <CheckCircleIcon sx={{ fontSize: 16, color: '#4ade80' }} />
-              <Typography variant="caption" sx={{ color: '#4ade80', fontWeight: 600 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.75, mb: 0.5 }}>
+              {connectedAccount?.profilePictureUrl ? (
+                <Avatar src={connectedAccount.profilePictureUrl} sx={{ width: 22, height: 22, flexShrink: 0 }} />
+              ) : (
+                <CheckCircleIcon sx={{ fontSize: 16, color: '#4ade80' }} />
+              )}
+              <Typography variant="caption" sx={{ color: '#4ade80', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {connectedAccount?.displayName || t('connected')}
               </Typography>
             </Box>

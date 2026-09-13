@@ -25,6 +25,7 @@ const AppRoutes = () => {
           <Route path="/accounts" element={<AccountsPage />} />
           <Route path="/create" element={<CreatePostPage />} />
           <Route path="/posts" element={<PostsPage />} />
+          <Route path="/posts/:platform" element={<PostsPage />} />
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
         </Route>
       </Route>

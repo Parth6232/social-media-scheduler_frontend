@@ -1,4 +1,4 @@
-import { Box, Typography, Button as MuiButton, Divider, Grid } from '@mui/material';
+import { Box, Typography, Button as MuiButton, Divider, Grid, Chip, Tooltip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -7,7 +7,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import LinkIcon from '@mui/icons-material/Link';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { postApiAction } from '../createPost/postApiSlice';
 import { accountsApiAction } from '../accounts/accountsApiSlice';
 import CommonKpiCard from '../../common/CommonKpiCard';
@@ -15,6 +15,7 @@ import CommonTable from '../../common/CommonTable';
 import StatusBadge from '../../common/StatusBadge';
 import { format } from 'date-fns';
 import { useTranslation } from '../../i18n/useTranslation';
+import { POST_RULES } from '../../config/postRules';
 
 /** Capitalize every word in a name */
 const capitalizeName = (name = '') =>
@@ -38,6 +39,7 @@ const DashboardContainer = () => {
   const user = useSelector((state) => state.auth.user);
   const { data: posts, isLoading: postsLoading } = postApiAction.getPosts();
   const { data: accounts, isLoading: accountsLoading } = accountsApiAction.getMyAccounts();
+  const [activeFilter, setActiveFilter] = useState(null); // null | 'pending' | 'completed' | 'failed'
 
   const stats = useMemo(() => {
     if (!posts) return { total: 0, pending: 0, completed: 0, failed: 0 };
@@ -49,7 +51,18 @@ const DashboardContainer = () => {
     };
   }, [posts]);
 
-  const recentPosts = useMemo(() => (posts ? posts.slice(0, 8) : []), [posts]);
+  const filteredPosts = useMemo(() => {
+    if (!posts) return [];
+    if (!activeFilter) return posts;
+    if (activeFilter === 'pending') return posts.filter((p) => p.status === 'pending' || p.status === 'processing');
+    return posts.filter((p) => p.status === activeFilter);
+  }, [posts, activeFilter]);
+
+  const recentPosts = useMemo(() => filteredPosts.slice(0, 8), [filteredPosts]);
+
+  const handleFilterClick = (filterKey) => {
+    setActiveFilter((prev) => (prev === filterKey ? null : filterKey));
+  };
 
   const columns = useMemo(() => [
     {
@@ -62,30 +75,75 @@ const DashboardContainer = () => {
       )
     },
     {
+      key: 'postType',
+      label: t('colPostType'),
+      render: (val) => {
+        const rule = POST_RULES[val];
+        const label = t(`postType_${val}`) || rule?.label || val;
+        return (
+          <Box
+            component="span"
+            sx={{
+              fontSize: '0.7rem',
+              fontWeight: 600,
+              color: 'text.secondary',
+              border: '1px solid',
+              borderColor: 'divider',
+              borderRadius: 1,
+              px: 0.8,
+              py: 0.3,
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {label}
+          </Box>
+        );
+      },
+    },
+    {
       key: 'targets',
       label: t('colPlatforms'),
-      render: (val) => (
-        <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-          {(val || []).map((targ, i) => (
-            <Box
-              key={i}
-              component="span"
-              sx={{
-                fontSize: '0.7rem',
-                color: 'text.secondary',
-                border: '1px solid',
-                borderColor: 'divider',
-                backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)',
-                borderRadius: 1,
-                px: 0.8,
-                py: 0.2,
-              }}
-            >
-              {targ.platform}
-            </Box>
-          ))}
-        </Box>
-      )
+      render: (val) => {
+        const TARGET_STATUS_COLORS = {
+          published: '#10B981',
+          completed: '#10B981',
+          failed: '#EF4444',
+          pending: '#F59E0B',
+          processing: '#F59E0B',
+        };
+        return (
+          <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+            {(val || []).map((targ, i) => {
+              const color = TARGET_STATUS_COLORS[targ.status] || '#9CA3AF';
+              const chip = (
+                <Box
+                  key={i}
+                  component="span"
+                  sx={{
+                    fontSize: '0.7rem',
+                    fontWeight: 600,
+                    color,
+                    border: `1px solid ${color}50`,
+                    backgroundColor: `${color}15`,
+                    borderRadius: 1,
+                    px: 0.8,
+                    py: 0.2,
+                  }}
+                >
+                  {targ.platform}
+                </Box>
+              );
+              return targ.status === 'failed' && targ.error ? (
+                <Tooltip key={i} title={targ.error} arrow placement="top">
+                  <Box component="span" sx={{ display: 'inline-flex', cursor: 'help' }}>
+                    {chip}
+                  </Box>
+                </Tooltip>
+              ) : chip;
+            })}
+          </Box>
+        );
+      }
     },
     {
       key: 'scheduledAt',
@@ -123,16 +181,36 @@ const DashboardContainer = () => {
       {/* KPI Cards */}
       <Grid container spacing={2.5} sx={{ mb: 4 }}>
         <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
-          <CommonKpiCard label={t('totalPosts')} value={stats.total} icon={<PostAddIcon />} color="#7C3AED" isLoading={isLoading} />
+          <CommonKpiCard
+            label={t('totalPosts')} value={stats.total} icon={<PostAddIcon />} color="#7C3AED"
+            isLoading={isLoading}
+            isActive={activeFilter === null}
+            onClick={() => setActiveFilter(null)}
+          />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
-          <CommonKpiCard label={t('pending')} value={stats.pending} icon={<HourglassEmptyIcon />} color="#F59E0B" isLoading={isLoading} />
+          <CommonKpiCard
+            label={t('pending')} value={stats.pending} icon={<HourglassEmptyIcon />} color="#F59E0B"
+            isLoading={isLoading}
+            isActive={activeFilter === 'pending'}
+            onClick={() => handleFilterClick('pending')}
+          />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
-          <CommonKpiCard label={t('completed')} value={stats.completed} icon={<CheckCircleIcon />} color="#10B981" isLoading={isLoading} />
+          <CommonKpiCard
+            label={t('completed')} value={stats.completed} icon={<CheckCircleIcon />} color="#10B981"
+            isLoading={isLoading}
+            isActive={activeFilter === 'completed'}
+            onClick={() => handleFilterClick('completed')}
+          />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
-          <CommonKpiCard label={t('failed')} value={stats.failed} icon={<ErrorIcon />} color="#EF4444" isLoading={isLoading} />
+          <CommonKpiCard
+            label={t('failed')} value={stats.failed} icon={<ErrorIcon />} color="#EF4444"
+            isLoading={isLoading}
+            isActive={activeFilter === 'failed'}
+            onClick={() => handleFilterClick('failed')}
+          />
         </Grid>
       </Grid>
 
@@ -163,7 +241,17 @@ const DashboardContainer = () => {
       {/* Recent Posts */}
       <Box>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-          <Typography variant="h6" fontWeight={600}>{t('recentPosts')}</Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Typography variant="h6" fontWeight={600}>{t('recentPosts')}</Typography>
+            {activeFilter && (
+              <Chip
+                label={`${t(activeFilter === 'pending' ? 'pending' : activeFilter === 'completed' ? 'completed' : 'failed')} ×`}
+                size="small"
+                onClick={() => setActiveFilter(null)}
+                sx={{ fontWeight: 600, cursor: 'pointer' }}
+              />
+            )}
+          </Box>
           <MuiButton size="small" onClick={() => navigate('/posts')} sx={{ color: 'primary.main', fontWeight: 600 }}>
             {t('viewAll')}
           </MuiButton>

@@ -6,6 +6,7 @@ const STATUS_CONFIG = {
   processing: { labelKey: 'statusProcessing', color: '#3B82F6', bg: 'rgba(59, 130, 246, 0.12)' },
   completed: { labelKey: 'statusCompleted', color: '#10B981', bg: 'rgba(16, 185, 129, 0.12)' },
   published: { labelKey: 'statusPublished', color: '#10B981', bg: 'rgba(16, 185, 129, 0.12)' },
+  partial: { labelKey: 'statusPartial', color: '#F59E0B', bg: 'rgba(245, 158, 11, 0.12)' },
   failed: { labelKey: 'statusFailed', color: '#EF4444', bg: 'rgba(239, 68, 68, 0.12)' },
   scheduled: { labelKey: 'statusScheduled', color: '#8B5CF6', bg: 'rgba(139, 92, 246, 0.12)' },
 };

@@ -31,6 +31,9 @@ import Button from '../../common/Button';
 import { useTranslation } from '../../i18n/useTranslation';
 import { POST_RULES, isPlatformMediaCompatible } from '../../config/postRules';
 import PostTypeSelector from './PostTypeSelector';
+import MediaEditorModal from '../media/components/MediaEditorModal';
+import { mediaApiAction } from '../media/mediaApiSlice';
+import Loader from '../../common/Loader';
 
 const PLATFORM_ICONS = {
   youtube: <YouTubeIcon sx={{ fontSize: 18 }} />,
@@ -105,7 +108,13 @@ const CreatePostContainer = () => {
   // ─── Duration check state ──────────────────────────────────────────
   const [videoDuration, setVideoDuration] = useState(null);
 
+  // ─── Editor State ──────────────────────────────────────────────────
+  const [editorOpen, setEditorOpen] = useState(false);
+  const [rawMediaData, setRawMediaData] = useState(null);
+
   // ─── API hooks ─────────────────────────────────────────────────────
+  const [uploadMedia, { isLoading: isUploadingMedia }] = mediaApiAction.useUploadMediaMutation();
+  const [editMedia, { isLoading: isEditingMedia }] = mediaApiAction.useEditMediaMutation();
   const [createPost, { isLoading }] = postApiAction.createPost();
   const {
     data: accounts,
@@ -156,6 +165,8 @@ const CreatePostContainer = () => {
     setVideoDuration(null);
     setAiTopic('');
     setAiOptions({ caption: true, hashtags: true, image: false });
+    setEditorOpen(false);
+    setRawMediaData(null);
   };
 
   const handleSelectType = (type) => {
@@ -169,6 +180,8 @@ const CreatePostContainer = () => {
     setSelectedFbPageId('');
     setSelectedIgAccountId('');
     setVideoDuration(null);
+    setEditorOpen(false);
+    setRawMediaData(null);
   };
 
   // ─── Platform toggle ───────────────────────────────────────────────
@@ -189,19 +202,34 @@ const CreatePostContainer = () => {
 
   // ─── File drop + duration probe ─────────────────────────────────────
   const onDrop = useCallback(
-    (acceptedFiles) => {
+    async (acceptedFiles) => {
       const f = acceptedFiles[0];
       if (!f) return;
-      setFile(f);
-      setPreview(URL.createObjectURL(f));
-      setVideoDuration(null); // reset until probed
+      
+      if (postType === 'reel' || postType === 'photo') {
+        const formData = new FormData();
+        formData.append('media', f);
+        try {
+          const res = await uploadMedia(formData).unwrap();
+          setRawMediaData(res);
+          // Removed setEditorOpen(true) to fix UX flow
+          setFile(f);
+          setPreview(res.url); // use Cloudinary URL or local preview
+        } catch (err) {
+          dispatch(showToast({ message: 'Media upload failed.', variant: 'error' }));
+        }
+      } else {
+        setFile(f);
+        setPreview(URL.createObjectURL(f));
+        setVideoDuration(null); // reset until probed
+      }
     },
-    []
+    [postType, uploadMedia, dispatch]
   );
 
   // Probe video duration whenever a video file is set and maxDuration is relevant
   useEffect(() => {
-    if (!file || !file.type.startsWith('video/') || !maxDurationSeconds) {
+    if (!file || typeof file === 'string' || !file.type?.startsWith('video/') || !maxDurationSeconds) {
       return;
     }
     const objectUrl = URL.createObjectURL(file);
@@ -361,7 +389,11 @@ const CreatePostContainer = () => {
     }
 
     if (file) {
-      formData.append('media', file);
+      if (typeof file === 'string') {
+        formData.append('mediaUrl', file);
+      } else {
+        formData.append('media', file);
+      }
     }
 
     try {
@@ -406,6 +438,18 @@ const CreatePostContainer = () => {
   // ─── Gate AI "image" option ────────────────────────────────────────
   // Show image AI option only when mediaType allows images
   const showAiImageOption = mediaType === 'image' || mediaType === 'both' || postType === 'feed' || postType === 'photo' || postType === 'story';
+
+  // ─── Editor Apply ──────────────────────────────────────────────────
+  const handleApplyEdit = async (editParams) => {
+    try {
+      const res = await editMedia(editParams).unwrap();
+      setFile(res.url); // Store the returned URL instead of local File
+      setPreview(res.url);
+      setEditorOpen(false);
+    } catch (err) {
+      dispatch(showToast({ message: 'Failed to apply edits.', variant: 'error' }));
+    }
+  };
 
   // ─── Render ────────────────────────────────────────────────────────
   if (step === 'chooseType') {
@@ -611,22 +655,46 @@ const CreatePostContainer = () => {
                 )}
 
                 {preview ? (
-                  <Box sx={{ position: 'relative', borderRadius: 2, overflow: 'hidden' }}>
-                    {file?.type?.startsWith('video/') ? (
+                  <Box sx={{ position: 'relative', borderRadius: 2, overflow: 'hidden', backgroundColor: '#000', display: 'flex', justifyContent: 'center' }}>
+                    {((file instanceof File && file.type.startsWith('video/')) || rawMediaData?.resourceType === 'video' || (typeof preview === 'string' && preview.match(/\.(mp4|mov)$/i))) ? (
                       <video
                         src={preview}
                         controls
-                        style={{ width: '100%', borderRadius: 8, maxHeight: 280, objectFit: 'cover' }}
+                        style={{ width: '100%', borderRadius: 8, maxHeight: 280, objectFit: 'contain' }}
                       />
                     ) : (
                       <img
                         src={preview}
                         alt="preview"
-                        style={{ width: '100%', borderRadius: 8, maxHeight: 280, objectFit: 'cover' }}
+                        style={{ width: '100%', borderRadius: 8, maxHeight: 280, objectFit: 'contain' }}
                       />
                     )}
+                    
+                    {/* NAYA: Edit Overlay for Reel/Photo */}
+                    {rawMediaData && (postType === 'reel' || postType === 'photo') && (
+                      <Button
+                        variant="contained"
+                        onClick={() => setEditorOpen(true)}
+                        startIcon={<EditNoteIcon />}
+                        sx={{
+                          position: 'absolute',
+                          bottom: 16,
+                          left: '50%',
+                          transform: 'translateX(-50%)',
+                          backgroundColor: 'rgba(124, 58, 237, 0.9)',
+                          backdropFilter: 'blur(4px)',
+                          borderRadius: 8,
+                          textTransform: 'none',
+                          fontWeight: 600,
+                          '&:hover': { backgroundColor: '#7C3AED' }
+                        }}
+                      >
+                        {t('clickToEdit')}
+                      </Button>
+                    )}
+
                     <Box
-                      onClick={() => { setFile(null); setPreview(null); setVideoDuration(null); }}
+                      onClick={() => { setFile(null); setPreview(null); setVideoDuration(null); setRawMediaData(null); }}
                       sx={{
                         position: 'absolute', top: 8, right: 8,
                         width: 28, height: 28, borderRadius: '50%',
@@ -1190,6 +1258,20 @@ const CreatePostContainer = () => {
           </Tooltip>
         </Grid>
       </Grid>
+
+      {/* Editor Modal */}
+      {rawMediaData && (
+        <MediaEditorModal
+          open={editorOpen}
+          media={rawMediaData}
+          onClose={() => setEditorOpen(false)}
+          onApply={handleApplyEdit}
+        />
+      )}
+
+      {/* Loaders */}
+      <Loader loading={isUploadingMedia} text={t('uploadProgress').replace('{progress}', '...')} />
+      <Loader loading={isEditingMedia} text={t('processing')} />
     </Box>
   );
 };

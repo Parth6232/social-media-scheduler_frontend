@@ -179,7 +179,7 @@ const SignupContainer = () => {
             </Box>
 
             <Divider sx={{ my: 3, borderColor: 'divider' }} />
-            <Typography variant="body2" textAlign="center" sx={{ color: 'text.secondary' }}>
+            <Typography variant="body2" align="center" sx={{ color: 'text.secondary' }}>
               {t('alreadyHaveAccount')}{' '}
               <Link component={RouterLink} to="/login" sx={{ color: 'primary.main', fontWeight: 600, textDecoration: 'none' }}>
                 {t('signIn')}

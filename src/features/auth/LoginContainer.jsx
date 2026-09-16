@@ -250,7 +250,7 @@ const LoginContainer = () => {
 
                 <Divider sx={{ my: 3, borderColor: 'divider' }} />
 
-                <Typography variant="body2" textAlign="center" sx={{ color: 'text.secondary' }}>
+                <Typography variant="body2" align="center" sx={{ color: 'text.secondary' }}>
                   {t('dontHaveAccount')}{' '}
                   <Link component={RouterLink} to="/signup" sx={{ color: 'primary.main', fontWeight: 600, textDecoration: 'none' }}>
                     {t('createOneFree')}

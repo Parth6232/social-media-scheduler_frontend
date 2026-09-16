@@ -1,4 +1,4 @@
-﻿import { combineReducers } from '@reduxjs/toolkit';
+import { combineReducers } from '@reduxjs/toolkit';
 import authReducer from './slices/authSlice';
 import toastReducer from './slices/toastSlice';
 import uiReducer from './slices/uiSlice';
@@ -6,6 +6,7 @@ import { authApiReducer, authApiAction } from '../../features/auth/authApiSlice'
 import { accountsApiReducer, accountsApiAction } from '../../features/accounts/accountsApiSlice';
 import { postApiReducer, postApiAction } from '../../features/createPost/postApiSlice';
 import { aiApiReducer, aiApiAction } from '../../features/ai/aiApiSlice';
+import { mediaApiReducer, mediaApiAction } from '../../features/media/mediaApiSlice';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
   [accountsApiAction.reducerPath]: accountsApiReducer,
   [postApiAction.reducerPath]: postApiReducer,
   [aiApiAction.reducerPath]: aiApiReducer,
+  [mediaApiAction.reducerPath]: mediaApiReducer,
 });
 
 export default rootReducer;

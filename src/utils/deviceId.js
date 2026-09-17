@@ -1,4 +1,4 @@
-﻿const DEVICE_ID_KEY = 'socialblitz_device_id';
+﻿const DEVICE_ID_KEY = 'postpilot_device_id';
 
 /**
  * Returns a persistent unique device ID for this browser profile.

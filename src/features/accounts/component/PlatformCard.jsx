@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Typography, Chip, Skeleton, Tooltip, Divider, Avatar } from '@mui/material';
+import { Box, CardContent, Typography, Chip, Skeleton, Tooltip, Divider, Avatar } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import FacebookIcon from '@mui/icons-material/Facebook';
@@ -10,6 +10,8 @@ import { accountsApiAction } from '../accountsApiSlice';
 import { appConstants } from '../../../constant/appConstants';
 import Button from '../../../common/Button';
 import { useTranslation } from '../../../i18n/useTranslation';
+import GlassCard from '../../../common/components/motion/GlassCard';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const PLATFORM_ICONS = {
   youtube: <YouTubeIcon sx={{ fontSize: 36 }} />,
@@ -86,12 +88,12 @@ const PlatformCard = ({ platform, connectedAccount, isLoading }) => {
 
   if (isLoading) {
     return (
-      <Card sx={{ p: 2, borderRadius: 3 }}>
+      <GlassCard sx={{ p: 2, borderRadius: 3 }}>
         <Skeleton variant="circular" width={48} height={48} sx={{ mb: 1, mx: 'auto' }} />
         <Skeleton variant="text" width="60%" height={24} sx={{ mx: 'auto' }} />
         <Skeleton variant="text" width="80%" height={18} sx={{ mx: 'auto' }} />
         <Skeleton variant="rounded" width="100%" height={36} sx={{ mt: 2 }} />
-      </Card>
+      </GlassCard>
     );
   }
 
@@ -105,8 +107,16 @@ const PlatformCard = ({ platform, connectedAccount, isLoading }) => {
             ? `Facebook ${t('pages')} (${accountsList.length})`
             : `Instagram ${t('accounts')} (${accountsList.length})`}
         </Typography>
+        <AnimatePresence>
         {accountsList.map((item, idx) => (
-          <Box key={item.platformAccountId || idx}>
+          <Box
+            component={motion.div}
+            key={item.platformAccountId || idx}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3 }}
+          >
             {idx > 0 && <Divider sx={{ borderColor: 'divider', my: 0.75 }} />}
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1, py: 0.5 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, minWidth: 0 }}>
@@ -139,6 +149,7 @@ const PlatformCard = ({ platform, connectedAccount, isLoading }) => {
             </Box>
           </Box>
         ))}
+        </AnimatePresence>
       </Box>
     );
   };
@@ -148,16 +159,11 @@ const PlatformCard = ({ platform, connectedAccount, isLoading }) => {
     : color;
 
   return (
-    <Card sx={{
+    <GlassCard hoverEffect={!meta.isComingSoon} sx={{
       borderRadius: 3,
       border: isConnected ? `1px solid ${color}40` : (theme) => `1px solid ${theme.palette.divider}`,
       position: 'relative',
       overflow: 'hidden',
-      transition: 'transform 0.2s, box-shadow 0.2s',
-      '&:hover': meta.isComingSoon ? {} : {
-        transform: 'translateY(-4px)',
-        boxShadow: `0 12px 36px ${color}25`,
-      },
       opacity: meta.isComingSoon ? 0.6 : 1,
       height: '100%',
       display: 'flex',
@@ -273,7 +279,7 @@ const PlatformCard = ({ platform, connectedAccount, isLoading }) => {
           )}
         </Box>
       </CardContent>
-    </Card>
+    </GlassCard>
   );
 };
 

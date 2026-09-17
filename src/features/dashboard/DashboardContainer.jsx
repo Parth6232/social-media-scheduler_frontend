@@ -16,6 +16,7 @@ import StatusBadge from '../../common/StatusBadge';
 import { format } from 'date-fns';
 import { useTranslation } from '../../i18n/useTranslation';
 import { POST_RULES } from '../../config/postRules';
+import AnimatedSection from '../../common/components/motion/AnimatedSection';
 
 /** Capitalize every word in a name */
 const capitalizeName = (name = '') =>
@@ -181,36 +182,44 @@ const DashboardContainer = () => {
       {/* KPI Cards */}
       <Grid container spacing={2.5} sx={{ mb: 4 }}>
         <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
-          <CommonKpiCard
-            label={t('totalPosts')} value={stats.total} icon={<PostAddIcon />} color="#7C3AED"
-            isLoading={isLoading}
-            isActive={activeFilter === null}
-            onClick={() => setActiveFilter(null)}
-          />
+          <AnimatedSection delay={0.1}>
+            <CommonKpiCard
+              label={t('totalPosts')} value={stats.total} icon={<PostAddIcon />} color="#7C3AED"
+              isLoading={isLoading}
+              isActive={activeFilter === null}
+              onClick={() => setActiveFilter(null)}
+            />
+          </AnimatedSection>
         </Grid>
         <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
-          <CommonKpiCard
-            label={t('pending')} value={stats.pending} icon={<HourglassEmptyIcon />} color="#F59E0B"
-            isLoading={isLoading}
-            isActive={activeFilter === 'pending'}
-            onClick={() => handleFilterClick('pending')}
-          />
+          <AnimatedSection delay={0.2}>
+            <CommonKpiCard
+              label={t('pending')} value={stats.pending} icon={<HourglassEmptyIcon />} color="#F59E0B"
+              isLoading={isLoading}
+              isActive={activeFilter === 'pending'}
+              onClick={() => handleFilterClick('pending')}
+            />
+          </AnimatedSection>
         </Grid>
         <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
-          <CommonKpiCard
-            label={t('completed')} value={stats.completed} icon={<CheckCircleIcon />} color="#10B981"
-            isLoading={isLoading}
-            isActive={activeFilter === 'completed'}
-            onClick={() => handleFilterClick('completed')}
-          />
+          <AnimatedSection delay={0.3}>
+            <CommonKpiCard
+              label={t('completed')} value={stats.completed} icon={<CheckCircleIcon />} color="#10B981"
+              isLoading={isLoading}
+              isActive={activeFilter === 'completed'}
+              onClick={() => handleFilterClick('completed')}
+            />
+          </AnimatedSection>
         </Grid>
         <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
-          <CommonKpiCard
-            label={t('failed')} value={stats.failed} icon={<ErrorIcon />} color="#EF4444"
-            isLoading={isLoading}
-            isActive={activeFilter === 'failed'}
-            onClick={() => handleFilterClick('failed')}
-          />
+          <AnimatedSection delay={0.4}>
+            <CommonKpiCard
+              label={t('failed')} value={stats.failed} icon={<ErrorIcon />} color="#EF4444"
+              isLoading={isLoading}
+              isActive={activeFilter === 'failed'}
+              onClick={() => handleFilterClick('failed')}
+            />
+          </AnimatedSection>
         </Grid>
       </Grid>
 

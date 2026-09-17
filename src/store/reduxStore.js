@@ -15,7 +15,7 @@ const storage = {
 };
 
 const persistConfig = {
-  key: 'socialblitz_root',
+  key: 'postpilot_root',
   storage,
   whitelist: ['auth', 'ui'],
 };

@@ -3,6 +3,7 @@ import LinkIcon from '@mui/icons-material/Link';
 import { accountsApiAction } from './accountsApiSlice';
 import PlatformCard from './component/PlatformCard';
 import { useTranslation } from '../../i18n/useTranslation';
+import AnimatedSection from '../../common/components/motion/AnimatedSection';
 
 const PLATFORMS = ['youtube', 'facebook', 'instagram', 'linkedin', 'twitter', 'whatsapp'];
 
@@ -74,19 +75,21 @@ const AccountsContainer = () => {
 
       {/* Platform Grid */}
       <Grid container spacing={2.5}>
-        {PLATFORMS.map((platform) => (
-          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={platform}>
-            <PlatformCard
-              platform={platform}
-              connectedAccount={
-                platform === 'facebook'
-                  ? getFacebookPages()
-                  : platform === 'instagram'
-                  ? getInstagramAccounts()
-                  : getConnectedAccount(platform)
-              }
-              isLoading={isLoading}
-            />
+        {PLATFORMS.map((platform, index) => (
+          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={platform} sx={{ display: 'flex' }}>
+            <AnimatedSection delay={0.1 * index} sx={{ width: '100%', height: '100%' }}>
+              <PlatformCard
+                platform={platform}
+                connectedAccount={
+                  platform === 'facebook'
+                    ? getFacebookPages()
+                    : platform === 'instagram'
+                    ? getInstagramAccounts()
+                    : getConnectedAccount(platform)
+                }
+                isLoading={isLoading}
+              />
+            </AnimatedSection>
           </Grid>
         ))}
       </Grid>

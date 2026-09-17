@@ -11,6 +11,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import CheckIcon from '@mui/icons-material/Check';
+import { motion } from 'framer-motion';
 
 /** Capitalize the first letter of each word */
 const capitalizeName = (name = '') =>
@@ -55,7 +56,13 @@ const Header = ({ handleDrawerToggle }) => {
   };
 
   return (
-    <Box sx={{
+    <Box 
+      component={motion.div}
+      initial={{ y: -70, rotateX: 90 }}
+      animate={{ y: 0, rotateX: 0 }}
+      transition={{ duration: 0.6, type: 'spring', bounce: 0.4 }}
+      style={{ transformOrigin: 'top', perspective: 1000 }}
+      sx={{
       height: 70,
       display: 'flex',
       alignItems: 'center',
@@ -106,20 +113,23 @@ const Header = ({ handleDrawerToggle }) => {
           sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: 1 }}
           onClick={handleMenu}
         >
-          <Avatar
-            src={user?.avatarUrl || undefined}
-            alt={displayName}
-            sx={{
-              width: 36,
-              height: 36,
-              bgcolor: 'primary.main',
-              fontSize: '0.9rem',
-              fontWeight: 700,
-              background: user?.avatarUrl ? undefined : 'linear-gradient(135deg, #7C3AED, #2563EB)',
-            }}
-          >
-            {!user?.avatarUrl && initials}
-          </Avatar>
+          <Box component={motion.div} whileHover={{ rotateY: 22, scale: 1.1 }} style={{ perspective: 400 }}>
+            <Avatar
+              src={user?.avatarUrl || undefined}
+              alt={displayName}
+              sx={{
+                width: 36,
+                height: 36,
+                bgcolor: 'primary.main',
+                fontSize: '0.9rem',
+                fontWeight: 700,
+                background: user?.avatarUrl ? undefined : 'linear-gradient(135deg, #7C3AED, #2563EB)',
+                boxShadow: '0 0 0 2px rgba(124, 58, 237, 0.35)',
+              }}
+            >
+              {!user?.avatarUrl && initials}
+            </Avatar>
+          </Box>
 
           <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.primary', display: { xs: 'none', sm: 'block' } }}>
             {displayName || 'User'}

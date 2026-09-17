@@ -1,4 +1,5 @@
-import { Box, Card, CardContent, Typography, Chip, Skeleton, Grid } from '@mui/material';
+import { Box, CardContent, Typography, Chip, Skeleton, Grid } from '@mui/material';
+import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import FacebookIcon from '@mui/icons-material/Facebook';
@@ -10,6 +11,9 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { appConstants } from '../../constant/appConstants';
 import { postApiAction } from '../createPost/postApiSlice';
 import { useTranslation } from '../../i18n/useTranslation';
+import AnimatedSection from '../../common/components/motion/AnimatedSection';
+import GlassCard from '../../common/components/motion/GlassCard';
+import Counter from '../../common/components/motion/Counter';
 
 const PLATFORM_ICONS = {
   youtube: <YouTubeIcon sx={{ fontSize: 34 }} />,
@@ -42,6 +46,10 @@ const PostsPlatformGrid = () => {
       <Box sx={{ mb: { xs: 2.5, sm: 4 } }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
           <Box
+            component={motion.div}
+            animate={{ rotateY: [0, 15, 0, -15, 0] }}
+            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+            style={{ perspective: 500 }}
             sx={{
               width: 40,
               height: 40,
@@ -51,6 +59,7 @@ const PostsPlatformGrid = () => {
               alignItems: 'center',
               justifyContent: 'center',
               flexShrink: 0,
+              boxShadow: '0 4px 14px rgba(124, 58, 237, 0.35)',
             }}
           >
             <HistoryIcon sx={{ color: '#fff', fontSize: 20 }} />
@@ -66,7 +75,7 @@ const PostsPlatformGrid = () => {
 
       {/* Grid */}
       <Grid container spacing={{ xs: 2, sm: 2.5 }}>
-        {platformKeys.map((platformKey) => {
+        {platformKeys.map((platformKey, index) => {
           const meta = appConstants.platforms[platformKey] || { name: platformKey, isComingSoon: false };
           const color = PLATFORM_COLORS[platformKey] || '#7C3AED';
           const platformStats = summary?.[platformKey] || { total: 0, published: 0, failed: 0, pending: 0 };
@@ -78,8 +87,8 @@ const PostsPlatformGrid = () => {
 
           if (isLoading) {
             return (
-              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={platformKey}>
-                <Card sx={{ p: 2.5, borderRadius: 3, height: '100%' }}>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={platformKey} sx={{ display: 'flex' }}>
+                <GlassCard sx={{ p: 2.5, borderRadius: 3, height: '100%', width: '100%' }}>
                   <Skeleton variant="circular" width={44} height={44} sx={{ mb: 1.5 }} />
                   <Skeleton variant="text" width="50%" height={24} sx={{ mb: 2 }} />
                   <Grid container spacing={1}>
@@ -88,14 +97,17 @@ const PostsPlatformGrid = () => {
                     <Grid size={6}><Skeleton variant="rounded" height={48} /></Grid>
                     <Grid size={6}><Skeleton variant="rounded" height={48} /></Grid>
                   </Grid>
-                </Card>
+                </GlassCard>
               </Grid>
             );
           }
 
           return (
-            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={platformKey}>
-              <Card
+            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={platformKey} sx={{ display: 'flex' }}>
+            <AnimatedSection delay={0.08 * index} sx={{ width: '100%', height: '100%' }}>
+              <GlassCard
+                hoverEffect={!isComingSoon}
+                tilt={!isComingSoon}
                 onClick={() => {
                   if (!isComingSoon) {
                     navigate(`/posts/${platformKey}`);
@@ -108,12 +120,6 @@ const PostsPlatformGrid = () => {
                   overflow: 'hidden',
                   cursor: isComingSoon ? 'default' : 'pointer',
                   opacity: isComingSoon ? 0.65 : 1,
-                  transition: 'transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease',
-                  '&:hover': isComingSoon ? {} : {
-                    transform: 'translateY(-4px)',
-                    boxShadow: `0 12px 32px ${color}25`,
-                    borderColor: `${color}60`,
-                  },
                   display: 'flex',
                   flexDirection: 'column',
                   height: '100%',
@@ -191,7 +197,7 @@ const PostsPlatformGrid = () => {
                           {t('totalPosts')}
                         </Typography>
                         <Typography variant="h6" fontWeight={700} sx={{ lineHeight: 1.2, mt: 0.25 }}>
-                          {platformStats.total || 0}
+                          <Counter value={platformStats.total || 0} />
                         </Typography>
                       </Box>
 
@@ -208,7 +214,7 @@ const PostsPlatformGrid = () => {
                           {t('statusPublished')}
                         </Typography>
                         <Typography variant="h6" fontWeight={700} sx={{ color: '#10B981', lineHeight: 1.2, mt: 0.25 }}>
-                          {platformStats.published || 0}
+                          <Counter value={platformStats.published || 0} />
                         </Typography>
                       </Box>
 
@@ -225,7 +231,7 @@ const PostsPlatformGrid = () => {
                           {t('statusFailed')}
                         </Typography>
                         <Typography variant="h6" fontWeight={700} sx={{ color: '#EF4444', lineHeight: 1.2, mt: 0.25 }}>
-                          {platformStats.failed || 0}
+                          <Counter value={platformStats.failed || 0} />
                         </Typography>
                       </Box>
 
@@ -242,13 +248,14 @@ const PostsPlatformGrid = () => {
                           {t('statusPending')}
                         </Typography>
                         <Typography variant="h6" fontWeight={700} sx={{ color: '#F59E0B', lineHeight: 1.2, mt: 0.25 }}>
-                          {platformStats.pending || 0}
+                          <Counter value={platformStats.pending || 0} />
                         </Typography>
                       </Box>
                     </Box>
                   )}
                 </CardContent>
-              </Card>
+              </GlassCard>
+            </AnimatedSection>
             </Grid>
           );
         })}

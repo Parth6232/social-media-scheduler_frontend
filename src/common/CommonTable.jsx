@@ -2,7 +2,10 @@ import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, 
 import SearchIcon from '@mui/icons-material/Search';
 import InboxIcon from '@mui/icons-material/Inbox';
 import { useState, useMemo } from 'react';
+import { motion } from 'framer-motion';
 import { useTranslation } from '../i18n/useTranslation';
+
+const MotionTableRow = motion.create(TableRow);
 
 const CommonTable = ({ columns, rows, isLoading, searchKeys = [], emptyMessage }) => {
   const { t } = useTranslation();
@@ -44,11 +47,12 @@ const CommonTable = ({ columns, rows, isLoading, searchKeys = [], emptyMessage }
       </Box>
 
       <TableContainer sx={{
-        borderRadius: 2,
+        borderRadius: 3,
         border: '1px solid',
         borderColor: 'divider',
         backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(16, 24, 46, 0.4)' : theme.palette.background.paper,
-        boxShadow: (theme) => theme.palette.mode === 'dark' ? 'none' : '0 2px 12px rgba(0, 0, 0, 0.04)',
+        backdropFilter: 'blur(14px)',
+        boxShadow: (theme) => theme.palette.mode === 'dark' ? '0 12px 40px rgba(0, 0, 0, 0.35)' : '0 2px 12px rgba(0, 0, 0, 0.04)',
         overflowX: 'auto',
       }}>
         <Table sx={{ minWidth: { xs: 600, md: '100%' } }}>
@@ -87,16 +91,20 @@ const CommonTable = ({ columns, rows, isLoading, searchKeys = [], emptyMessage }
                 </TableRow>
               )
               : paginated.map((row, i) => (
-                <TableRow
+                <MotionTableRow
                   key={row._id || i}
-                  sx={{ '&:hover': { backgroundColor: 'action.hover' }, transition: 'background 0.15s' }}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: i * 0.04, ease: [0.21, 0.47, 0.32, 0.98] }}
+                  whileHover={{ backgroundColor: 'rgba(124, 58, 237, 0.06)', scale: 1.003 }}
+                  sx={{ transition: 'background 0.15s' }}
                 >
                   {columns.map((col) => (
                     <TableCell key={col.key} sx={{ borderColor: 'divider', py: 1.5, color: 'text.primary' }}>
                       {col.render ? col.render(row[col.key], row) : (row[col.key] ?? '—')}
                     </TableCell>
                   ))}
-                </TableRow>
+                </MotionTableRow>
               ))
             }
           </TableBody>

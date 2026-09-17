@@ -1,5 +1,5 @@
 import {
-  Box, Card, CardContent, Typography, Grid, Switch, Chip, Tooltip,
+  Box, CardContent, Typography, Grid, Switch, Chip, Tooltip,
   TextField, LinearProgress, Checkbox, FormControlLabel, FormGroup,
   MenuItem, Select, FormControl, InputLabel, CircularProgress, Alert
 } from '@mui/material';
@@ -34,6 +34,9 @@ import PostTypeSelector from './PostTypeSelector';
 import MediaEditorModal from '../media/components/MediaEditorModal';
 import { mediaApiAction } from '../media/mediaApiSlice';
 import Loader from '../../common/Loader';
+import GlassCard from '../../common/components/motion/GlassCard';
+import AnimatedSection from '../../common/components/motion/AnimatedSection';
+import { motion, useMotionValue, useTransform } from 'framer-motion';
 
 const PLATFORM_ICONS = {
   youtube: <YouTubeIcon sx={{ fontSize: 18 }} />,
@@ -460,7 +463,7 @@ const CreatePostContainer = () => {
   const currentRule = POST_RULES[postType];
 
   return (
-    <Box>
+    <AnimatedSection direction="none" sx={{ width: '100%' }}>
       {/* Header */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 4 }}>
         <Button
@@ -513,7 +516,7 @@ const CreatePostContainer = () => {
         <Grid size={{ xs: 12, lg: 7 }}>
 
           {/* AI Composer */}
-          <Card sx={{ mb: 3, borderRadius: 3 }}>
+          <GlassCard sx={{ mb: 3, borderRadius: 3 }}>
             <CardContent sx={{ p: 3 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
                 <AutoAwesomeIcon sx={{ color: '#A78BFA' }} />
@@ -573,10 +576,10 @@ const CreatePostContainer = () => {
                 {t('generateWithAi')}
               </Button>
             </CardContent>
-          </Card>
+          </GlassCard>
 
           {/* Content Editor */}
-          <Card sx={{ mb: 3, borderRadius: 3 }}>
+          <GlassCard sx={{ mb: 3, borderRadius: 3 }}>
             <CardContent sx={{ p: 3 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
                 <EditNoteIcon sx={{ color: '#60A5FA' }} />
@@ -603,11 +606,11 @@ const CreatePostContainer = () => {
                 {content.length}/2200
               </Typography>
             </CardContent>
-          </Card>
+          </GlassCard>
 
           {/* Media Upload — only when mediaType !== 'none' */}
           {mediaType !== 'none' && (
-            <Card sx={{ borderRadius: 3 }}>
+            <GlassCard sx={{ borderRadius: 3 }}>
               <CardContent sx={{ p: 3 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                   <PermMediaIcon sx={{ color: '#F59E0B' }} />
@@ -655,7 +658,12 @@ const CreatePostContainer = () => {
                 )}
 
                 {preview ? (
-                  <Box sx={{ position: 'relative', borderRadius: 2, overflow: 'hidden', backgroundColor: '#000', display: 'flex', justifyContent: 'center' }}>
+                  <Box
+                    component={motion.div}
+                    whileHover={{ scale: 1.02, rotateX: 2, rotateY: -2, zIndex: 10 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    sx={{ position: 'relative', borderRadius: 2, overflow: 'hidden', backgroundColor: '#000', display: 'flex', justifyContent: 'center', perspective: 1000 }}
+                  >
                     {((file instanceof File && file.type.startsWith('video/')) || rawMediaData?.resourceType === 'video' || (typeof preview === 'string' && preview.match(/\.(mp4|mov)$/i))) ? (
                       <video
                         src={preview}
@@ -756,7 +764,7 @@ const CreatePostContainer = () => {
                   </Box>
                 )}
               </CardContent>
-            </Card>
+            </GlassCard>
           )}
         </Grid>
 
@@ -764,7 +772,7 @@ const CreatePostContainer = () => {
         <Grid size={{ xs: 12, lg: 5 }}>
 
           {/* Platform Selector */}
-          <Card sx={{ mb: 3, borderRadius: 3 }}>
+          <GlassCard sx={{ mb: 3, borderRadius: 3 }}>
             <CardContent sx={{ p: 3 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
                 <ShareIcon sx={{ color: '#34D399' }} />
@@ -1162,10 +1170,10 @@ const CreatePostContainer = () => {
                 </Box>
               )}
             </CardContent>
-          </Card>
+          </GlassCard>
 
           {/* Schedule Toggle */}
-          <Card sx={{ mb: 3, borderRadius: 3 }}>
+          <GlassCard sx={{ mb: 3, borderRadius: 3 }}>
             <CardContent sx={{ p: 3 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: scheduleEnabled ? 2 : 0 }}>
                 <Box>
@@ -1213,7 +1221,7 @@ const CreatePostContainer = () => {
                 </LocalizationProvider>
               )}
             </CardContent>
-          </Card>
+          </GlassCard>
 
           {/* Submit */}
           <Tooltip
@@ -1272,7 +1280,7 @@ const CreatePostContainer = () => {
       {/* Loaders */}
       <Loader loading={isUploadingMedia} text={t('uploadProgress').replace('{progress}', '...')} />
       <Loader loading={isEditingMedia} text={t('processing')} />
-    </Box>
+    </AnimatedSection>
   );
 };
 

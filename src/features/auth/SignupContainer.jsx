@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, IconButton, Typography, Divider, Link, LinearProgress } from '@mui/material';
+import { Box, IconButton, Typography, Divider, Link, LinearProgress, useTheme } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -9,11 +9,19 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import HomeIcon from '@mui/icons-material/Home';
 import { useState, useMemo } from 'react';
 import { showToast } from '../../store/redux/slices/toastSlice';
 import { authApiAction } from './authApiSlice';
 import Button from '../../common/Button';
 import { useTranslation } from '../../i18n/useTranslation';
+import GlassCard from '../../common/components/motion/GlassCard';
+import { StaggerContainer, StaggerItem } from '../../common/components/motion/Stagger';
+import { motion } from 'framer-motion';
+import postPilotIcon from '../../assets/brand/postpilot-icon-256.png';
+import AuthBackground from '../../common/components/auth/AuthBackground';
+import AuthFloatingChips from '../../common/components/auth/AuthFloatingChips';
+import usePrefersReducedMotion from '../../features/landing/hooks/usePrefersReducedMotion';
 
 const schema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -24,37 +32,6 @@ const schema = z.object({
   message: 'Passwords do not match',
   path: ['confirmPassword'],
 });
-
-const FieldBox = ({ icon, children, error, label }) => (
-  <Box sx={{ mb: 2.5 }}>
-    <Typography variant="caption" sx={{ color: 'text.secondary', mb: 0.5, display: 'block' }}>{label}</Typography>
-    <Box sx={{
-      display: 'flex', alignItems: 'center',
-      border: (theme) => `1px solid ${error ? '#f44336' : theme.palette.divider}`,
-      borderRadius: 2, px: 1.5, py: 0.5,
-      backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
-      '&:focus-within': { borderColor: '#7C3AED' }
-    }}>
-      <Box sx={{ color: 'text.secondary', mr: 1, display: 'flex' }}>{icon}</Box>
-      {children}
-    </Box>
-    {error && <Typography variant="caption" color="error" sx={{ ml: 0.5 }}>{error.message}</Typography>}
-  </Box>
-);
-
-const InputField = ({ type = 'text', placeholder, ...rest }) => (
-  <Box
-    component="input"
-    type={type}
-    placeholder={placeholder}
-    sx={{
-      flex: 1, border: 'none', outline: 'none', background: 'transparent',
-      color: (theme) => theme.palette.text.primary, fontSize: '0.95rem', py: 1,
-      '&::placeholder': { color: (theme) => theme.palette.text.secondary, opacity: 0.7 }
-    }}
-    {...rest}
-  />
-);
 
 const getPasswordStrength = (password) => {
   if (!password) return 0;
@@ -77,6 +54,9 @@ const SignupContainer = () => {
   const [passwordVal, setPasswordVal] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const theme    = useTheme();
+  const isDark   = theme.palette.mode === 'dark';
+  const reduced  = usePrefersReducedMotion();
   const [signupMutation, { isLoading }] = authApiAction.signup();
 
   const { register, handleSubmit, formState: { errors } } = useForm({ resolver: zodResolver(schema) });
@@ -93,100 +73,283 @@ const SignupContainer = () => {
     }
   };
 
+  // ── Shared field styles ────────────────────────────────────────────────────
+
+  const inputBoxSx = (hasError) => ({
+    display: 'flex',
+    alignItems: 'center',
+    border: `1px solid ${hasError
+      ? '#f44336'
+      : isDark ? 'rgba(255,255,255,0.1)' : 'rgba(139,92,246,0.18)'}`,
+    borderRadius: '12px',
+    px: 1.5,
+    py: 0.75,
+    backgroundColor: isDark
+      ? 'rgba(255,255,255,0.04)'
+      : 'rgba(255,255,255,0.65)',
+    backdropFilter: 'blur(8px)',
+    transition: 'border-color 0.25s, box-shadow 0.25s',
+    '&:focus-within': {
+      borderColor: '#8B5CF6',
+      boxShadow: isDark
+        ? '0 0 0 3px rgba(139,92,246,0.18)'
+        : '0 0 0 3px rgba(139,92,246,0.12)',
+    },
+  });
+
+  const nativeInputSx = {
+    flex: 1,
+    border: 'none',
+    outline: 'none',
+    background: 'transparent',
+    color: (t) => t.palette.text.primary,
+    fontSize: '0.95rem',
+    py: 0.5,
+    '&::placeholder': { color: (t) => t.palette.text.secondary, opacity: 0.65 },
+  };
+
+  // ── FieldBox sub-component ─────────────────────────────────────────────────
+
+  const FieldBox = ({ icon, label, children, error }) => (
+    <Box sx={{ mb: 2.25 }}>
+      <Typography variant="caption" sx={{ color: 'text.secondary', mb: 0.75, display: 'block', fontWeight: 500, letterSpacing: '0.02em' }}>
+        {label}
+      </Typography>
+      <Box sx={inputBoxSx(!!error)}>
+        <Box sx={{ color: error ? '#f44336' : 'text.secondary', mr: 1, display: 'flex', flexShrink: 0 }}>
+          {icon}
+        </Box>
+        {children}
+      </Box>
+      {error && (
+        <Typography variant="caption" color="error" sx={{ ml: 0.5, mt: 0.4, display: 'block' }}>
+          {error.message}
+        </Typography>
+      )}
+    </Box>
+  );
+
+  // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <Box sx={{
-      minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', p: 2,
-      background: (theme) => theme.palette.mode === 'dark'
-        ? 'radial-gradient(ellipse at top left, rgba(124, 58, 237, 0.2) 0%, transparent 50%), radial-gradient(ellipse at bottom right, rgba(37, 99, 235, 0.15) 0%, transparent 50%)'
-        : 'radial-gradient(ellipse at top left, rgba(124, 58, 237, 0.08) 0%, transparent 50%), radial-gradient(ellipse at bottom right, rgba(37, 99, 235, 0.08) 0%, transparent 50%)',
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      p: { xs: 2, sm: 3 },
+      position: 'relative',
+      overflow: 'hidden',
     }}>
-      <Box sx={{ width: '100%', maxWidth: 440 }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 4 }}>
-          <Box sx={{
-            width: 56, height: 56, borderRadius: 2,
-            background: 'linear-gradient(135deg, #7C3AED 0%, #2563EB 100%)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            mb: 2, boxShadow: '0 0 30px rgba(124, 58, 237, 0.4)',
-          }}>
-            <Typography variant="h4" sx={{ color: '#fff', fontWeight: 900 }}>S</Typography>
-          </Box>
-          <Typography variant="h5" fontWeight={700} sx={{ color: 'text.primary' }}>{t('createYourAccount')}</Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
-            {t('signupSubtitle')}
-          </Typography>
-        </Box>
+      {/* Aurora CSS background */}
+      <AuthBackground />
 
-        <Card sx={{ borderRadius: 3, p: 1 }}>
-          <CardContent sx={{ p: 3 }}>
-            <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
-              <FieldBox label={t('fullName')} icon={<PersonOutlinedIcon sx={{ fontSize: 20 }} />} error={errors.name}>
-                <InputField placeholder={t('namePlaceholder')} {...register('name')} />
-              </FieldBox>
+      {/* Back-to-home link */}
+      <Box
+        component={RouterLink}
+        to="/"
+        sx={{
+          position: 'fixed',
+          top: 20,
+          left: 24,
+          zIndex: 10,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 0.75,
+          color: isDark ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.45)',
+          textDecoration: 'none',
+          fontSize: '0.8rem',
+          fontWeight: 500,
+          transition: 'color 0.2s',
+          '&:hover': { color: '#8B5CF6' },
+        }}
+      >
+        <HomeIcon sx={{ fontSize: 16 }} />
+        PostPilot
+      </Box>
 
-              <FieldBox label={t('emailAddress')} icon={<EmailOutlinedIcon sx={{ fontSize: 20 }} />} error={errors.email}>
-                <InputField type="email" placeholder={t('emailPlaceholder')} {...register('email')} />
-              </FieldBox>
+      {/* Card wrapper — chips positioned relative to this */}
+      <Box sx={{ width: '100%', maxWidth: 460, position: 'relative', zIndex: 1 }}>
+        <AuthFloatingChips />
 
-              <FieldBox label={t('password')} icon={<LockOutlinedIcon sx={{ fontSize: 20 }} />} error={errors.password}>
-                <InputField
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="••••••••"
-                  {...register('password', { onChange: (e) => setPasswordVal(e.target.value) })}
-                />
-                <IconButton size="small" onClick={() => setShowPassword(!showPassword)} sx={{ color: 'text.secondary' }}>
-                  {showPassword ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}
-                </IconButton>
-              </FieldBox>
+        <StaggerContainer>
 
-              {/* Password strength indicator */}
-              {passwordVal && (
-                <Box sx={{ mb: 2.5, mt: -1.5 }}>
-                  <LinearProgress
-                    variant="determinate"
-                    value={(strength / 5) * 100}
-                    sx={{
-                      height: 4, borderRadius: 2,
-                      backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)',
-                      '& .MuiLinearProgress-bar': { backgroundColor: strengthColors[strength], borderRadius: 2 }
-                    }}
-                  />
-                  <Typography variant="caption" sx={{ color: strengthColors[strength], mt: 0.5, display: 'block' }}>
-                    {strengthKeys[strength] ? t(strengthKeys[strength]) : ''}
-                  </Typography>
-                </Box>
-              )}
-
-              <FieldBox label={t('confirmPassword')} icon={<LockOutlinedIcon sx={{ fontSize: 20 }} />} error={errors.confirmPassword}>
-                <InputField
-                  type={showConfirm ? 'text' : 'password'}
-                  placeholder="••••••••"
-                  {...register('confirmPassword')}
-                />
-                <IconButton size="small" onClick={() => setShowConfirm(!showConfirm)} sx={{ color: 'text.secondary' }}>
-                  {showConfirm ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}
-                </IconButton>
-              </FieldBox>
-
-              <Button
-                type="submit"
-                variant="contained"
-                loading={isLoading}
-                fullWidth
-                sx={{ py: 1.5, fontSize: '1rem', borderRadius: 2 }}
-              >
-                {t('createAccount')}
-              </Button>
+          {/* ── Logo / header ── */}
+          <StaggerItem
+            sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 3.5 }}
+          >
+            {/* Floating logo */}
+            <Box
+              component={motion.div}
+              onClick={() => navigate('/')}
+              animate={reduced ? {} : { y: [0, -6, 0] }}
+              transition={{ y: { duration: 3.6, repeat: Infinity, ease: 'easeInOut' } }}
+              whileHover={reduced ? {} : { scale: 1.08, rotateY: -15 }}
+              sx={{
+                width: 68,
+                height: 68,
+                borderRadius: '18px',
+                background: 'linear-gradient(135deg, #ffffff 0%, #eef2ff 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                mb: 2.5,
+                boxShadow: isDark
+                  ? '0 0 40px rgba(139,92,246,0.5), 0 8px 20px rgba(0,0,0,0.35)'
+                  : '0 0 32px rgba(139,92,246,0.28), 0 8px 20px rgba(0,0,0,0.1)',
+                cursor: 'pointer',
+                p: 1,
+                perspective: '600px',
+                transformStyle: 'preserve-3d',
+                transition: 'box-shadow 0.3s',
+              }}
+            >
+              <Box component="img" src={postPilotIcon} alt="PostPilot" sx={{ width: '100%', height: '100%', objectFit: 'contain' }} />
             </Box>
 
-            <Divider sx={{ my: 3, borderColor: 'divider' }} />
-            <Typography variant="body2" align="center" sx={{ color: 'text.secondary' }}>
-              {t('alreadyHaveAccount')}{' '}
-              <Link component={RouterLink} to="/login" sx={{ color: 'primary.main', fontWeight: 600, textDecoration: 'none' }}>
-                {t('signIn')}
-              </Link>
+            {/* Gradient headline */}
+            <Typography
+              variant="h5"
+              fontWeight={700}
+              sx={{
+                textAlign: 'center',
+                background: 'linear-gradient(90deg, #A78BFA 0%, #E879F9 50%, #67E8F9 100%)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                mb: 0.5,
+              }}
+            >
+              {t('createYourAccount')}
             </Typography>
-          </CardContent>
-        </Card>
+            <Typography variant="body2" sx={{ color: 'text.secondary', textAlign: 'center' }}>
+              {t('signupSubtitle')}
+            </Typography>
+          </StaggerItem>
+
+          {/* ── Glass card ── */}
+          <StaggerItem>
+            <GlassCard authCard hoverEffect tilt sx={{ p: { xs: 3, sm: 4 } }}>
+              <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
+
+                {/* Full Name */}
+                <FieldBox label={t('fullName')} icon={<PersonOutlinedIcon sx={{ fontSize: 18 }} />} error={errors.name}>
+                  <Box
+                    component="input"
+                    {...register('name')}
+                    placeholder={t('namePlaceholder')}
+                    sx={nativeInputSx}
+                  />
+                </FieldBox>
+
+                {/* Email */}
+                <FieldBox label={t('emailAddress')} icon={<EmailOutlinedIcon sx={{ fontSize: 18 }} />} error={errors.email}>
+                  <Box
+                    component="input"
+                    {...register('email')}
+                    type="email"
+                    placeholder={t('emailPlaceholder')}
+                    sx={nativeInputSx}
+                  />
+                </FieldBox>
+
+                {/* Password */}
+                <FieldBox label={t('password')} icon={<LockOutlinedIcon sx={{ fontSize: 18 }} />} error={errors.password}>
+                  <Box
+                    component="input"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="••••••••"
+                    {...register('password', { onChange: (e) => setPasswordVal(e.target.value) })}
+                    sx={nativeInputSx}
+                  />
+                  <IconButton size="small" onClick={() => setShowPassword(!showPassword)} sx={{ color: 'text.secondary', p: 0.5 }}>
+                    {showPassword ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}
+                  </IconButton>
+                </FieldBox>
+
+                {/* Password strength indicator */}
+                {passwordVal && (
+                  <Box sx={{ mb: 2.25, mt: -1.5 }}>
+                    <LinearProgress
+                      variant="determinate"
+                      value={(strength / 5) * 100}
+                      sx={{
+                        height: 3,
+                        borderRadius: 2,
+                        backgroundColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
+                        '& .MuiLinearProgress-bar': {
+                          backgroundColor: strengthColors[strength],
+                          borderRadius: 2,
+                          transition: 'background-color 0.3s, width 0.3s',
+                        },
+                      }}
+                    />
+                    <Typography variant="caption" sx={{ color: strengthColors[strength], mt: 0.5, display: 'block' }}>
+                      {strengthKeys[strength] ? t(strengthKeys[strength]) : ''}
+                    </Typography>
+                  </Box>
+                )}
+
+                {/* Confirm Password */}
+                <FieldBox label={t('confirmPassword')} icon={<LockOutlinedIcon sx={{ fontSize: 18 }} />} error={errors.confirmPassword}>
+                  <Box
+                    component="input"
+                    type={showConfirm ? 'text' : 'password'}
+                    placeholder="••••••••"
+                    {...register('confirmPassword')}
+                    sx={nativeInputSx}
+                  />
+                  <IconButton size="small" onClick={() => setShowConfirm(!showConfirm)} sx={{ color: 'text.secondary', p: 0.5 }}>
+                    {showConfirm ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}
+                  </IconButton>
+                </FieldBox>
+
+                {/* Submit */}
+                <Button
+                  type="submit"
+                  variant="contained"
+                  loading={isLoading}
+                  fullWidth
+                  sx={{
+                    py: 1.5,
+                    mt: 0.5,
+                    fontSize: '0.98rem',
+                    borderRadius: '12px',
+                    background: 'linear-gradient(135deg, #7C3AED 0%, #C026D3 55%, #F472B6 100%)',
+                    backgroundSize: '160% 160%',
+                    boxShadow: isDark
+                      ? '0 8px 24px rgba(192,38,211,0.38)'
+                      : '0 8px 24px rgba(139,92,246,0.3)',
+                    border: '1px solid rgba(255,255,255,0.15)',
+                    '&:hover': {
+                      boxShadow: isDark
+                        ? '0 12px 32px rgba(192,38,211,0.52)'
+                        : '0 12px 32px rgba(139,92,246,0.4)',
+                      backgroundPosition: '100% 0%',
+                      transform: 'perspective(600px) rotateX(6deg) translateY(-2px)',
+                    },
+                    transition: 'all 0.28s ease',
+                  }}
+                >
+                  {t('createAccount')}
+                </Button>
+
+                <Divider sx={{ my: 3, borderColor: 'divider' }} />
+
+                <Typography variant="body2" align="center" sx={{ color: 'text.secondary' }}>
+                  {t('alreadyHaveAccount')}{' '}
+                  <Link
+                    component={RouterLink}
+                    to="/login"
+                    sx={{ color: 'primary.main', fontWeight: 600, textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
+                  >
+                    {t('signIn')}
+                  </Link>
+                </Typography>
+              </Box>
+            </GlassCard>
+          </StaggerItem>
+
+        </StaggerContainer>
       </Box>
     </Box>
   );

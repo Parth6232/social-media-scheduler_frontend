@@ -1,19 +1,20 @@
-import { Card, CardContent, Box, Typography, Skeleton } from '@mui/material';
+import { CardContent, Box, Typography, Skeleton } from '@mui/material';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import GlassCard from './components/motion/GlassCard';
+import Counter from './components/motion/Counter';
 
 const CommonKpiCard = ({ label, value, icon, color = '#7C3AED', isLoading = false, subtitle, onClick, isActive = false }) => {
   return (
-    <Card
+    <GlassCard
       onClick={onClick}
+      hoverEffect={!!onClick}
       sx={{
         borderRadius: 3,
         border: isActive ? `2px solid ${color}` : `1px solid ${color}30`,
         position: 'relative',
         overflow: 'hidden',
         cursor: onClick ? 'pointer' : 'default',
-        transition: 'transform 0.2s, box-shadow 0.2s, border-color 0.2s',
-        boxShadow: isActive ? `0 0 0 3px ${color}25` : 'none',
-        '&:hover': onClick ? { transform: 'translateY(-2px)', boxShadow: `0 8px 30px ${color}20` } : {},
+        boxShadow: isActive ? `0 0 0 3px ${color}25` : undefined,
         '&::before': {
           content: '""',
           position: 'absolute', top: 0, left: 0, right: 0, height: 3,
@@ -35,7 +36,7 @@ const CommonKpiCard = ({ label, value, icon, color = '#7C3AED', isLoading = fals
                   {label}
                 </Typography>
                 <Typography variant="h4" fontWeight={800} sx={{ color: 'text.primary', lineHeight: 1.2, mt: 0.5 }}>
-                  {value ?? '—'}
+                  {value != null ? <Counter value={value} /> : '—'}
                 </Typography>
                 {subtitle && (
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.5 }}>
@@ -57,7 +58,7 @@ const CommonKpiCard = ({ label, value, icon, color = '#7C3AED', isLoading = fals
           </Box>
         </Box>
       </CardContent>
-    </Card>
+    </GlassCard>
   );
 };
 

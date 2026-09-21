@@ -59,7 +59,7 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
   const drawerContent = (
     <Box 
       component={motion.div}
-      initial={{ x: -100, rotateY: -45, opacity: 0 }}
+      initial={false}
       animate={{ x: 0, rotateY: 0, opacity: 1 }}
       transition={{ duration: 0.6, type: 'spring', bounce: 0.3 }}
       style={{ transformOrigin: 'left', perspective: 1200 }}
@@ -103,7 +103,7 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
         </Typography>
       </LogoBox>
 
-      <StaggerContainer sx={{ flexGrow: 1, pt: 2 }}>
+      <StaggerContainer initial={false} sx={{ flexGrow: 1, pt: 2 }}>
         <List disablePadding>
         {navItems.map((item) => {
           const isActive = item.path === '/' 

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Icosahedron, Octahedron, Float, Environment } from '@react-three/drei';
+import { Icosahedron, Octahedron, Float } from '@react-three/drei';
 
 /** Wraps all shapes in a slow, continuous auto-rotation so the whole
  *  ambient scene feels alive even before the user moves the mouse. */
@@ -93,9 +93,15 @@ const useIsSmallScreen = (breakpoint = 768) => {
 const AmbientBackground = ({ variant = 'full', fixed = false }) => {
   const isSmallScreen = useIsSmallScreen();
   const isSubtle = variant === 'subtle';
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setReady(true), 800);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Skip WebGL entirely on small screens — keeps mobile smooth and battery-friendly.
-  if (isSmallScreen) return null;
+  if (isSmallScreen || !ready) return null;
 
   return (
     <div
@@ -113,7 +119,7 @@ const AmbientBackground = ({ variant = 'full', fixed = false }) => {
       }}
     >
       <Canvas camera={{ position: [0, 0, 10], fov: 45 }} dpr={[1, 1.5]}>
-        <ambientLight intensity={0.6} />
+        <ambientLight intensity={1.2} />
         <directionalLight position={[10, 10, 5]} intensity={1} />
         <directionalLight position={[-10, -10, -5]} intensity={0.5} color="#7C3AED" />
 
@@ -132,7 +138,6 @@ const AmbientBackground = ({ variant = 'full', fixed = false }) => {
           )}
         </SlowSpin>
 
-        <Environment preset="city" />
       </Canvas>
     </div>
   );

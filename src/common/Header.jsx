@@ -58,8 +58,8 @@ const Header = ({ handleDrawerToggle }) => {
   return (
     <Box 
       component={motion.div}
-      initial={{ y: -70, rotateX: 90 }}
-      animate={{ y: 0, rotateX: 0 }}
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, type: 'spring', bounce: 0.4 }}
       style={{ transformOrigin: 'top', perspective: 1000 }}
       sx={{

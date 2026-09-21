@@ -90,7 +90,6 @@ const LoginContainer = () => {
       localStore.setToken(result.token);
       dispatch(setCredentials({ user: result.user, token: result.token }));
       dispatch(showToast({ message: 'Welcome back! 🎉', variant: 'success' }));
-      navigate('/dashboard');
     } catch {
       // Errors (wrong password, network, etc.) handled by apiSliceInterceptor
     }
@@ -116,7 +115,6 @@ const LoginContainer = () => {
       localStore.setToken(result.token);
       dispatch(setCredentials({ user: result.user, token: result.token }));
       dispatch(showToast({ message: '✅ Device verified! Welcome back!', variant: 'success' }));
-      navigate('/dashboard');
     } catch (err) {
       // Show inline error in addition to the interceptor toast
       const msg = err?.data?.message || 'OTP verification failed. Please try again.';

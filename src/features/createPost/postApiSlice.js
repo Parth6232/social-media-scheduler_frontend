@@ -32,6 +32,11 @@ const postApi = createApi({
       query: ({ postId, platform }) => ({ url: `/posts/${postId}/targets/${platform}`, method: 'DELETE' }),
       invalidatesTags: ['POSTS'],
     }),
+    // NEW: best time to post
+    getBestTime: qb.query({
+      query: (platform) => ({ url: platform ? `/posts/best-time?platform=${platform}` : '/posts/best-time' }),
+      providesTags: ['POSTS'],
+    }),
   }),
 });
 
@@ -44,4 +49,6 @@ export const postApiAction = {
   getPlatformSummary: postApi.useGetPlatformSummaryQuery,
   refreshPostStats: postApi.useRefreshPostStatsMutation,
   deletePostTarget: postApi.useDeletePostTargetMutation,
+  // NEW: best time to post
+  getBestTime: postApi.useGetBestTimeQuery,
 };

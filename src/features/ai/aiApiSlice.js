@@ -19,6 +19,22 @@ const aiApi = createApi({
         body: data,
       }),
     }),
+    // NEW: multi-platform content generation
+    generatePlatformContent: qb.mutation({
+      query: (data) => ({
+        url: '/ai/generate-platform-content',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    // NEW: voice command parsing
+    parseCommand: qb.mutation({
+      query: (data) => ({
+        url: '/ai/parse-command',
+        method: 'POST',
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -28,4 +44,8 @@ export const aiApiAction = {
   reducerPath: aiApi.reducerPath,
   generateCaption: aiApi.useGenerateCaptionMutation,
   generateImage: aiApi.useGenerateImageMutation,
+  // NEW: multi-platform content generation
+  generatePlatformContent: aiApi.useGeneratePlatformContentMutation,
+  // NEW: voice command parsing
+  parseCommand: aiApi.useParseCommandMutation,
 };

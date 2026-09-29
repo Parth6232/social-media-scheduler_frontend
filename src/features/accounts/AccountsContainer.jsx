@@ -4,6 +4,8 @@ import { accountsApiAction } from './accountsApiSlice';
 import PlatformCard from './component/PlatformCard';
 import { useTranslation } from '../../i18n/useTranslation';
 import AnimatedSection from '../../common/components/motion/AnimatedSection';
+// NEW: email notification settings
+import NotificationSettingsCard from './component/NotificationSettingsCard';
 
 const PLATFORMS = ['youtube', 'facebook', 'instagram', 'linkedin', 'twitter', 'whatsapp'];
 
@@ -52,6 +54,11 @@ const AccountsContainer = () => {
           {t('connectedAccountsSubtitle')}
         </Typography>
       </Box>
+
+      {/* NEW: Email notification settings card — between header and stats banner */}
+      <AnimatedSection delay={0.05} sx={{ mb: 1 }}>
+        <NotificationSettingsCard />
+      </AnimatedSection>
 
       {/* Stats banner */}
       {!isLoading && accounts && (

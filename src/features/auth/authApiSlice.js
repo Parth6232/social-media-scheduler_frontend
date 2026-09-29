@@ -1,9 +1,11 @@
-﻿import { createApi } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
 import { apiSliceInterceptor } from '../../store/redux/apiSliceInterceptor';
 
 const authApi = createApi({
   reducerPath: 'authApi',
   baseQuery: apiSliceInterceptor.baseQueryWithInterceptor,
+  // NEW: notification settings tag
+  tagTypes: ['NOTIF'],
   endpoints: (qb) => ({
     login: qb.mutation({
       query: (credentials) => ({
@@ -41,6 +43,15 @@ const authApi = createApi({
         body: data,
       }),
     }),
+    // NEW: email notification settings
+    getNotificationSettings: qb.query({
+      query: () => ({ url: '/auth/notification-settings' }),
+      providesTags: ['NOTIF'],
+    }),
+    updateNotificationSettings: qb.mutation({
+      query: (data) => ({ url: '/auth/notification-settings', method: 'PUT', body: data }),
+      invalidatesTags: ['NOTIF'],
+    }),
   }),
 });
 
@@ -53,4 +64,7 @@ export const authApiAction = {
   verifyDeviceOtp: authApi.useVerifyDeviceOtpMutation,
   forgotPassword: authApi.useForgotPasswordMutation,
   resetPassword: authApi.useResetPasswordMutation,
+  // NEW: notification settings
+  getNotificationSettings: authApi.useGetNotificationSettingsQuery,
+  updateNotificationSettings: authApi.useUpdateNotificationSettingsMutation,
 };

@@ -37,6 +37,12 @@ import Loader from '../../common/Loader';
 import GlassCard from '../../common/components/motion/GlassCard';
 import AnimatedSection from '../../common/components/motion/AnimatedSection';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
+// NEW: best time to post
+import BestTimeSuggestions from './components/BestTimeSuggestions';
+// NEW: multi-platform adapt composer
+import PlatformAdaptComposer from './components/PlatformAdaptComposer';
+// NEW: voice command
+import VoiceCommandButton from './components/VoiceCommandButton';
 
 const PLATFORM_ICONS = {
   youtube: <YouTubeIcon sx={{ fontSize: 18 }} />,
@@ -136,6 +142,8 @@ const CreatePostContainer = () => {
   const [aiOptions, setAiOptions] = useState({ caption: true, hashtags: true, image: false });
   const [generateCaption, { isLoading: isGeneratingCaption }] = aiApiAction.generateCaption();
   const [generateImage, { isLoading: isGeneratingImage }] = aiApiAction.generateImage();
+  // NEW: AI composer mode toggle
+  const [aiMode, setAiMode] = useState('quick'); // 'quick' | 'adapt'
 
   // ─── Derived rule values ───────────────────────────────────────────
   const rule = postType ? POST_RULES[postType] : null;
@@ -456,7 +464,24 @@ const CreatePostContainer = () => {
 
   // ─── Render ────────────────────────────────────────────────────────
   if (step === 'chooseType') {
-    return <PostTypeSelector onSelectType={handleSelectType} />;
+    return (
+      <AnimatedSection direction="none" sx={{ width: '100%' }}>
+        {/* NEW: voice command button available on choose-type step too */}
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+          <VoiceCommandButton
+            step={step}
+            connectedPlatforms={connectedPlatforms}
+            handleSelectType={handleSelectType}
+            setAiTopic={setAiTopic}
+            setSelectedPlatforms={setSelectedPlatforms}
+            setScheduleEnabled={setScheduleEnabled}
+            setScheduledAt={setScheduledAt}
+            handleGenerateAI={handleGenerateAI}
+          />
+        </Box>
+        <PostTypeSelector onSelectType={handleSelectType} />
+      </AnimatedSection>
+    );
   }
 
   // ── Step 2: Compose ─────────────────────────────────────────────────
@@ -509,6 +534,20 @@ const CreatePostContainer = () => {
             {t('createPostSubtitle')}
           </Typography>
         </Box>
+
+        {/* NEW: voice command mic button in compose header */}
+        <Box sx={{ ml: 'auto', flexShrink: 0 }}>
+          <VoiceCommandButton
+            step={step}
+            connectedPlatforms={connectedPlatforms}
+            handleSelectType={handleSelectType}
+            setAiTopic={setAiTopic}
+            setSelectedPlatforms={setSelectedPlatforms}
+            setScheduleEnabled={setScheduleEnabled}
+            setScheduledAt={setScheduledAt}
+            handleGenerateAI={handleGenerateAI}
+          />
+        </Box>
       </Box>
 
       <Grid container spacing={3}>
@@ -522,59 +561,103 @@ const CreatePostContainer = () => {
                 <AutoAwesomeIcon sx={{ color: '#A78BFA' }} />
                 <Typography variant="subtitle2" fontWeight={600}>{t('aiContentGenerator')}</Typography>
               </Box>
-              <TextField
-                fullWidth
-                size="small"
-                placeholder={t('aiTopicPlaceholder')}
-                value={aiTopic}
-                onChange={(e) => setAiTopic(e.target.value)}
-                sx={{ mb: 1.5, '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
-              />
-              <FormGroup row sx={{ mb: 1.5, gap: 1 }}>
-                {['caption', 'hashtags', 'image'].map((opt) => {
-                  // Hide the image AI checkbox when mediaType is none or video
-                  if (opt === 'image' && !showAiImageOption) return null;
-                  return (
-                    <FormControlLabel
-                      key={opt}
-                      control={
-                        <Checkbox
-                          checked={aiOptions[opt]}
-                          onChange={(e) =>
-                            setAiOptions((prev) => ({ ...prev, [opt]: e.target.checked }))
+
+              {/* NEW: mode toggle quick/adapt */}
+              <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
+                {['quick', 'adapt'].map((mode) => (
+                  <Box
+                    key={mode}
+                    component="button"
+                    onClick={() => setAiMode(mode)}
+                    aria-pressed={aiMode === mode}
+                    sx={{
+                      px: 2, py: 0.7, borderRadius: 2, border: '1px solid',
+                      borderColor: aiMode === mode ? '#A78BFA' : 'divider',
+                      background: aiMode === mode
+                        ? 'linear-gradient(135deg, rgba(124,58,237,0.15) 0%, rgba(217,70,239,0.1) 100%)'
+                        : 'transparent',
+                      color: aiMode === mode ? '#A78BFA' : 'text.secondary',
+                      fontWeight: 600, fontSize: '0.75rem', cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      '&:hover': {
+                        borderColor: '#A78BFA',
+                        color: '#A78BFA',
+                        background: 'rgba(167,139,250,0.08)',
+                      },
+                    }}
+                  >
+                    {mode === 'quick' ? t('adapt_quickGenerate') : t('adapt_adaptPerPlatform')}
+                  </Box>
+                ))}
+              </Box>
+
+              {/* NEW: quick mode = existing UI */}
+              {aiMode === 'quick' && (
+                <>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    placeholder={t('aiTopicPlaceholder')}
+                    value={aiTopic}
+                    onChange={(e) => setAiTopic(e.target.value)}
+                    sx={{ mb: 1.5, '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                  />
+                  <FormGroup row sx={{ mb: 1.5, gap: 1 }}>
+                    {['caption', 'hashtags', 'image'].map((opt) => {
+                      // Hide the image AI checkbox when mediaType is none or video
+                      if (opt === 'image' && !showAiImageOption) return null;
+                      return (
+                        <FormControlLabel
+                          key={opt}
+                          control={
+                            <Checkbox
+                              checked={aiOptions[opt]}
+                              onChange={(e) =>
+                                setAiOptions((prev) => ({ ...prev, [opt]: e.target.checked }))
+                              }
+                              size="small"
+                              sx={{ color: '#A78BFA', '&.Mui-checked': { color: '#A78BFA' } }}
+                            />
                           }
-                          size="small"
-                          sx={{ color: '#A78BFA', '&.Mui-checked': { color: '#A78BFA' } }}
+                          label={<Typography variant="caption">{t(opt)}</Typography>}
                         />
-                      }
-                      label={<Typography variant="caption">{t(opt)}</Typography>}
+                      );
+                    })}
+                  </FormGroup>
+                  {(isGeneratingCaption || isGeneratingImage) && (
+                    <LinearProgress
+                      sx={{
+                        mb: 1,
+                        borderRadius: 1,
+                        backgroundColor: (theme) =>
+                          theme.palette.mode === 'dark' ? 'rgba(167,139,250,0.2)' : 'rgba(124,58,237,0.1)',
+                        '& .MuiLinearProgress-bar': { backgroundColor: '#A78BFA' },
+                      }}
                     />
-                  );
-                })}
-              </FormGroup>
-              {(isGeneratingCaption || isGeneratingImage) && (
-                <LinearProgress
-                  sx={{
-                    mb: 1,
-                    borderRadius: 1,
-                    backgroundColor: (theme) =>
-                      theme.palette.mode === 'dark' ? 'rgba(167,139,250,0.2)' : 'rgba(124,58,237,0.1)',
-                    '& .MuiLinearProgress-bar': { backgroundColor: '#A78BFA' },
-                  }}
+                  )}
+                  <Button
+                    variant="outlined"
+                    onClick={handleGenerateAI}
+                    loading={isGeneratingCaption || isGeneratingImage}
+                    sx={{
+                      borderColor: '#A78BFA40',
+                      color: '#A78BFA',
+                      '&:hover': { borderColor: '#A78BFA', backgroundColor: '#A78BFA10' },
+                    }}
+                  >
+                    {t('generateWithAi')}
+                  </Button>
+                </>
+              )}
+
+              {/* NEW: adapt per platform mode */}
+              {aiMode === 'adapt' && (
+                <PlatformAdaptComposer
+                  selectedPlatforms={selectedPlatforms}
+                  setContent={setContent}
+                  aiTopic={aiTopic}
                 />
               )}
-              <Button
-                variant="outlined"
-                onClick={handleGenerateAI}
-                loading={isGeneratingCaption || isGeneratingImage}
-                sx={{
-                  borderColor: '#A78BFA40',
-                  color: '#A78BFA',
-                  '&:hover': { borderColor: '#A78BFA', backgroundColor: '#A78BFA10' },
-                }}
-              >
-                {t('generateWithAi')}
-              </Button>
             </CardContent>
           </GlassCard>
 
@@ -1220,6 +1303,14 @@ const CreatePostContainer = () => {
                   />
                 </LocalizationProvider>
               )}
+
+              {/* NEW: best time suggestions always visible */}
+              <BestTimeSuggestions
+                selectedPlatforms={selectedPlatforms}
+                scheduledAt={scheduledAt}
+                setScheduleEnabled={setScheduleEnabled}
+                setScheduledAt={setScheduledAt}
+              />
             </CardContent>
           </GlassCard>
 

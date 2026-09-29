@@ -29,6 +29,7 @@ import VoiceCommandDialog from './VoiceCommandDialog';
  */
 const VoiceCommandButton = ({
   step,
+  postType: currentPostType,
   connectedPlatforms,
   handleSelectType,
   setAiTopic,
@@ -65,7 +66,7 @@ const VoiceCommandButton = ({
           setScheduleEnabled(false);
         }
         if (vals.autoFillAI && vals.topic) {
-          handleGenerateAI && handleGenerateAI(vals.topic);
+          handleGenerateAI && handleGenerateAI({ topic: vals.topic, platforms: vals.platforms });
         }
       }, 50);
     }
@@ -74,13 +75,13 @@ const VoiceCommandButton = ({
   const handleConfirm = ({ topic, platforms, postType, scheduledAt, autoFillAI }) => {
     const validPlatforms = platforms.filter((p) => connectedPlatforms.includes(p));
 
-    if (step === 'chooseType') {
+    if (step === 'chooseType' || (step === 'compose' && postType !== currentPostType)) {
       // handleSelectType resets the form — schedule pending values
       pendingValuesRef.current = { topic, platforms: validPlatforms, scheduledAt, autoFillAI };
       setWaitingForCompose(true);
       handleSelectType(postType);
     } else {
-      // Already in compose: check if postType differs
+      // Already in compose with same postType
       setAiTopic(topic);
       setSelectedPlatforms(validPlatforms);
       if (scheduledAt) {
@@ -90,7 +91,7 @@ const VoiceCommandButton = ({
         setScheduleEnabled(false);
       }
       if (autoFillAI && topic) {
-        handleGenerateAI && handleGenerateAI(topic);
+        handleGenerateAI && handleGenerateAI({ topic, platforms: validPlatforms });
       }
     }
   };

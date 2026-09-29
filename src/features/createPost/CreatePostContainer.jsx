@@ -284,8 +284,11 @@ const CreatePostContainer = () => {
   });
 
   // ─── AI Handler ────────────────────────────────────────────────────
-  const handleGenerateAI = async () => {
-    if (!aiTopic.trim()) {
+  const handleGenerateAI = async (override) => {
+    const topic = typeof override?.topic === 'string' ? override.topic : aiTopic;
+    const platforms = Array.isArray(override?.platforms) ? override.platforms : selectedPlatforms;
+
+    if (!topic.trim()) {
       dispatch(showToast({ message: 'Please enter a topic or idea for AI.', variant: 'warning' }));
       return;
     }
@@ -296,8 +299,8 @@ const CreatePostContainer = () => {
     try {
       if (aiOptions.caption || aiOptions.hashtags) {
         const res = await generateCaption({
-          topic: aiTopic,
-          platforms: selectedPlatforms,
+          topic,
+          platforms,
           includeCaption: aiOptions.caption,
           includeHashtags: aiOptions.hashtags,
         }).unwrap();
@@ -318,7 +321,7 @@ const CreatePostContainer = () => {
       }
 
       if (aiOptions.image) {
-        const res = await generateImage({ topic: aiTopic }).unwrap();
+        const res = await generateImage({ topic }).unwrap();
         if (res.image) {
           const fetchRes = await fetch(res.image);
           const blob = await fetchRes.blob();
@@ -470,6 +473,7 @@ const CreatePostContainer = () => {
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
           <VoiceCommandButton
             step={step}
+            postType={postType}
             connectedPlatforms={connectedPlatforms}
             handleSelectType={handleSelectType}
             setAiTopic={setAiTopic}
@@ -539,6 +543,7 @@ const CreatePostContainer = () => {
         <Box sx={{ ml: 'auto', flexShrink: 0 }}>
           <VoiceCommandButton
             step={step}
+            postType={postType}
             connectedPlatforms={connectedPlatforms}
             handleSelectType={handleSelectType}
             setAiTopic={setAiTopic}

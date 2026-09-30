@@ -8,6 +8,8 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutlined';
 import { analyticsApiAction } from './analyticsApiSlice';
 import { getMockAnalytics } from './mockAnalytics';
 import { downloadAnalyticsCsv } from './utils/exportCsv';
+import { downloadAnalyticsPdf } from './utils/exportPdf';
+import { downloadAnalyticsWord } from './utils/exportWord';
 import { showToast } from '../../store/redux/slices/toastSlice';
 import { useTranslation } from '../../i18n/useTranslation';
 import AnimatedSection from '../../common/components/motion/AnimatedSection';
@@ -95,17 +97,33 @@ const AnalyticsContainer = () => {
     }
   };
 
-  // Handle CSV Export
-  const handleExport = async () => {
+  // Handle Report Export (PDF, Word, CSV)
+  const handleExport = async (format = 'pdf') => {
     setIsExporting(true);
     try {
-      await downloadAnalyticsCsv({
-        range,
-        platform: platform === 'all' ? undefined : platform,
-      });
-      dispatch(showToast({ message: t('analytics_exportSuccess'), variant: 'success' }));
+      if (format === 'pdf') {
+        await downloadAnalyticsPdf({
+          data,
+          range,
+          platform,
+        });
+        dispatch(showToast({ message: t('analytics_exportSuccessPdf'), variant: 'success' }));
+      } else if (format === 'word') {
+        await downloadAnalyticsWord({
+          data,
+          range,
+          platform,
+        });
+        dispatch(showToast({ message: t('analytics_exportSuccessWord'), variant: 'success' }));
+      } else if (format === 'csv') {
+        await downloadAnalyticsCsv({
+          range,
+          platform: platform === 'all' ? undefined : platform,
+        });
+        dispatch(showToast({ message: t('analytics_exportSuccess'), variant: 'success' }));
+      }
     } catch (err) {
-      dispatch(showToast({ message: err?.message || 'Failed to export CSV', variant: 'error' }));
+      dispatch(showToast({ message: err?.message || 'Failed to export report', variant: 'error' }));
     } finally {
       setIsExporting(false);
     }

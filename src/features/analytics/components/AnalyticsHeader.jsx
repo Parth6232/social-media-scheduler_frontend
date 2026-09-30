@@ -5,6 +5,9 @@ import {
   Typography,
   Select,
   MenuItem,
+  Menu,
+  ListItemIcon,
+  ListItemText,
   Tooltip,
   IconButton,
   CircularProgress,
@@ -13,6 +16,10 @@ import {
 import { motion } from 'framer-motion';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import DescriptionIcon from '@mui/icons-material/Description';
+import TableChartIcon from '@mui/icons-material/TableChart';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import InstagramIcon from '@mui/icons-material/Instagram';
@@ -57,6 +64,23 @@ const AnalyticsHeader = ({
 
   // Cooldown countdown
   const [secondsLeft, setSecondsLeft] = useState(cooldownSeconds);
+  const [exportAnchorEl, setExportAnchorEl] = useState(null);
+  const isExportMenuOpen = Boolean(exportAnchorEl);
+
+  const handleOpenExportMenu = (event) => {
+    setExportAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseExportMenu = () => {
+    setExportAnchorEl(null);
+  };
+
+  const handleSelectExport = (format) => {
+    handleCloseExportMenu();
+    if (onExport) {
+      onExport(format);
+    }
+  };
 
   useEffect(() => {
     setSecondsLeft(cooldownSeconds);
@@ -163,14 +187,18 @@ const AnalyticsHeader = ({
             </span>
           </Box>
 
-          {/* Export CSV Button */}
+          {/* Export Report Dropdown Menu */}
           <Box
             component={motion.button}
             whileHover={isExporting ? {} : { scale: 1.02 }}
             whileTap={isExporting ? {} : { scale: 0.98 }}
-            onClick={isExporting ? undefined : onExport}
+            onClick={isExporting ? undefined : handleOpenExportMenu}
             disabled={isExporting}
-            aria-label={t('analytics_exportCsv')}
+            aria-label={t('analytics_exportReport')}
+            id="analytics-export-button"
+            aria-controls={isExportMenuOpen ? 'analytics-export-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={isExportMenuOpen ? 'true' : undefined}
             sx={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -196,8 +224,109 @@ const AnalyticsHeader = ({
             ) : (
               <FileDownloadIcon sx={{ fontSize: 18 }} />
             )}
-            <span>{isExporting ? t('analytics_exporting') : t('analytics_exportCsv')}</span>
+            <span>{isExporting ? t('analytics_exporting') : t('analytics_exportReport')}</span>
+            <KeyboardArrowDownIcon sx={{ fontSize: 18, ml: -0.3 }} />
           </Box>
+
+          <Menu
+            id="analytics-export-menu"
+            anchorEl={exportAnchorEl}
+            open={isExportMenuOpen}
+            onClose={handleCloseExportMenu}
+            MenuListProps={{
+              'aria-labelledby': 'analytics-export-button',
+            }}
+            slotProps={{
+              paper: {
+                elevation: 4,
+                sx: {
+                  borderRadius: 3,
+                  minWidth: 220,
+                  p: 0.5,
+                  backdropFilter: 'blur(16px)',
+                  bgcolor: isDark ? 'rgba(15, 23, 42, 0.92)' : 'rgba(255, 255, 255, 0.95)',
+                  border: isDark ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.08)',
+                  boxShadow: isDark
+                    ? '0 10px 30px rgba(0, 0, 0, 0.5)'
+                    : '0 10px 30px rgba(124, 58, 237, 0.15)',
+                },
+              },
+            }}
+            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+          >
+            {/* PDF Option */}
+            <MenuItem
+              onClick={() => handleSelectExport('pdf')}
+              sx={{
+                borderRadius: 2,
+                py: 1.2,
+                px: 1.5,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1.5,
+                '&:hover': {
+                  bgcolor: isDark ? 'rgba(239, 68, 68, 0.12)' : 'rgba(239, 68, 68, 0.08)',
+                },
+              }}
+            >
+              <ListItemIcon sx={{ minWidth: 'auto', color: '#EF4444' }}>
+                <PictureAsPdfIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText
+                primary={t('analytics_exportPdf')}
+                primaryTypographyProps={{ fontSize: '0.875rem', fontWeight: 600 }}
+              />
+            </MenuItem>
+
+            {/* Word (.docx) Option */}
+            <MenuItem
+              onClick={() => handleSelectExport('word')}
+              sx={{
+                borderRadius: 2,
+                py: 1.2,
+                px: 1.5,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1.5,
+                '&:hover': {
+                  bgcolor: isDark ? 'rgba(59, 130, 246, 0.12)' : 'rgba(59, 130, 246, 0.08)',
+                },
+              }}
+            >
+              <ListItemIcon sx={{ minWidth: 'auto', color: '#3B82F6' }}>
+                <DescriptionIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText
+                primary={t('analytics_exportWord')}
+                primaryTypographyProps={{ fontSize: '0.875rem', fontWeight: 600 }}
+              />
+            </MenuItem>
+
+            {/* CSV Option */}
+            <MenuItem
+              onClick={() => handleSelectExport('csv')}
+              sx={{
+                borderRadius: 2,
+                py: 1.2,
+                px: 1.5,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1.5,
+                '&:hover': {
+                  bgcolor: isDark ? 'rgba(16, 185, 129, 0.12)' : 'rgba(16, 185, 129, 0.08)',
+                },
+              }}
+            >
+              <ListItemIcon sx={{ minWidth: 'auto', color: '#10B981' }}>
+                <TableChartIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText
+                primary={t('analytics_exportCsv')}
+                primaryTypographyProps={{ fontSize: '0.875rem', fontWeight: 500, color: 'text.secondary' }}
+              />
+            </MenuItem>
+          </Menu>
         </Box>
       </Box>
 

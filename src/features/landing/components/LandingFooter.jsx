@@ -42,36 +42,40 @@ const LandingFooter = () => {
       }}
     >
       <Container maxWidth="lg">
-        <Grid container spacing={6} justifyContent="space-between">
-          <Grid item xs={12} md={5}>
+        <Grid container spacing={6} sx={{ justifyContent: 'space-between' }}>
+          <Grid size={{ xs: 12, md: 5 }}>
             <Box component="img" src={logoFull} alt="PostPilot logo" sx={{ height: 36, mb: 3 }} />
             <Typography variant="body1" sx={{ color: 'text.secondary', maxWidth: 320, lineHeight: 1.6, mb: 4 }}>
               Intelligent, modern, reliable social media automation for creators and forward-thinking teams.
             </Typography>
             <Stack direction="row" spacing={1.5}>
               {[XIcon, InstagramIcon, LinkedInIcon].map((Icon, i) => (
-                <IconButton
+                <Box
                   key={i}
-                  component={motion.button}
-                  whileHover={{ scale: 1.15, y: -4, color: theme.palette.primary.main }}
+                  component={motion.div}
+                  whileHover={{ scale: 1.15, y: -4 }}
                   whileTap={{ scale: 0.95 }}
-                  sx={{ 
-                    color: 'text.secondary',
-                    bgcolor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)',
-                    transition: 'background-color 0.2s',
-                    '&:hover': { bgcolor: isDark ? 'rgba(124, 58, 237, 0.1)' : 'rgba(124, 58, 237, 0.1)' }
-                  }}
                 >
-                  <Icon fontSize="small" />
-                </IconButton>
+                  <IconButton
+                    aria-label="Social link"
+                    sx={{ 
+                      color: 'text.secondary',
+                      bgcolor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)',
+                      transition: 'background-color 0.2s',
+                      '&:hover': { bgcolor: isDark ? 'rgba(124, 58, 237, 0.1)' : 'rgba(124, 58, 237, 0.1)', color: theme.palette.primary.main }
+                    }}
+                  >
+                    <Icon fontSize="small" />
+                  </IconButton>
+                </Box>
               ))}
             </Stack>
           </Grid>
 
-          <Grid item xs={12} md={5}>
-            <Grid container spacing={4} justifyContent="flex-end">
+          <Grid size={{ xs: 12, md: 5 }}>
+            <Grid container spacing={4} sx={{ justifyContent: 'flex-end' }}>
               {COLUMNS.map((col) => (
-                <Grid item xs={6} sm={5} key={col.title}>
+                <Grid size={{ xs: 6, sm: 5 }} key={col.title}>
                   <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 3, color: 'text.primary' }}>
                     {col.title}
                   </Typography>
@@ -82,22 +86,26 @@ const LandingFooter = () => {
                         : { component: RouterLink, to: link.path };
                       
                       return (
-                        <Link
+                        <Box
                           key={link.label}
-                          component={link.isHash ? motion.a : motion(RouterLink)}
-                          whileHover={{ x: 6, color: theme.palette.primary.main }}
-                          underline="none"
-                          variant="body2"
-                          sx={{ 
-                            color: 'text.secondary', 
-                            cursor: 'pointer',
-                            display: 'inline-block',
-                            width: 'fit-content'
-                          }}
-                          {...linkProps}
+                          component={motion.div}
+                          whileHover={{ x: 6 }}
+                          sx={{ width: 'fit-content' }}
                         >
-                          {link.label}
-                        </Link>
+                          <Link
+                            underline="none"
+                            variant="body2"
+                            sx={{ 
+                              color: 'text.secondary', 
+                              cursor: 'pointer',
+                              display: 'inline-block',
+                              '&:hover': { color: theme.palette.primary.main }
+                            }}
+                            {...linkProps}
+                          >
+                            {link.label}
+                          </Link>
+                        </Box>
                       );
                     })}
                   </Stack>

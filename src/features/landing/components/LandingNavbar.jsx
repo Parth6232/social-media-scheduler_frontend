@@ -77,7 +77,7 @@ const LandingNavbar = () => {
 
           <Box sx={{ flexGrow: 1, display: { xs: 'block', md: 'none' } }} />
 
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
             <IconButton
               aria-label="Toggle color theme"
               onClick={() => dispatch(toggleThemeMode())}
@@ -86,21 +86,20 @@ const LandingNavbar = () => {
               {isDark ? <LightModeIcon fontSize="small" /> : <DarkModeIcon fontSize="small" />}
             </IconButton>
 
-            <Box sx={{ display: { xs: 'none', sm: 'flex' }, gap: 1 }}>
+            <Box sx={{ display: { xs: 'none', sm: 'flex' }, gap: 1, alignItems: 'center' }}>
               <Button variant="text" onClick={() => navigate(isAuthenticated ? '/dashboard' : '/login')} sx={{ color: 'text.primary', fontWeight: 600 }}>
                 {isAuthenticated ? 'Dashboard' : 'Login'}
               </Button>
-              <Button
-                component={motion.button}
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.97 }}
-                variant="contained"
-                color="primary"
-                onClick={() => navigate(isAuthenticated ? '/dashboard' : '/signup')}
-                sx={{ fontWeight: 700 }}
-              >
-                Get Started
-              </Button>
+              <Box component={motion.div} whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => navigate(isAuthenticated ? '/dashboard' : '/signup')}
+                  sx={{ fontWeight: 700 }}
+                >
+                  Get Started
+                </Button>
+              </Box>
             </Box>
 
             <IconButton sx={{ display: { xs: 'flex', md: 'none' }, color: 'text.primary' }} onClick={() => setDrawerOpen(true)} aria-label="Open menu">

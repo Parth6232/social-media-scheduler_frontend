@@ -15,24 +15,34 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
-const baseQueryWithInterceptor = async (args, api, extraOptions) => {
-  api.dispatch(setGlobalLoading(true));
-  
-  let result = await baseQuery(args, api, extraOptions);
-  
-  api.dispatch(setGlobalLoading(false));
+let activeRequests = 0;
 
-  if (result.error) {
-    if (result.error.status === 401) {
-      api.dispatch(logout());
-      api.dispatch(showToast({ message: 'Session expired. Please log in again.', variant: 'error' }));
-    } else {
-      const errMsg = result.error.data?.message || result.error.error || 'An unexpected error occurred';
-      api.dispatch(showToast({ message: errMsg, variant: 'error' }));
-    }
+const baseQueryWithInterceptor = async (args, api, extraOptions) => {
+  activeRequests++;
+  if (activeRequests === 1) {
+    api.dispatch(setGlobalLoading(true));
   }
 
-  return result;
+  try {
+    let result = await baseQuery(args, api, extraOptions);
+
+    if (result.error) {
+      if (result.error.status === 401) {
+        api.dispatch(logout());
+        api.dispatch(showToast({ message: 'Session expired. Please log in again.', variant: 'error' }));
+      } else {
+        const errMsg = result.error.data?.message || result.error.error || 'An unexpected error occurred';
+        api.dispatch(showToast({ message: errMsg, variant: 'error' }));
+      }
+    }
+
+    return result;
+  } finally {
+    activeRequests = Math.max(0, activeRequests - 1);
+    if (activeRequests === 0) {
+      api.dispatch(setGlobalLoading(false));
+    }
+  }
 };
 
 export const apiSliceInterceptor = {

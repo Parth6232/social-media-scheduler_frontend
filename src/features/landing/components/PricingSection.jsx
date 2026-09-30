@@ -40,7 +40,7 @@ const PricingSection = () => {
   return (
     <Box component="section" id="pricing" sx={{ py: { xs: 8, md: 12 } }}>
       <Container maxWidth="lg">
-        <Stack spacing={2} alignItems="center" textAlign="center" sx={{ mb: 5 }}>
+        <Stack spacing={2} sx={{ alignItems: 'center', textAlign: 'center', mb: 5 }}>
           <Typography variant="overline" sx={{ color: 'secondary.main', fontWeight: 700, letterSpacing: 2 }}>
             Simple pricing
           </Typography>
@@ -48,7 +48,7 @@ const PricingSection = () => {
             Plans that grow with you
           </Typography>
 
-          <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mt: 1 }}>
+          <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mt: 1 }}>
             <Typography variant="body2" sx={{ fontWeight: yearly ? 400 : 700 }}>Monthly</Typography>
             <Switch checked={yearly} onChange={(e) => setYearly(e.target.checked)} color="secondary" />
             <Typography variant="body2" sx={{ fontWeight: yearly ? 700 : 400 }}>Yearly</Typography>
@@ -56,9 +56,9 @@ const PricingSection = () => {
           </Stack>
         </Stack>
 
-        <Grid container spacing={3} alignItems="stretch">
+        <Grid container spacing={3} sx={{ alignItems: 'stretch' }}>
           {PLANS.map((plan, i) => (
-            <Grid item xs={12} md={4} key={plan.name}>
+            <Grid xs={12} md={4} key={plan.name}>
               <Paper
                 component={motion.div}
                 initial={{ opacity: 0, y: 30 }}

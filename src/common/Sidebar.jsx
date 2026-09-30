@@ -5,6 +5,8 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import LinkIcon from '@mui/icons-material/Link';
 import HistoryIcon from '@mui/icons-material/History';
 import HomeIcon from '@mui/icons-material/Home';
+// NEW: Analytics
+import InsightsIcon from '@mui/icons-material/Insights';
 import { styled } from '@mui/material/styles';
 import { motion } from 'framer-motion';
 
@@ -50,6 +52,8 @@ const navItems = [
   { path: '/create', labelKey: 'createPost', icon: <AddCircleIcon /> },
   { path: '/accounts', labelKey: 'accounts', icon: <LinkIcon /> },
   { path: '/posts', labelKey: 'postsHistory', icon: <HistoryIcon /> },
+  // NEW: Analytics
+  { path: '/analytics', labelKey: 'analytics', icon: <InsightsIcon /> },
 ];
 
 const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {

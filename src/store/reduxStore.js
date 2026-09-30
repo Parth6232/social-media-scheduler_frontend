@@ -6,6 +6,8 @@ import { accountsApiAction } from '../features/accounts/accountsApiSlice';
 import { postApiAction } from '../features/createPost/postApiSlice';
 import { aiApiAction } from '../features/ai/aiApiSlice';
 import { mediaApiAction } from '../features/media/mediaApiSlice';
+// NEW: Analytics
+import { analyticsApiAction } from '../features/analytics/analyticsApiSlice';
 
 // Custom storage wrapper for Vite / redux-persist compatibility
 const storage = {
@@ -34,7 +36,8 @@ export const store = configureStore({
     .concat(accountsApiAction.middleware)
     .concat(postApiAction.middleware)
     .concat(aiApiAction.middleware)
-    .concat(mediaApiAction.middleware),
+    .concat(mediaApiAction.middleware)
+    .concat(analyticsApiAction.middleware),
 });
 
 export const persistor = persistStore(store);

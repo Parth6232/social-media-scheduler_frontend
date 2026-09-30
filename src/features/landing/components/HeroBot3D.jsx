@@ -16,8 +16,10 @@ const glossy = (color, extra = {}) => ({
 /** Small glowing data-node that orbits the core, representing a scheduled post / analytics ping. */
 const OrbitNode = ({ radius, speed, offset, color, y = 0, size = 0.14, reduced }) => {
   const ref = useRef(null);
-  useFrame(({ clock }) => {
-    const t = reduced ? offset : clock.getElapsedTime() * speed + offset;
+  const timeRef = useRef(0);
+  useFrame((_, delta) => {
+    timeRef.current += delta;
+    const t = reduced ? offset : timeRef.current * speed + offset;
     if (ref.current) {
       ref.current.position.set(Math.cos(t) * radius, y + Math.sin(t * 1.3) * 0.15, Math.sin(t) * radius);
     }

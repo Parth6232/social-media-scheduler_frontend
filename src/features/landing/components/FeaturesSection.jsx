@@ -52,7 +52,7 @@ const FeatureCard = ({ feature, index }) => {
   const Icon = feature.icon;
 
   return (
-    <Grid item xs={12} sm={6} md={4}>
+    <Grid xs={12} sm={6} md={4}>
       <Paper
         component={motion.div}
         initial={{ opacity: 0, y: 30 }}
@@ -104,7 +104,7 @@ const FeatureCard = ({ feature, index }) => {
 const FeaturesSection = () => (
   <Box component="section" id="features" sx={{ py: { xs: 8, md: 12 } }}>
     <Container maxWidth="lg">
-      <Stack spacing={1.5} alignItems="center" textAlign="center" sx={{ mb: 6 }}>
+      <Stack spacing={1.5} sx={{ alignItems: 'center', textAlign: 'center', mb: 6 }}>
         <Typography variant="overline" sx={{ color: 'secondary.main', fontWeight: 700, letterSpacing: 2 }}>
           Everything you need
         </Typography>

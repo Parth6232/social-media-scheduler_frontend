@@ -26,7 +26,17 @@ const authSlice = createSlice({
     },
     setGlobalLoading: (state, action) => {
       state.isLoading = action.payload;
-    }
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase('persist/REHYDRATE', (state, action) => {
+      // Never allow a stuck global loading state to survive page reload
+      state.isLoading = false;
+      if (action.payload?.auth) {
+        state.isAuthenticated = !!action.payload.auth.isAuthenticated && !!localStore.getToken();
+        state.user = action.payload.auth.user || null;
+      }
+    });
   },
 });
 

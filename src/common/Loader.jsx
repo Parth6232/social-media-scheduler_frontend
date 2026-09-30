@@ -1,8 +1,9 @@
 import { Backdrop, CircularProgress } from '@mui/material';
 import { useSelector } from 'react-redux';
 
-const Loader = ({ fullPage = true, inline = false }) => {
-  const isLoading = useSelector((state) => state.auth.isLoading);
+const Loader = ({ fullPage = true, inline = false, open }) => {
+  const authLoading = useSelector((state) => state.auth?.isLoading);
+  const isVisible = open !== undefined ? open : (fullPage ? authLoading : true);
 
   if (inline) {
     return (
@@ -12,12 +13,12 @@ const Loader = ({ fullPage = true, inline = false }) => {
     );
   }
 
-  if (fullPage && !isLoading) return null;
+  if (fullPage && !isVisible) return null;
 
   return (
     <Backdrop
       sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 999 }}
-      open={fullPage ? isLoading : true}
+      open={Boolean(isVisible)}
     >
       <CircularProgress color="primary" size={60} thickness={4} />
     </Backdrop>

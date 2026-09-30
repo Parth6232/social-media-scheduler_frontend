@@ -28,8 +28,8 @@ const HeroSection = () => {
   return (
     <Box component="section" sx={{ position: 'relative', pt: { xs: 16, md: 20 }, pb: { xs: 10, md: 14 } }}>
       <Container maxWidth="lg">
-        <Grid container spacing={{ xs: 6, md: 4 }} alignItems="center">
-          <Grid item xs={12} md={6}>
+        <Grid container spacing={{ xs: 6, md: 4 }} sx={{ alignItems: 'center' }}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.4 }} custom={0} variants={fadeUp}>
               <Chip
                 icon={<AutoAwesomeIcon sx={{ fontSize: 16 }} />}
@@ -93,7 +93,7 @@ const HeroSection = () => {
             </motion.div>
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <Box
               sx={{
                 position: 'relative',

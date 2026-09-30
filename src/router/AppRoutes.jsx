@@ -11,6 +11,8 @@ import CreatePostPage from '../pages/CreatePostPage';
 import PostsPage from '../pages/PostsPage';
 import ForgotPasswordPage from '../pages/ForgotPasswordPage';
 import PolicyPage from '../pages/PolicyPage';
+// NEW: Analytics
+import AnalyticsPage from '../pages/AnalyticsPage';
 
 const AppRoutes = () => {
   return (
@@ -34,6 +36,8 @@ const AppRoutes = () => {
           <Route path="/create" element={<CreatePostPage />} />
           <Route path="/posts" element={<PostsPage />} />
           <Route path="/posts/:platform" element={<PostsPage />} />
+          {/* NEW: Analytics */}
+          <Route path="/analytics" element={<AnalyticsPage />} />
         </Route>
       </Route>
 

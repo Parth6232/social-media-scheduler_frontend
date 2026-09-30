@@ -25,7 +25,7 @@ const PlatformsSection = () => {
   return (
     <Box component="section" sx={{ py: { xs: 8, md: 12 } }}>
       <Container maxWidth="lg">
-        <Stack spacing={1.5} alignItems="center" textAlign="center" sx={{ mb: 6 }}>
+        <Stack spacing={1.5} sx={{ alignItems: 'center', textAlign: 'center', mb: 6 }}>
           <Typography variant="overline" sx={{ color: 'secondary.main', fontWeight: 700, letterSpacing: 2 }}>
             Everywhere your audience is
           </Typography>
@@ -39,7 +39,7 @@ const PlatformsSection = () => {
             const Icon = ICONS[platform.iconName] || ShareIconFallback;
             const gradient = platform.color?.startsWith('linear-gradient') ? platform.color : `linear-gradient(135deg, ${platform.color}, ${platform.color}99)`;
             return (
-              <Grid item xs={6} sm={4} md={2} key={platform.name}>
+              <Grid size={{ xs: 6, sm: 4, md: 2 }} key={platform.name}>
                 <Paper
                   component={motion.div}
                   initial={{ opacity: 0, y: 24 }}

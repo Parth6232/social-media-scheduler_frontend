@@ -32,7 +32,7 @@ function App() {
       <SnackbarProvider maxSnack={3}>
         <ToastHandler />
         <Loader fullPage />
-        <Suspense fallback={<Loader fullPage />}>
+        <Suspense fallback={<Loader fullPage open={true} />}>
           <AppRoutes />
         </Suspense>
       </SnackbarProvider>

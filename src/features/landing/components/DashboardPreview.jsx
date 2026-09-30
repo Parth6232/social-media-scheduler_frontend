@@ -70,9 +70,9 @@ const DashboardPreview = () => {
             >
               <Grid container spacing={2.5}>
                 {/* Top bar */}
-                <Grid item xs={12}>
-                  <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" gap={1.5}>
-                    <Stack direction="row" spacing={1} alignItems="center">
+                <Grid size={{ xs: 12 }}>
+                  <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1.5 }}>
+                    <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
                       <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: '#22c55e', boxShadow: '0 0 8px #22c55e' }} />
                       <Typography variant="body2" sx={{ fontWeight: 700 }}>
                         Automation active
@@ -87,13 +87,13 @@ const DashboardPreview = () => {
                 </Grid>
 
                 {/* Analytics chart */}
-                <Grid item xs={12} md={7}>
+                <Grid size={{ xs: 12, md: 7 }}>
                   <Paper elevation={0} sx={{ p: 2.5, borderRadius: 4, background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(139,92,246,0.05)', border: '1px solid', borderColor: 'divider', height: '100%' }}>
-                    <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
+                    <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                       <Typography variant="body2" sx={{ fontWeight: 700 }}>Engagement this week</Typography>
                       <Typography variant="caption" sx={{ color: '#22c55e', fontWeight: 700 }}>+18.2%</Typography>
                     </Stack>
-                    <Stack direction="row" spacing={1.2} alignItems="flex-end" sx={{ height: 110 }}>
+                    <Stack direction="row" spacing={1.2} sx={{ alignItems: 'flex-end', height: 110 }}>
                       {bars.map((h, i) => (
                         <Box
                           key={i}
@@ -115,10 +115,10 @@ const DashboardPreview = () => {
                 </Grid>
 
                 {/* Scheduling + notifications */}
-                <Grid item xs={12} md={5}>
+                <Grid size={{ xs: 12, md: 5 }}>
                   <Stack spacing={2} sx={{ height: '100%' }}>
                     <Paper elevation={0} sx={{ p: 2, borderRadius: 4, border: '1px solid', borderColor: 'divider', background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.6)' }}>
-                      <Stack direction="row" spacing={1.2} alignItems="center" sx={{ mb: 1 }}>
+                      <Stack direction="row" spacing={1.2} sx={{ alignItems: 'center', mb: 1 }}>
                         <CalendarMonthIcon fontSize="small" sx={{ color: '#8B5CF6' }} />
                         <Typography variant="body2" sx={{ fontWeight: 700 }}>Next scheduled</Typography>
                       </Stack>

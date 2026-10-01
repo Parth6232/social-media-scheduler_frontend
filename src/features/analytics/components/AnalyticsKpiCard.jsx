@@ -14,7 +14,7 @@ const AnalyticsKpiCard = ({
   value,
   isPercentage = false,
   icon,
-  color = '#8B5CF6',
+  color = '#2563EB',
   comparison, // { current, previous, changePct } | null
   invertComparisonColor = false, // for failed posts (increase is bad = red)
   subtext,
@@ -76,7 +76,7 @@ const AnalyticsKpiCard = ({
             sx={{
               color: 'text.secondary',
               fontWeight: 700,
-              textTransform: 'uppercase',
+              textTransform: 'none',
               letterSpacing: 0.8,
               fontSize: '0.72rem',
             }}
@@ -163,9 +163,9 @@ const AnalyticsKpiCard = ({
                     height: 20,
                     fontSize: '0.68rem',
                     fontWeight: 700,
-                    bgcolor: 'rgba(139, 92, 246, 0.15)',
-                    color: '#8B5CF6',
-                    border: '1px solid rgba(139, 92, 246, 0.3)',
+                    bgcolor: 'rgba(37,99,235, 0.15)',
+                    color: '#2563EB',
+                    border: '1px solid rgba(37,99,235, 0.3)',
                   }}
                 />
               ) : changePct !== null ? (

@@ -77,9 +77,9 @@ const BestTimeSuggestions = ({
     : {
         animate: {
           boxShadow: [
-            '0 0 0px rgba(139,92,246,0)',
-            '0 0 14px rgba(139,92,246,0.55)',
-            '0 0 0px rgba(139,92,246,0)',
+            '0 0 0px rgba(37,99,235,0)',
+            '0 0 14px rgba(37,99,235,0.55)',
+            '0 0 0px rgba(37,99,235,0)',
           ],
         },
         transition: { duration: 2, repeat: Infinity },
@@ -89,7 +89,7 @@ const BestTimeSuggestions = ({
     <Box sx={{ mt: 2.5 }}>
       {/* Header row */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5, flexWrap: 'wrap' }}>
-        <AccessTimeIcon sx={{ color: '#A78BFA', fontSize: 17 }} />
+        <AccessTimeIcon sx={{ color: '#93C5FD', fontSize: 17 }} />
         <Typography variant="caption" fontWeight={700} sx={{ color: 'text.primary', letterSpacing: 0.3 }}>
           {t('bestTime_title')}
         </Typography>
@@ -98,7 +98,7 @@ const BestTimeSuggestions = ({
           <Chip
             icon={
               data.source === 'your_data' ? (
-                <AutoAwesomeIcon sx={{ fontSize: 12, color: '#D946EF !important' }} />
+                <AutoAwesomeIcon sx={{ fontSize: 12, color: '#1D4ED8 !important' }} />
               ) : undefined
             }
             label={
@@ -113,10 +113,10 @@ const BestTimeSuggestions = ({
               fontWeight: 600,
               backgroundColor: (theme) =>
                 theme.palette.mode === 'dark'
-                  ? 'rgba(217,70,239,0.12)'
-                  : 'rgba(217,70,239,0.08)',
-              color: '#D946EF',
-              border: '1px solid rgba(217,70,239,0.3)',
+                  ? 'rgba(37,99,235,0.12)'
+                  : 'rgba(37,99,235,0.08)',
+              color: '#1D4ED8',
+              border: '1px solid rgba(37,99,235,0.3)',
               '& .MuiChip-icon': { fontSize: 12 },
             }}
           />
@@ -204,24 +204,24 @@ const BestTimeSuggestions = ({
                         borderRadius: 2,
                         fontWeight: 600,
                         border: selected
-                          ? '1.5px solid #8B5CF6'
+                          ? '1.5px solid #2563EB'
                           : isBest
                           ? '1px solid rgba(251,191,36,0.4)'
                           : '1px solid',
                         borderColor: selected
-                          ? '#8B5CF6'
+                          ? '#2563EB'
                           : isBest
                           ? 'rgba(251,191,36,0.4)'
                           : 'divider',
                         background: selected
-                          ? 'linear-gradient(135deg, #7C3AED 0%, #D946EF 100%)'
+                          ? '#2563EB'
                           : (theme) =>
                               theme.palette.mode === 'dark'
                                 ? 'rgba(255,255,255,0.04)'
                                 : 'rgba(0,0,0,0.03)',
                         color: selected ? '#fff' : 'text.primary',
                         transition: 'all 0.25s ease',
-                        boxShadow: selected ? '0 0 10px rgba(139,92,246,0.4)' : 'none',
+                        boxShadow: selected ? '0 0 10px rgba(37,99,235,0.4)' : 'none',
                         '& .MuiChip-label': { px: 0.75 },
                         '& .MuiChip-icon': { ml: '4px' },
                       }}

@@ -38,7 +38,7 @@ const CustomMiniTooltip = ({ active, payload, label, isDark }) => {
       <Typography variant="caption" fontWeight={700} sx={{ color: 'text.primary', display: 'block' }}>
         {label}
       </Typography>
-      <Typography variant="caption" sx={{ color: '#8B5CF6', fontWeight: 600 }}>
+      <Typography variant="caption" sx={{ color: '#2563EB', fontWeight: 600 }}>
         Score: {entry.value}
       </Typography>
     </Box>
@@ -108,9 +108,9 @@ const BestTimeSection = ({
                 }
                 size="small"
                 sx={{
-                  bgcolor: isPersonalized ? 'rgba(139, 92, 246, 0.15)' : 'rgba(255, 255, 255, 0.08)',
-                  color: isPersonalized ? '#8B5CF6' : 'text.secondary',
-                  border: isPersonalized ? '1px solid rgba(139, 92, 246, 0.35)' : '1px solid rgba(255, 255, 255, 0.1)',
+                  bgcolor: isPersonalized ? 'rgba(37,99,235, 0.15)' : 'rgba(255, 255, 255, 0.08)',
+                  color: isPersonalized ? '#2563EB' : 'text.secondary',
+                  border: isPersonalized ? '1px solid rgba(37,99,235, 0.35)' : '1px solid rgba(255, 255, 255, 0.1)',
                   fontWeight: 700,
                   fontSize: '0.72rem',
                 }}
@@ -127,7 +127,7 @@ const BestTimeSection = ({
         {/* Recommended Slot Chips */}
         {slots.length > 0 && (
           <Box sx={{ mb: 3 }}>
-            <Typography variant="caption" fontWeight={700} sx={{ color: 'text.secondary', textTransform: 'uppercase', letterSpacing: 0.5, display: 'block', mb: 1 }}>
+            <Typography variant="caption" fontWeight={700} sx={{ color: 'text.secondary', textTransform: 'none', letterSpacing: 0.5, display: 'block', mb: 1 }}>
               Recommended Posting Windows
             </Typography>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5 }}>
@@ -144,13 +144,13 @@ const BestTimeSection = ({
                       cursor: 'pointer',
                       bgcolor: isTop
                         ? isDark
-                          ? 'rgba(124, 58, 237, 0.18)'
-                          : 'rgba(124, 58, 237, 0.08)'
+                          ? 'rgba(37,99,235, 0.18)'
+                          : 'rgba(37,99,235, 0.08)'
                         : isDark
                         ? 'rgba(255, 255, 255, 0.04)'
                         : 'rgba(0, 0, 0, 0.03)',
                       border: isTop
-                        ? '1px solid rgba(124, 58, 237, 0.45)'
+                        ? '1px solid rgba(37,99,235, 0.45)'
                         : isDark
                         ? '1px solid rgba(255, 255, 255, 0.08)'
                         : '1px solid rgba(0, 0, 0, 0.06)',
@@ -158,10 +158,10 @@ const BestTimeSection = ({
                       alignItems: 'center',
                       gap: 1.5,
                       transition: 'all 0.2s',
-                      boxShadow: isTop ? '0 4px 14px rgba(124, 58, 237, 0.2)' : undefined,
+                      boxShadow: isTop ? '0 4px 14px rgba(37,99,235, 0.2)' : undefined,
                       '&:hover': {
                         transform: 'translateY(-2px)',
-                        borderColor: '#8B5CF6',
+                        borderColor: '#2563EB',
                       },
                     }}
                   >
@@ -170,7 +170,7 @@ const BestTimeSection = ({
                         width: 32,
                         height: 32,
                         borderRadius: 1.5,
-                        bgcolor: isTop ? '#8B5CF6' : isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0,0,0,0.06)',
+                        bgcolor: isTop ? '#2563EB' : isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0,0,0,0.06)',
                         color: isTop ? '#fff' : 'text.primary',
                         display: 'flex',
                         alignItems: 'center',
@@ -189,7 +189,7 @@ const BestTimeSection = ({
                           avg {formatCompactNumber(slot.avgViews)} views · {slot.avgLikes} likes
                         </Typography>
                       ) : (
-                        <Typography variant="caption" sx={{ color: '#8B5CF6', fontSize: '0.7rem', fontWeight: 600 }}>
+                        <Typography variant="caption" sx={{ color: '#2563EB', fontSize: '0.7rem', fontWeight: 600 }}>
                           {t('analytics_scheduleAtSlot')} →
                         </Typography>
                       )}
@@ -255,7 +255,7 @@ const BestTimeSection = ({
                         {hourChartData.map((entry, index) => (
                           <Cell
                             key={`cell-${index}`}
-                            fill={entry.isBest ? '#22D3EE' : isDark ? 'rgba(139, 92, 246, 0.45)' : 'rgba(139, 92, 246, 0.35)'}
+                            fill={entry.isBest ? '#0EA5E9' : isDark ? 'rgba(37,99,235, 0.45)' : 'rgba(37,99,235, 0.35)'}
                           />
                         ))}
                       </Bar>
@@ -294,7 +294,7 @@ const BestTimeSection = ({
                         {dayChartData.map((entry, index) => (
                           <Cell
                             key={`cell-${index}`}
-                            fill={entry.isBest ? '#D946EF' : isDark ? 'rgba(192, 38, 211, 0.45)' : 'rgba(192, 38, 211, 0.35)'}
+                            fill={entry.isBest ? '#1D4ED8' : isDark ? 'rgba(37,99,235, 0.45)' : 'rgba(37,99,235, 0.35)'}
                           />
                         ))}
                       </Bar>

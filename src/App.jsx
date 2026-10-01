@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { SnackbarProvider, enqueueSnackbar } from 'notistack';
+import { MotionConfig } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { hideToast } from './store/redux/slices/toastSlice';
@@ -28,6 +29,7 @@ const ToastHandler = () => {
 
 function App() {
   return (
+    <MotionConfig reducedMotion="user">
     <BrowserRouter>
       <SnackbarProvider maxSnack={3}>
         <ToastHandler />
@@ -37,6 +39,7 @@ function App() {
         </Suspense>
       </SnackbarProvider>
     </BrowserRouter>
+    </MotionConfig>
   );
 }
 

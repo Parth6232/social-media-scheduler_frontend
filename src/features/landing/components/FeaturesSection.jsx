@@ -12,31 +12,31 @@ const FEATURES = [
     icon: CalendarMonthIcon,
     title: 'Content Scheduling',
     desc: 'Plan weeks of posts in minutes with a visual calendar built for teams that publish often.',
-    color: '#8B5CF6',
+    color: '#2563EB',
   },
   {
     icon: BoltIcon,
     title: 'Social Media Automation',
     desc: 'Set the rules once — PostPilot publishes, reposts and follows up automatically.',
-    color: '#D946EF',
+    color: '#1D4ED8',
   },
   {
     icon: InsightsIcon,
     title: 'Analytics',
     desc: 'Understand reach, engagement and growth with clear, real-time dashboards.',
-    color: '#22D3EE',
+    color: '#0EA5E9',
   },
   {
     icon: HubIcon,
     title: 'Multi-platform Management',
     desc: 'Instagram, YouTube, Facebook and more — manage every account from one place.',
-    color: '#F472B6',
+    color: '#3B82F6',
   },
   {
     icon: SmartToyIcon,
     title: 'AI-assisted Content',
     desc: 'Generate captions, hashtags and post ideas tailored to your brand voice.',
-    color: '#A78BFA',
+    color: '#93C5FD',
   },
   {
     icon: TrendingUpIcon,
@@ -66,12 +66,11 @@ const FeatureCard = ({ feature, index }) => {
           p: 3.5,
           borderRadius: 4,
           transformStyle: 'preserve-3d',
-          backdropFilter: 'blur(14px)',
           backgroundColor: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.8)',
           border: isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.06)',
           transition: 'box-shadow 0.3s ease',
           '&:hover': {
-            boxShadow: `0 20px 40px ${feature.color}22`,
+            boxShadow: '0 8px 24px rgba(16,24,40,0.08)',
           },
         }}
       >
@@ -84,7 +83,7 @@ const FeatureCard = ({ feature, index }) => {
             alignItems: 'center',
             justifyContent: 'center',
             mb: 2.5,
-            background: `linear-gradient(135deg, ${feature.color}33, ${feature.color}11)`,
+            background: `${feature.color}1A`,
             color: feature.color,
           }}
         >

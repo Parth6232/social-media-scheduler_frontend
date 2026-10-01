@@ -60,18 +60,18 @@ const Header = ({ handleDrawerToggle }) => {
       component={motion.div}
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, type: 'spring', bounce: 0.4 }}
-      style={{ transformOrigin: 'top', perspective: 1000 }}
+      transition={{ duration: 0.35 }}
+      
       sx={{
-      height: 70,
+      height: 64,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
       px: { xs: 2, sm: 4 },
       borderBottom: '1px solid',
       borderColor: 'divider',
-      backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(10, 15, 30, 0.7)' : 'rgba(255, 255, 255, 0.9)',
-      backdropFilter: 'blur(12px)',
+      backgroundColor: 'background.paper',
+      position: 'sticky', top: 0, zIndex: 20,
     }}>
       <IconButton
         color="inherit"
@@ -123,8 +123,8 @@ const Header = ({ handleDrawerToggle }) => {
                 bgcolor: 'primary.main',
                 fontSize: '0.9rem',
                 fontWeight: 700,
-                background: user?.avatarUrl ? undefined : 'linear-gradient(135deg, #7C3AED, #2563EB)',
-                boxShadow: '0 0 0 2px rgba(124, 58, 237, 0.35)',
+                background: user?.avatarUrl ? undefined : '#2563EB',
+                boxShadow: '0 0 0 2px rgba(37,99,235, 0.35)',
               }}
             >
               {!user?.avatarUrl && initials}
@@ -160,7 +160,7 @@ const Header = ({ handleDrawerToggle }) => {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <Box sx={{ px: 2, py: 1 }}>
-          <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+          <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', textTransform: 'none', letterSpacing: 0.5 }}>
             {t('settings')}
           </Typography>
         </Box>
@@ -208,7 +208,7 @@ const Header = ({ handleDrawerToggle }) => {
 
         {/* Language Section */}
         <Box sx={{ px: 2, pt: 1, pb: 0.5 }}>
-          <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+          <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', textTransform: 'none', letterSpacing: 0.5 }}>
             {t('language')}
           </Typography>
         </Box>
@@ -234,7 +234,7 @@ const Header = ({ handleDrawerToggle }) => {
                 borderRadius: 1,
                 mx: 0.5,
                 bgcolor: isSelected
-                  ? (theme) => theme.palette.mode === 'dark' ? 'rgba(124, 58, 237, 0.18)' : 'rgba(124, 58, 237, 0.08)'
+                  ? (theme) => theme.palette.mode === 'dark' ? 'rgba(37,99,235, 0.18)' : 'rgba(37,99,235, 0.08)'
                   : 'transparent',
                 color: isSelected ? 'primary.main' : 'text.primary',
                 fontWeight: isSelected ? 600 : 400,

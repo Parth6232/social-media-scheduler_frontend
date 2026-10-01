@@ -24,7 +24,6 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { format, formatDistanceToNow } from 'date-fns';
 
 import { postApiAction } from '../createPost/postApiSlice';
@@ -35,14 +34,13 @@ import StatusBadge from '../../common/StatusBadge';
 import { useTranslation } from '../../i18n/useTranslation';
 import PostsPlatformGrid from './PostsPlatformGrid';
 import { showToast } from '../../store/redux/slices/toastSlice';
+import PageHeader from '../../common/components/motion/PageHeader';
 
 const PLATFORM_ICONS = {
   youtube: <YouTubeIcon sx={{ fontSize: 24 }} />,
   facebook: <FacebookIcon sx={{ fontSize: 24 }} />,
   instagram: <InstagramIcon sx={{ fontSize: 24 }} />,
   linkedin: <LinkedInIcon sx={{ fontSize: 24 }} />,
-  twitter: <Box component="span" sx={{ fontSize: 18, fontWeight: 900, lineHeight: 1 }}>𝕏</Box>,
-  whatsapp: <WhatsAppIcon sx={{ fontSize: 24 }} />,
 };
 
 const PLATFORM_COLORS = {
@@ -50,8 +48,6 @@ const PLATFORM_COLORS = {
   facebook: '#1877F2',
   instagram: '#E1306C',
   linkedin: '#0A66C2',
-  twitter: '#1D9BF0',
-  whatsapp: '#25D366',
 };
 
 const PostsContainer = () => {
@@ -110,7 +106,7 @@ const PlatformPostsView = ({
 }) => {
   const { data: posts, isLoading } = postApiAction.getPosts(platform);
   const meta = appConstants.platforms[platform] || { name: platform };
-  const platformColor = PLATFORM_COLORS[platform] || '#7C3AED';
+  const platformColor = PLATFORM_COLORS[platform] || '#2563EB';
 
   const handleRefreshStats = useCallback(async (postId) => {
     try {
@@ -511,47 +507,26 @@ const PlatformPostsView = ({
           {t('backToPlatforms')}
         </MuiButton>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-            <Box
-              sx={{
-                width: 44,
-                height: 44,
-                borderRadius: 2,
-                backgroundColor: `${platformColor}18`,
-                border: `1px solid ${platformColor}35`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: platformColor,
-              }}
-            >
-              {PLATFORM_ICONS[platform] || <Box sx={{ fontSize: 20 }}>●</Box>}
-            </Box>
-            <Box>
-              <Typography variant="h5" fontWeight={700}>
-                {meta.name} {t('posts')}
-              </Typography>
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {t('postsHistorySubtitle')}
-              </Typography>
-            </Box>
-          </Box>
-
-          {/* Post count badge */}
-          {processedPosts.length > 0 && (
-            <Chip
-              label={`${processedPosts.length} ${t('postsCount')}`}
-              size="small"
-              sx={{
-                fontWeight: 600,
-                fontSize: '0.75rem',
-                backgroundColor: (theme) =>
-                  theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)',
-              }}
-            />
-          )}
-        </Box>
+        <PageHeader
+          sx={{ mb: 0 }}
+          icon={PLATFORM_ICONS[platform] || <Box sx={{ fontSize: 20 }}>●</Box>}
+          title={`${meta.name} ${t('posts')}`}
+          subtitle={t('postsHistorySubtitle')}
+          actions={
+            processedPosts.length > 0 ? (
+              <Chip
+                label={`${processedPosts.length} ${t('postsCount')}`}
+                size="small"
+                sx={{
+                  fontWeight: 600,
+                  fontSize: '0.75rem',
+                  backgroundColor: (theme) =>
+                    theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)',
+                }}
+              />
+            ) : null
+          }
+        />
       </Box>
 
       {/* Table */}

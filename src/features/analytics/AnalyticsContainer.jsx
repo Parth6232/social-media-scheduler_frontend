@@ -170,7 +170,7 @@ const AnalyticsContainer = () => {
             sx={{
               borderRadius: 2.5,
               textTransform: 'none',
-              background: 'linear-gradient(135deg, #7C3AED 0%, #D946EF 100%)',
+              background: '#2563EB',
             }}
           >
             {t('analytics_retry')}
@@ -196,7 +196,7 @@ const AnalyticsContainer = () => {
               borderRadius: 1.5,
               bgcolor: 'transparent',
               '& .MuiLinearProgress-bar': {
-                background: 'linear-gradient(90deg, #7C3AED, #D946EF, #22D3EE)',
+                background: '#2563EB',
               },
             }}
           />

@@ -6,7 +6,7 @@ import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion';
  * Small glass "HUD" card that gently floats in place and lifts on hover/tap.
  * Used for the hero's Scheduled Post / Analytics / Engagement / Automation chips.
  */
-const FloatingChip = ({ icon, label, value, sx, delay = 0, duration = 6, color = '#8B5CF6' }) => {
+const FloatingChip = ({ icon, label, value, sx, delay = 0, duration = 6, color = '#2563EB' }) => {
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
   const reduced = usePrefersReducedMotion();
@@ -36,11 +36,11 @@ const FloatingChip = ({ icon, label, value, sx, delay = 0, duration = 6, color =
           gap: 1.1,
           borderRadius: 3,
           backdropFilter: 'blur(18px)',
-          backgroundColor: isDark ? 'rgba(20, 16, 40, 0.55)' : 'rgba(255,255,255,0.75)',
-          border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(139,92,246,0.15)',
+          backgroundColor: isDark ? 'rgba(17,19,23, 0.55)' : 'rgba(255,255,255,0.75)',
+          border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(37,99,235,0.15)',
           boxShadow: isDark
             ? '0 10px 30px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06)'
-            : '0 10px 30px rgba(139,92,246,0.14), inset 0 1px 0 rgba(255,255,255,0.6)',
+            : '0 10px 30px rgba(37,99,235,0.14), inset 0 1px 0 rgba(255,255,255,0.6)',
           transformStyle: 'preserve-3d',
           cursor: 'default',
           whiteSpace: 'nowrap',
@@ -54,7 +54,7 @@ const FloatingChip = ({ icon, label, value, sx, delay = 0, duration = 6, color =
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            background: `linear-gradient(135deg, ${color}33, ${color}11)`,
+            background: `${color}1F`,
             color,
             flexShrink: 0,
           }}

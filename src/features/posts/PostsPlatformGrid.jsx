@@ -5,7 +5,6 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import HistoryIcon from '@mui/icons-material/History';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { appConstants } from '../../constant/appConstants';
@@ -14,14 +13,13 @@ import { useTranslation } from '../../i18n/useTranslation';
 import AnimatedSection from '../../common/components/motion/AnimatedSection';
 import GlassCard from '../../common/components/motion/GlassCard';
 import Counter from '../../common/components/motion/Counter';
+import PageHeader from '../../common/components/motion/PageHeader';
 
 const PLATFORM_ICONS = {
   youtube: <YouTubeIcon sx={{ fontSize: 34 }} />,
   facebook: <FacebookIcon sx={{ fontSize: 34 }} />,
   instagram: <InstagramIcon sx={{ fontSize: 34 }} />,
   linkedin: <LinkedInIcon sx={{ fontSize: 34 }} />,
-  twitter: <Box component="span" sx={{ fontSize: 26, fontWeight: 900, lineHeight: 1 }}>𝕏</Box>,
-  whatsapp: <WhatsAppIcon sx={{ fontSize: 34 }} />,
 };
 
 const PLATFORM_COLORS = {
@@ -29,8 +27,6 @@ const PLATFORM_COLORS = {
   facebook: '#1877F2',
   instagram: '#E1306C',
   linkedin: '#0A66C2',
-  twitter: '#1D9BF0',
-  whatsapp: '#25D366',
 };
 
 const PostsPlatformGrid = () => {
@@ -43,41 +39,17 @@ const PostsPlatformGrid = () => {
   return (
     <Box>
       {/* Header */}
-      <Box sx={{ mb: { xs: 2.5, sm: 4 } }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
-          <Box
-            component={motion.div}
-            animate={{ rotateY: [0, 15, 0, -15, 0] }}
-            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-            style={{ perspective: 500 }}
-            sx={{
-              width: 40,
-              height: 40,
-              borderRadius: 2,
-              background: 'linear-gradient(135deg, #7C3AED 0%, #2563EB 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-              boxShadow: '0 4px 14px rgba(124, 58, 237, 0.35)',
-            }}
-          >
-            <HistoryIcon sx={{ color: '#fff', fontSize: 20 }} />
-          </Box>
-          <Typography variant="h5" fontWeight={700}>
-            {t('postsHistory')}
-          </Typography>
-        </Box>
-        <Typography variant="body2" sx={{ color: 'text.secondary', ml: { xs: 0, sm: 7 } }}>
-          {t('platformSummarySubtitle')}
-        </Typography>
-      </Box>
+      <PageHeader
+        icon={<HistoryIcon />}
+        title={t('postsHistory')}
+        subtitle={t('platformSummarySubtitle')}
+      />
 
       {/* Grid */}
       <Grid container spacing={{ xs: 2, sm: 2.5 }}>
         {platformKeys.map((platformKey, index) => {
           const meta = appConstants.platforms[platformKey] || { name: platformKey, isComingSoon: false };
-          const color = PLATFORM_COLORS[platformKey] || '#7C3AED';
+          const color = PLATFORM_COLORS[platformKey] || '#2563EB';
           const platformStats = summary?.[platformKey] || { total: 0, published: 0, failed: 0, pending: 0 };
           const isComingSoon = meta.isComingSoon;
 

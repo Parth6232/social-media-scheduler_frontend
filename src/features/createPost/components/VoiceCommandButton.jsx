@@ -99,7 +99,7 @@ const VoiceCommandButton = ({
   const pulseSx =
     speechHook.listening && !reduced
       ? {
-          boxShadow: '0 0 0 0px rgba(139,92,246,0.5)',
+          boxShadow: '0 0 0 0px rgba(37,99,235,0.5)',
           animation: 'voicePulse 1.2s infinite',
         }
       : {};
@@ -108,9 +108,9 @@ const VoiceCommandButton = ({
     <>
       <style>{`
         @keyframes voicePulse {
-          0%   { box-shadow: 0 0 0 0 rgba(139,92,246,0.5); }
-          70%  { box-shadow: 0 0 0 10px rgba(139,92,246,0); }
-          100% { box-shadow: 0 0 0 0 rgba(139,92,246,0); }
+          0%   { box-shadow: 0 0 0 0 rgba(37,99,235,0.5); }
+          70%  { box-shadow: 0 0 0 10px rgba(37,99,235,0); }
+          100% { box-shadow: 0 0 0 0 rgba(37,99,235,0); }
         }
       `}</style>
 
@@ -133,7 +133,7 @@ const VoiceCommandButton = ({
             width: 42,
             height: 42,
             borderRadius: '50%',
-            background: 'linear-gradient(135deg, #7C3AED 0%, #D946EF 100%)',
+            background: '#2563EB',
             border: 'none',
             cursor: 'pointer',
             display: 'flex',

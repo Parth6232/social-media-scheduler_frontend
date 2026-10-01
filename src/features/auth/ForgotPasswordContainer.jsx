@@ -22,7 +22,6 @@ import { useTranslation } from '../../i18n/useTranslation';
 import GlassCard from '../../common/components/motion/GlassCard';
 import { StaggerContainer, StaggerItem } from '../../common/components/motion/Stagger';
 import AuthBackground from '../../common/components/auth/AuthBackground';
-import AuthFloatingChips from '../../common/components/auth/AuthFloatingChips';
 import usePrefersReducedMotion from '../../features/landing/hooks/usePrefersReducedMotion';
 
 // Zod schemas
@@ -152,23 +151,23 @@ const ForgotPasswordContainer = () => {
       backdropFilter: 'blur(8px)',
       borderRadius: '12px',
       '& fieldset': {
-        borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(139,92,246,0.18)',
+        borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(37,99,235,0.18)',
       },
       '&:hover fieldset': {
-        borderColor: isDark ? 'rgba(255,255,255,0.22)' : 'rgba(139,92,246,0.32)',
+        borderColor: isDark ? 'rgba(255,255,255,0.22)' : 'rgba(37,99,235,0.32)',
       },
       '&.Mui-focused fieldset': {
-        borderColor: '#8B5CF6',
+        borderColor: '#2563EB',
         borderWidth: '1px',
       },
       '&.Mui-focused': {
         boxShadow: isDark
-          ? '0 0 0 3px rgba(139,92,246,0.18)'
-          : '0 0 0 3px rgba(139,92,246,0.12)',
+          ? '0 0 0 3px rgba(37,99,235,0.18)'
+          : '0 0 0 3px rgba(37,99,235,0.12)',
       },
     },
     '& .MuiInputLabel-root': { color: 'text.secondary' },
-    '& .MuiInputLabel-root.Mui-focused': { color: '#8B5CF6' },
+    '& .MuiInputLabel-root.Mui-focused': { color: '#2563EB' },
     '& .MuiInputBase-input': { color: 'text.primary' },
   };
 
@@ -180,18 +179,18 @@ const ForgotPasswordContainer = () => {
     borderRadius: '12px',
     fontSize: '1rem',
     fontWeight: 600,
-    background: 'linear-gradient(135deg, #7C3AED 0%, #C026D3 55%, #F472B6 100%)',
+    background: '#2563EB',
     backgroundSize: '160% 160%',
     color: '#fff',
     border: '1px solid rgba(255,255,255,0.15)',
     boxShadow: isDark
-      ? '0 8px 24px rgba(192,38,211,0.38)'
-      : '0 8px 24px rgba(139,92,246,0.3)',
+      ? '0 8px 24px rgba(37,99,235,0.38)'
+      : '0 8px 24px rgba(37,99,235,0.3)',
     transition: 'all 0.28s ease',
     '&:hover': {
       boxShadow: isDark
-        ? '0 12px 32px rgba(192,38,211,0.52)'
-        : '0 12px 32px rgba(139,92,246,0.4)',
+        ? '0 12px 32px rgba(37,99,235,0.52)'
+        : '0 12px 32px rgba(37,99,235,0.4)',
       backgroundPosition: '100% 0%',
       transform: 'perspective(600px) rotateX(6deg) translateY(-2px)',
     },
@@ -210,7 +209,7 @@ const ForgotPasswordContainer = () => {
             height: 8,
             borderRadius: 4,
             background: step === s
-              ? 'linear-gradient(90deg, #8B5CF6, #D946EF)'
+              ? '#2563EB'
               : isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)',
             transition: 'width 0.3s ease, background 0.3s ease',
           }}
@@ -249,7 +248,7 @@ const ForgotPasswordContainer = () => {
           fontSize: '0.8rem',
           fontWeight: 500,
           transition: 'color 0.2s',
-          '&:hover': { color: '#8B5CF6' },
+          '&:hover': { color: '#2563EB' },
         }}
       >
         <HomeIcon sx={{ fontSize: 16 }} />
@@ -258,7 +257,7 @@ const ForgotPasswordContainer = () => {
 
       {/* Card wrapper */}
       <Box sx={{ width: '100%', maxWidth: 460, position: 'relative', zIndex: 1 }}>
-        <AuthFloatingChips />
+        
 
         <StaggerContainer>
 
@@ -276,14 +275,14 @@ const ForgotPasswordContainer = () => {
                 width: 68,
                 height: 68,
                 borderRadius: '50%',
-                background: 'linear-gradient(135deg, #7C3AED 0%, #C026D3 55%, #F472B6 100%)',
+                background: '#2563EB',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 mb: 2.5,
                 boxShadow: isDark
-                  ? '0 0 40px rgba(139,92,246,0.5), 0 8px 20px rgba(0,0,0,0.35)'
-                  : '0 0 32px rgba(139,92,246,0.28), 0 8px 20px rgba(0,0,0,0.1)',
+                  ? '0 0 40px rgba(37,99,235,0.5), 0 8px 20px rgba(0,0,0,0.35)'
+                  : '0 0 32px rgba(37,99,235,0.28), 0 8px 20px rgba(0,0,0,0.1)',
                 perspective: '600px',
                 transformStyle: 'preserve-3d',
                 cursor: 'default',
@@ -298,7 +297,7 @@ const ForgotPasswordContainer = () => {
               fontWeight={700}
               sx={{
                 textAlign: 'center',
-                background: 'linear-gradient(90deg, #A78BFA 0%, #E879F9 50%, #67E8F9 100%)',
+                background: '#2563EB',
                 backgroundClip: 'text',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',

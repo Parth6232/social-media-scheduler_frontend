@@ -97,8 +97,8 @@ const PostTypeBreakdown = ({ postTypes = [] }) => {
                         position: 'absolute',
                         inset: 0,
                         borderRadius: 6,
-                        background: 'linear-gradient(135deg, #7C3AED 0%, #D946EF 100%)',
-                        boxShadow: '0 2px 8px rgba(124, 58, 237, 0.35)',
+                        background: '#2563EB',
+                        boxShadow: '0 2px 8px rgba(37,99,235, 0.35)',
                         zIndex: -1,
                       }}
                     />
@@ -126,13 +126,13 @@ const PostTypeBreakdown = ({ postTypes = [] }) => {
                   borderRadius: 2.5,
                   bgcolor: isTop
                     ? isDark
-                      ? 'rgba(124, 58, 237, 0.08)'
-                      : 'rgba(124, 58, 237, 0.04)'
+                      ? 'rgba(37,99,235, 0.08)'
+                      : 'rgba(37,99,235, 0.04)'
                     : isDark
                     ? 'rgba(255, 255, 255, 0.02)'
                     : 'rgba(0, 0, 0, 0.02)',
                   border: isTop
-                    ? '1px solid rgba(124, 58, 237, 0.35)'
+                    ? '1px solid rgba(37,99,235, 0.35)'
                     : isDark
                     ? '1px solid rgba(255, 255, 255, 0.05)'
                     : '1px solid rgba(0, 0, 0, 0.04)',
@@ -167,7 +167,7 @@ const PostTypeBreakdown = ({ postTypes = [] }) => {
                     <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                       {pt.posts} posts · {pt.successRate != null ? `${pt.successRate}% success` : ''}
                     </Typography>
-                    <Typography variant="body2" fontWeight={800} sx={{ color: isTop ? '#8B5CF6' : 'text.primary' }}>
+                    <Typography variant="body2" fontWeight={800} sx={{ color: isTop ? '#2563EB' : 'text.primary' }}>
                       {formatFullNumber(currentVal)}
                     </Typography>
                   </Box>
@@ -184,8 +184,8 @@ const PostTypeBreakdown = ({ postTypes = [] }) => {
                     '& .MuiLinearProgress-bar': {
                       borderRadius: 4,
                       background: isTop
-                        ? 'linear-gradient(90deg, #7C3AED 0%, #D946EF 100%)'
-                        : 'linear-gradient(90deg, #8B5CF6 0%, #6366F1 100%)',
+                        ? '#2563EB'
+                        : '#2563EB',
                     },
                   }}
                 />

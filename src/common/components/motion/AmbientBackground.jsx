@@ -121,20 +121,20 @@ const AmbientBackground = ({ variant = 'full', fixed = false }) => {
       <Canvas camera={{ position: [0, 0, 10], fov: 45 }} dpr={[1, 1.5]}>
         <ambientLight intensity={1.2} />
         <directionalLight position={[10, 10, 5]} intensity={1} />
-        <directionalLight position={[-10, -10, -5]} intensity={0.5} color="#7C3AED" />
+        <directionalLight position={[-10, -10, -5]} intensity={0.5} color="#2563EB" />
 
         {/* Shapes pushed into the far corners, well away from center content */}
         <SlowSpin>
-          <AbstractShape1 position={[-7, 4, -6]} color="#7C3AED" scale={1.6} />
-          <AbstractShape2 position={[7, -4, -7]} color="#2563EB" scale={2} />
+          <AbstractShape1 position={[-7, 4, -6]} color="#2563EB" scale={1.6} />
+          <AbstractShape2 position={[7, -4, -7]} color="#1D4ED8" scale={2} />
           {!isSubtle && (
             <>
-              <AbstractShape1 position={[-6.5, -4.5, -8]} color="#A78BFA" scale={1.3} />
+              <AbstractShape1 position={[-6.5, -4.5, -8]} color="#93C5FD" scale={1.3} />
               <AbstractShape2 position={[7, 4.5, -7]} color="#5B21B6" scale={1.4} />
             </>
           )}
           {isSubtle && (
-            <AbstractShape2 position={[0, 6.5, -9]} color="#A78BFA" scale={1.1} />
+            <AbstractShape2 position={[0, 6.5, -9]} color="#93C5FD" scale={1.1} />
           )}
         </SlowSpin>
 

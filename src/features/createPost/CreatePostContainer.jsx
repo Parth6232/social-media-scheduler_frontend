@@ -43,6 +43,7 @@ import BestTimeSuggestions from './components/BestTimeSuggestions';
 import PlatformAdaptComposer from './components/PlatformAdaptComposer';
 // NEW: voice command
 import VoiceCommandButton from './components/VoiceCommandButton';
+import PageHeader from '../../common/components/motion/PageHeader';
 
 const PLATFORM_ICONS = {
   youtube: <YouTubeIcon sx={{ fontSize: 18 }} />,
@@ -494,7 +495,8 @@ const CreatePostContainer = () => {
   return (
     <AnimatedSection direction="none" sx={{ width: '100%' }}>
       {/* Header */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 4 }}>
+      <PageHeader
+        leading={
         <Button
           variant="outlined"
           onClick={handleBack}
@@ -505,10 +507,10 @@ const CreatePostContainer = () => {
             borderColor: 'divider',
             color: 'text.secondary',
             '&:hover': {
-              borderColor: '#7C3AED',
-              color: '#7C3AED',
+              borderColor: '#2563EB',
+              color: '#2563EB',
               backgroundColor: (theme) =>
-                theme.palette.mode === 'dark' ? 'rgba(124,58,237,0.08)' : 'rgba(124,58,237,0.04)',
+                theme.palette.mode === 'dark' ? 'rgba(37,99,235,0.08)' : 'rgba(37,99,235,0.04)',
             },
           }}
         >
@@ -516,31 +518,11 @@ const CreatePostContainer = () => {
             {t('backToTypes')}
           </Box>
         </Button>
-
-        <Box
-          sx={{
-            width: 40,
-            height: 40,
-            borderRadius: 2,
-            background: 'linear-gradient(135deg, #7C3AED 0%, #2563EB 100%)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <AddCircleIcon sx={{ color: '#fff', fontSize: 20 }} />
-        </Box>
-        <Box>
-          <Typography variant="h5" fontWeight={700}>
-            {t(`postType_${postType}`) || currentRule?.label}
-          </Typography>
-          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-            {t('createPostSubtitle')}
-          </Typography>
-        </Box>
-
-        {/* NEW: voice command mic button in compose header */}
-        <Box sx={{ ml: 'auto', flexShrink: 0 }}>
+        }
+        icon={<AddCircleIcon />}
+        title={t(`postType_${postType}`) || currentRule?.label}
+        subtitle={t('createPostSubtitle')}
+        actions={
           <VoiceCommandButton
             step={step}
             postType={postType}
@@ -552,8 +534,8 @@ const CreatePostContainer = () => {
             setScheduledAt={setScheduledAt}
             handleGenerateAI={handleGenerateAI}
           />
-        </Box>
-      </Box>
+        }
+      />
 
       <Grid container spacing={3}>
         {/* ── Left Column ──────────────────────────────────────── */}
@@ -563,7 +545,7 @@ const CreatePostContainer = () => {
           <GlassCard sx={{ mb: 3, borderRadius: 3 }}>
             <CardContent sx={{ p: 3 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                <AutoAwesomeIcon sx={{ color: '#A78BFA' }} />
+                <AutoAwesomeIcon sx={{ color: '#93C5FD' }} />
                 <Typography variant="subtitle2" fontWeight={600}>{t('aiContentGenerator')}</Typography>
               </Box>
 
@@ -577,17 +559,17 @@ const CreatePostContainer = () => {
                     aria-pressed={aiMode === mode}
                     sx={{
                       px: 2, py: 0.7, borderRadius: 2, border: '1px solid',
-                      borderColor: aiMode === mode ? '#A78BFA' : 'divider',
+                      borderColor: aiMode === mode ? '#93C5FD' : 'divider',
                       background: aiMode === mode
-                        ? 'linear-gradient(135deg, rgba(124,58,237,0.15) 0%, rgba(217,70,239,0.1) 100%)'
+                        ? 'rgba(37,99,235,0.1)'
                         : 'transparent',
-                      color: aiMode === mode ? '#A78BFA' : 'text.secondary',
+                      color: aiMode === mode ? '#93C5FD' : 'text.secondary',
                       fontWeight: 600, fontSize: '0.75rem', cursor: 'pointer',
                       transition: 'all 0.2s',
                       '&:hover': {
-                        borderColor: '#A78BFA',
-                        color: '#A78BFA',
-                        background: 'rgba(167,139,250,0.08)',
+                        borderColor: '#93C5FD',
+                        color: '#93C5FD',
+                        background: 'rgba(37,99,235,0.08)',
                       },
                     }}
                   >
@@ -621,7 +603,7 @@ const CreatePostContainer = () => {
                                 setAiOptions((prev) => ({ ...prev, [opt]: e.target.checked }))
                               }
                               size="small"
-                              sx={{ color: '#A78BFA', '&.Mui-checked': { color: '#A78BFA' } }}
+                              sx={{ color: '#93C5FD', '&.Mui-checked': { color: '#93C5FD' } }}
                             />
                           }
                           label={<Typography variant="caption">{t(opt)}</Typography>}
@@ -635,8 +617,8 @@ const CreatePostContainer = () => {
                         mb: 1,
                         borderRadius: 1,
                         backgroundColor: (theme) =>
-                          theme.palette.mode === 'dark' ? 'rgba(167,139,250,0.2)' : 'rgba(124,58,237,0.1)',
-                        '& .MuiLinearProgress-bar': { backgroundColor: '#A78BFA' },
+                          theme.palette.mode === 'dark' ? 'rgba(37,99,235,0.2)' : 'rgba(37,99,235,0.1)',
+                        '& .MuiLinearProgress-bar': { backgroundColor: '#93C5FD' },
                       }}
                     />
                   )}
@@ -645,9 +627,9 @@ const CreatePostContainer = () => {
                     onClick={handleGenerateAI}
                     loading={isGeneratingCaption || isGeneratingImage}
                     sx={{
-                      borderColor: '#A78BFA40',
-                      color: '#A78BFA',
-                      '&:hover': { borderColor: '#A78BFA', backgroundColor: '#A78BFA10' },
+                      borderColor: '#93C5FD40',
+                      color: '#93C5FD',
+                      '&:hover': { borderColor: '#93C5FD', backgroundColor: '#93C5FD10' },
                     }}
                   >
                     {t('generateWithAi')}
@@ -670,7 +652,7 @@ const CreatePostContainer = () => {
           <GlassCard sx={{ mb: 3, borderRadius: 3 }}>
             <CardContent sx={{ p: 3 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                <EditNoteIcon sx={{ color: '#60A5FA' }} />
+                <EditNoteIcon sx={{ color: '#67C7EB' }} />
                 <Typography variant="subtitle2" fontWeight={600}>{t('postContent')}</Typography>
               </Box>
               <TextField
@@ -777,12 +759,12 @@ const CreatePostContainer = () => {
                           bottom: 16,
                           left: '50%',
                           transform: 'translateX(-50%)',
-                          backgroundColor: 'rgba(124, 58, 237, 0.9)',
+                          backgroundColor: 'rgba(37,99,235, 0.9)',
                           backdropFilter: 'blur(4px)',
                           borderRadius: 8,
                           textTransform: 'none',
                           fontWeight: 600,
-                          '&:hover': { backgroundColor: '#7C3AED' }
+                          '&:hover': { backgroundColor: '#2563EB' }
                         }}
                       >
                         {t('clickToEdit')}
@@ -811,7 +793,7 @@ const CreatePostContainer = () => {
                       borderColor: isDurationExceeded
                         ? '#F59E0B'
                         : isDragActive
-                          ? '#7C3AED'
+                          ? '#2563EB'
                           : requiresMedia && !file
                             ? 'rgba(239, 68, 68, 0.4)'
                             : 'divider',
@@ -820,18 +802,18 @@ const CreatePostContainer = () => {
                       textAlign: 'center',
                       cursor: 'pointer',
                       backgroundColor: isDragActive
-                        ? 'rgba(124, 58, 237, 0.08)'
+                        ? 'rgba(37,99,235, 0.08)'
                         : (theme) =>
                           theme.palette.mode === 'dark'
                             ? 'rgba(255,255,255,0.02)'
                             : 'rgba(0,0,0,0.02)',
                       transition: 'all 0.2s',
                       '&:hover': {
-                        borderColor: '#7C3AED',
+                        borderColor: '#2563EB',
                         backgroundColor: (theme) =>
                           theme.palette.mode === 'dark'
-                            ? 'rgba(124, 58, 237, 0.08)'
-                            : 'rgba(124, 58, 237, 0.04)',
+                            ? 'rgba(37,99,235, 0.08)'
+                            : 'rgba(37,99,235, 0.04)',
                       },
                     }}
                   >
@@ -839,7 +821,7 @@ const CreatePostContainer = () => {
                     <CloudUploadIcon
                       sx={{
                         fontSize: 40,
-                        color: isDragActive ? '#7C3AED' : 'text.secondary',
+                        color: isDragActive ? '#2563EB' : 'text.secondary',
                         mb: 1,
                       }}
                     />
@@ -870,7 +852,7 @@ const CreatePostContainer = () => {
               {/* Loading state */}
               {isAccountsLoading && (
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                  <CircularProgress size={16} sx={{ color: '#A78BFA' }} />
+                  <CircularProgress size={16} sx={{ color: '#93C5FD' }} />
                   <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                     {t('loadingAccounts')}
                   </Typography>
@@ -1277,8 +1259,8 @@ const CreatePostContainer = () => {
                   checked={scheduleEnabled}
                   onChange={(e) => setScheduleEnabled(e.target.checked)}
                   sx={{
-                    '& .MuiSwitch-switchBase.Mui-checked': { color: '#7C3AED' },
-                    '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { backgroundColor: '#7C3AED' },
+                    '& .MuiSwitch-switchBase.Mui-checked': { color: '#2563EB' },
+                    '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { backgroundColor: '#2563EB' },
                   }}
                 />
               </Box>
@@ -1344,14 +1326,14 @@ const CreatePostContainer = () => {
                   fontSize: '1.05rem',
                   borderRadius: 3,
                   background: isSubmitDisabled
-                    ? 'rgba(124, 58, 237, 0.3)'
-                    : 'linear-gradient(90deg, #7C3AED, #2563EB)',
+                    ? 'rgba(37,99,235, 0.3)'
+                    : '#2563EB',
                   transition: 'all 0.3s ease',
-                  boxShadow: isSubmitDisabled ? 'none' : '0 8px 20px rgba(124, 58, 237, 0.3)',
+                  boxShadow: isSubmitDisabled ? 'none' : '0 8px 20px rgba(37,99,235, 0.3)',
                   '&:hover': isSubmitDisabled
                     ? {}
                     : {
-                      boxShadow: '0 8px 25px rgba(124, 58, 237, 0.5)',
+                      boxShadow: '0 8px 25px rgba(37,99,235, 0.5)',
                       transform: 'translateY(-2px)',
                     },
                 }}

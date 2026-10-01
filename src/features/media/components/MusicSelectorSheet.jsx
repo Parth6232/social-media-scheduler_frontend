@@ -29,7 +29,7 @@ const EqualizerBars = () => (
         <Box
           key={i}
           sx={{
-            width: 4, bgcolor: '#7C3AED', borderRadius: 1,
+            width: 4, bgcolor: '#2563EB', borderRadius: 1,
             animation: `eq-bar 0.75s ${delay}s ease-in-out infinite`,
             height: '60%',
           }}
@@ -41,11 +41,11 @@ const EqualizerBars = () => (
 
 // ── Deterministic gradient from track id ────────────────────────────────────
 const GRADIENTS = [
-  'linear-gradient(135deg, #6D28D9, #EC4899)',
+  'linear-gradient(135deg, #2563EB, #EC4899)',
   'linear-gradient(135deg, #0EA5E9, #14B8A6)',
   'linear-gradient(135deg, #F97316, #EAB308)',
   'linear-gradient(135deg, #10B981, #3B82F6)',
-  'linear-gradient(135deg, #8B5CF6, #F43F5E)',
+  'linear-gradient(135deg, #2563EB, #F43F5E)',
 ];
 const getGradient = (id) => {
   if (!id) return GRADIENTS[0];
@@ -90,10 +90,10 @@ const TrackItem = ({ track, isPlaying, onPlayPause, onSelect, isSelected, isLoad
         cursor: 'pointer',
         borderRadius: 2,
         mb: 0.5,
-        border: isSelected ? '1px solid rgba(124,58,237,0.5)' : '1px solid transparent',
-        bgcolor: isSelected ? 'rgba(124,58,237,0.12)' : 'transparent',
+        border: isSelected ? '1px solid rgba(37,99,235,0.5)' : '1px solid transparent',
+        bgcolor: isSelected ? 'rgba(37,99,235,0.12)' : 'transparent',
         transition: 'background-color 0.2s, border-color 0.2s',
-        '&:hover': { bgcolor: isSelected ? 'rgba(124,58,237,0.18)' : 'rgba(255,255,255,0.05)' },
+        '&:hover': { bgcolor: isSelected ? 'rgba(37,99,235,0.18)' : 'rgba(255,255,255,0.05)' },
         pr: '110px',  // room for secondary action
       }}
       secondaryAction={
@@ -111,9 +111,9 @@ const TrackItem = ({ track, isPlaying, onPlayPause, onSelect, isSelected, isLoad
             {isPlaying ? <PauseIcon fontSize="small" /> : <PlayArrowIcon fontSize="small" />}
           </IconButton>
           {isLoading ? (
-            <CircularProgress size={20} sx={{ color: '#7C3AED', ml: 0.5 }} />
+            <CircularProgress size={20} sx={{ color: '#2563EB', ml: 0.5 }} />
           ) : isSelected ? (
-            <CheckCircleIcon sx={{ color: '#7C3AED', fontSize: 22, ml: 0.5 }} />
+            <CheckCircleIcon sx={{ color: '#2563EB', fontSize: 22, ml: 0.5 }} />
           ) : null}
         </Box>
       }
@@ -300,7 +300,7 @@ const MusicSelectorSheet = ({ open, onClose, onSelect, selectedTrackId }) => {
               color: 'rgba(255,255,255,0.5)', minHeight: 40,
             },
             '& .Mui-selected': { color: 'white' },
-            '& .MuiTabs-indicator': { backgroundColor: '#7C3AED', height: 3, borderRadius: 3 }
+            '& .MuiTabs-indicator': { backgroundColor: '#2563EB', height: 3, borderRadius: 3 }
           }}
         >
           <Tab label={t('myLibrary')} />
@@ -315,7 +315,7 @@ const MusicSelectorSheet = ({ open, onClose, onSelect, selectedTrackId }) => {
           {tab === 0 && (
             myTracksLoading ? (
               <Box sx={{ display: 'flex', justifyContent: 'center', pt: 4 }}>
-                <CircularProgress size={28} sx={{ color: '#7C3AED' }} />
+                <CircularProgress size={28} sx={{ color: '#2563EB' }} />
               </Box>
             ) : myTracks.length === 0 ? (
               <EmptyState icon={LibraryMusicIcon} text={t('noMusicFound')} />
@@ -360,14 +360,14 @@ const MusicSelectorSheet = ({ open, onClose, onSelect, selectedTrackId }) => {
                     color: 'white',
                     '& fieldset': { borderColor: 'rgba(255,255,255,0.12)' },
                     '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.3)' },
-                    '&.Mui-focused fieldset': { borderColor: '#7C3AED' },
+                    '&.Mui-focused fieldset': { borderColor: '#2563EB' },
                   },
                   '& input::placeholder': { color: 'rgba(255,255,255,0.35)' },
                 }}
               />
               {discoverLoading ? (
                 <Box sx={{ display: 'flex', justifyContent: 'center', pt: 4 }}>
-                  <CircularProgress size={28} sx={{ color: '#7C3AED' }} />
+                  <CircularProgress size={28} sx={{ color: '#2563EB' }} />
                 </Box>
               ) : discoverResults.length === 0 ? (
                 <EmptyState icon={SearchIcon} text={searchQuery ? t('noMusicFound') : t('searchMusic')} />
@@ -387,7 +387,7 @@ const MusicSelectorSheet = ({ open, onClose, onSelect, selectedTrackId }) => {
                 </List>
               )}
               {importingId && (
-                <Typography variant="caption" sx={{ color: '#7C3AED', display: 'block', textAlign: 'center', mt: 1 }}>
+                <Typography variant="caption" sx={{ color: '#2563EB', display: 'block', textAlign: 'center', mt: 1 }}>
                   {t('addingToLibrary')}
                 </Typography>
               )}
@@ -401,7 +401,7 @@ const MusicSelectorSheet = ({ open, onClose, onSelect, selectedTrackId }) => {
               <Box
                 onClick={() => !uploadingAudio && fileInputRef.current?.click()}
                 sx={{
-                  border: '2px dashed rgba(124,58,237,0.4)',
+                  border: '2px dashed rgba(37,99,235,0.4)',
                   borderRadius: 4,
                   p: 4,
                   width: '100%',
@@ -414,19 +414,19 @@ const MusicSelectorSheet = ({ open, onClose, onSelect, selectedTrackId }) => {
                   cursor: uploadingAudio ? 'default' : 'pointer',
                   transition: 'border-color 0.2s, background-color 0.2s',
                   '&:hover': uploadingAudio ? {} : {
-                    borderColor: '#7C3AED',
-                    bgcolor: 'rgba(124,58,237,0.06)',
+                    borderColor: '#2563EB',
+                    bgcolor: 'rgba(37,99,235,0.06)',
                   },
                 }}
               >
                 {uploadingAudio ? (
                   <>
-                    <CircularProgress size={36} sx={{ color: '#7C3AED' }} />
+                    <CircularProgress size={36} sx={{ color: '#2563EB' }} />
                     <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.6)' }}>{t('processing')}</Typography>
                   </>
                 ) : (
                   <>
-                    <UploadFileIcon sx={{ fontSize: 52, color: '#7C3AED' }} />
+                    <UploadFileIcon sx={{ fontSize: 52, color: '#2563EB' }} />
                     <Typography variant="subtitle2" fontWeight={700} sx={{ color: 'white' }}>{t('uploadFromDevice')}</Typography>
                     <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.45)', textAlign: 'center' }}>
                       MP3, M4A, WAV supported

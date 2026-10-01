@@ -17,6 +17,9 @@ import { format } from 'date-fns';
 import { useTranslation } from '../../i18n/useTranslation';
 import { POST_RULES } from '../../config/postRules';
 import AnimatedSection from '../../common/components/motion/AnimatedSection';
+import PageHeader from '../../common/components/motion/PageHeader';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import { motion } from 'framer-motion';
 
 /** Capitalize every word in a name */
 const capitalizeName = (name = '') =>
@@ -167,24 +170,19 @@ const DashboardContainer = () => {
   return (
     <Box>
       {/* Greeting */}
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h5" fontWeight={700}>
-          {t(getGreetingKey())},{' '}
-          <Box component="span" sx={{ background: 'linear-gradient(90deg, #A78BFA, #60A5FA)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-            {capitalizeName(user?.name) || t('there')} 👋
-          </Box>
-        </Typography>
-        <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
-          {t('dashboardSubtitle')}
-        </Typography>
-      </Box>
+      <PageHeader
+        icon={<DashboardIcon />}
+        title={`${t(getGreetingKey())}, ${capitalizeName(user?.name) || t('there')} 👋`}
+        subtitle={t('dashboardSubtitle')}
+      />
 
       {/* KPI Cards */}
       <Grid container spacing={2.5} sx={{ mb: 4 }}>
         <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
           <AnimatedSection delay={0.1}>
             <CommonKpiCard
-              label={t('totalPosts')} value={stats.total} icon={<PostAddIcon />} color="#7C3AED"
+              total={stats.total}
+              label={t('totalPosts')} value={stats.total} icon={<PostAddIcon />} color="#2563EB"
               isLoading={isLoading}
               isActive={activeFilter === null}
               onClick={() => setActiveFilter(null)}
@@ -194,6 +192,7 @@ const DashboardContainer = () => {
         <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
           <AnimatedSection delay={0.2}>
             <CommonKpiCard
+              total={stats.total}
               label={t('pending')} value={stats.pending} icon={<HourglassEmptyIcon />} color="#F59E0B"
               isLoading={isLoading}
               isActive={activeFilter === 'pending'}
@@ -204,6 +203,7 @@ const DashboardContainer = () => {
         <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
           <AnimatedSection delay={0.3}>
             <CommonKpiCard
+              total={stats.total}
               label={t('completed')} value={stats.completed} icon={<CheckCircleIcon />} color="#10B981"
               isLoading={isLoading}
               isActive={activeFilter === 'completed'}
@@ -214,6 +214,7 @@ const DashboardContainer = () => {
         <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
           <AnimatedSection delay={0.4}>
             <CommonKpiCard
+              total={stats.total}
               label={t('failed')} value={stats.failed} icon={<ErrorIcon />} color="#EF4444"
               isLoading={isLoading}
               isActive={activeFilter === 'failed'}
@@ -224,12 +225,12 @@ const DashboardContainer = () => {
       </Grid>
 
       {/* Quick actions */}
-      <Box sx={{ display: 'flex', gap: 2, mb: 4 }}>
+      <Box component={motion.div} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.45 }} sx={{ display: 'flex', gap: 2, mb: 4, flexWrap: 'wrap' }}>
         <MuiButton
           variant="contained"
           startIcon={<AddCircleIcon />}
           onClick={() => navigate('/create')}
-          sx={{ background: 'linear-gradient(90deg, #7C3AED, #2563EB)', '&:hover': { boxShadow: '0 0 20px rgba(124,58,237,0.5)' } }}
+          
         >
           {t('createPost')}
         </MuiButton>
@@ -248,7 +249,7 @@ const DashboardContainer = () => {
       </Box>
 
       {/* Recent Posts */}
-      <Box>
+      <AnimatedSection delay={0.15}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Typography variant="h6" fontWeight={600}>{t('recentPosts')}</Typography>
@@ -273,7 +274,7 @@ const DashboardContainer = () => {
           searchKeys={['content', 'status']}
           emptyMessage={t('noPostsYetDashboard')}
         />
-      </Box>
+      </AnimatedSection>
     </Box>
   );
 };

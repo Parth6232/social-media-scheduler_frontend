@@ -22,8 +22,8 @@ const CtaSection = () => {
             p: { xs: 4, md: 6 },
             borderRadius: 5,
             textAlign: 'center',
-            background: 'linear-gradient(135deg, rgba(139,92,246,0.14), rgba(217,70,239,0.12) 55%, rgba(34,211,238,0.08))',
-            border: '1px solid rgba(217,70,239,0.25)',
+            background: 'transparent',
+            border: '1px solid rgba(37,99,235,0.25)',
           }}
         >
           <Typography variant="h3" sx={{ fontSize: { xs: '1.6rem', md: '2rem' }, mb: 1.5 }}>

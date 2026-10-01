@@ -30,7 +30,7 @@ const BellIcon = ({ ringing }) => {
     >
       <NotificationsIcon
         sx={{
-          color: ringing ? '#A78BFA' : 'text.secondary',
+          color: ringing ? '#93C5FD' : 'text.secondary',
           fontSize: 22,
           transition: 'color 0.3s',
         }}
@@ -107,8 +107,8 @@ const NotificationSettingsCard = () => {
               disabled={isLoading || isUpdating}
               inputProps={{ 'aria-label': t('notif_title') }}
               sx={{
-                '& .MuiSwitch-switchBase.Mui-checked': { color: '#7C3AED' },
-                '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { backgroundColor: '#7C3AED' },
+                '& .MuiSwitch-switchBase.Mui-checked': { color: '#2563EB' },
+                '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { backgroundColor: '#2563EB' },
               }}
             />
           )}

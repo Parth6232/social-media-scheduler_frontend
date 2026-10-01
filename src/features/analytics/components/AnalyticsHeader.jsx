@@ -32,7 +32,7 @@ import { formatRelativeTime } from '../utils/analyticsFormatters';
 import { usePrefersReducedMotion } from '../../landing/hooks/usePrefersReducedMotion';
 
 const PLATFORM_OPTIONS = [
-  { value: 'all', labelKey: 'analytics_allPlatforms', icon: <PublicIcon sx={{ fontSize: 18, color: '#8B5CF6' }} /> },
+  { value: 'all', labelKey: 'analytics_allPlatforms', icon: <PublicIcon sx={{ fontSize: 18, color: '#2563EB' }} /> },
   { value: 'youtube', label: 'YouTube', icon: <YouTubeIcon sx={{ fontSize: 18, color: '#FF0000' }} /> },
   { value: 'instagram', label: 'Instagram', icon: <InstagramIcon sx={{ fontSize: 18, color: '#E1306C' }} /> },
   { value: 'facebook', label: 'Facebook', icon: <FacebookIcon sx={{ fontSize: 18, color: '#1877F2' }} /> },
@@ -122,8 +122,8 @@ const AnalyticsHeader = ({
               fontWeight={800}
               sx={{
                 background: isDark
-                  ? 'linear-gradient(135deg, #FFFFFF 0%, #C4B5FD 100%)'
-                  : 'linear-gradient(135deg, #1E1B4B 0%, #6D28D9 100%)',
+                  ? '#FFFFFF'
+                  : '#2563EB',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 letterSpacing: '-0.02em',
@@ -169,14 +169,14 @@ const AnalyticsHeader = ({
               transition: 'all 0.2s',
               '&:hover': {
                 bgcolor: secondsLeft > 0 ? undefined : isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.04)',
-                borderColor: secondsLeft > 0 ? undefined : '#8B5CF6',
+                borderColor: secondsLeft > 0 ? undefined : '#2563EB',
               },
             }}
           >
             {isRefreshing ? (
-              <CircularProgress size={16} sx={{ color: '#8B5CF6' }} />
+              <CircularProgress size={16} sx={{ color: '#2563EB' }} />
             ) : (
-              <RefreshIcon sx={{ fontSize: 18, color: secondsLeft > 0 ? 'inherit' : '#8B5CF6' }} />
+              <RefreshIcon sx={{ fontSize: 18, color: secondsLeft > 0 ? 'inherit' : '#2563EB' }} />
             )}
             <span>
               {isRefreshing
@@ -210,12 +210,12 @@ const AnalyticsHeader = ({
               fontWeight: 600,
               cursor: isExporting ? 'not-allowed' : 'pointer',
               border: 'none',
-              background: 'linear-gradient(135deg, #7C3AED 0%, #D946EF 100%)',
+              background: '#2563EB',
               color: '#ffffff',
-              boxShadow: '0 4px 14px rgba(124, 58, 237, 0.35)',
+              boxShadow: '0 4px 14px rgba(37,99,235, 0.35)',
               transition: 'all 0.2s',
               '&:hover': {
-                boxShadow: '0 6px 20px rgba(124, 58, 237, 0.5)',
+                boxShadow: '0 6px 20px rgba(37,99,235, 0.5)',
               },
             }}
           >
@@ -248,7 +248,7 @@ const AnalyticsHeader = ({
                   border: isDark ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.08)',
                   boxShadow: isDark
                     ? '0 10px 30px rgba(0, 0, 0, 0.5)'
-                    : '0 10px 30px rgba(124, 58, 237, 0.15)',
+                    : '0 10px 30px rgba(37,99,235, 0.15)',
                 },
               },
             }}
@@ -391,8 +391,8 @@ const AnalyticsHeader = ({
                       position: 'absolute',
                       inset: 0,
                       borderRadius: 8,
-                      background: 'linear-gradient(135deg, #7C3AED 0%, #2563EB 100%)',
-                      boxShadow: '0 2px 10px rgba(124, 58, 237, 0.4)',
+                      background: '#2563EB',
+                      boxShadow: '0 2px 10px rgba(37,99,235, 0.4)',
                       zIndex: -1,
                     }}
                   />
@@ -422,7 +422,7 @@ const AnalyticsHeader = ({
                 borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
               },
               '&:hover .MuiOutlinedInput-notchedOutline': {
-                borderColor: '#8B5CF6',
+                borderColor: '#2563EB',
               },
             }}
           >

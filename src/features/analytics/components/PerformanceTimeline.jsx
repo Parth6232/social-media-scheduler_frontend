@@ -146,8 +146,8 @@ const PerformanceTimeline = ({ timeline = { granularity: 'day', points: [] } }) 
                         position: 'absolute',
                         inset: 0,
                         borderRadius: 6,
-                        background: 'linear-gradient(135deg, #7C3AED 0%, #D946EF 100%)',
-                        boxShadow: '0 2px 8px rgba(124, 58, 237, 0.35)',
+                        background: '#2563EB',
+                        boxShadow: '0 2px 8px rgba(37,99,235, 0.35)',
                         zIndex: -1,
                       }}
                     />
@@ -168,16 +168,16 @@ const PerformanceTimeline = ({ timeline = { granularity: 'day', points: [] } }) 
             >
               <defs>
                 <linearGradient id="viewsGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#D946EF" stopOpacity={0.6} />
-                  <stop offset="95%" stopColor="#7C3AED" stopOpacity={0.0} />
+                  <stop offset="0%" stopColor="#1D4ED8" stopOpacity={0.6} />
+                  <stop offset="95%" stopColor="#2563EB" stopOpacity={0.0} />
                 </linearGradient>
                 <linearGradient id="likesGrad" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#F59E0B" stopOpacity={0.6} />
-                  <stop offset="95%" stopColor="#D946EF" stopOpacity={0.0} />
+                  <stop offset="95%" stopColor="#1D4ED8" stopOpacity={0.0} />
                 </linearGradient>
                 <linearGradient id="publishedBarGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#8B5CF6" />
-                  <stop offset="100%" stopColor="#7C3AED" />
+                  <stop offset="0%" stopColor="#2563EB" />
+                  <stop offset="100%" stopColor="#2563EB" />
                 </linearGradient>
               </defs>
 
@@ -235,11 +235,11 @@ const PerformanceTimeline = ({ timeline = { granularity: 'day', points: [] } }) 
                   type="monotone"
                   dataKey="views"
                   name={t('analytics_metricViews')}
-                  stroke="#D946EF"
+                  stroke="#1D4ED8"
                   strokeWidth={2.5}
                   fill="url(#viewsGrad)"
                   dot={false}
-                  activeDot={{ r: 5, fill: '#D946EF', stroke: '#fff', strokeWidth: 2 }}
+                  activeDot={{ r: 5, fill: '#1D4ED8', stroke: '#fff', strokeWidth: 2 }}
                 />
               )}
 

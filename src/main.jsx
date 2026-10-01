@@ -1,4 +1,4 @@
-﻿import { StrictMode } from 'react';
+import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider, useSelector } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -10,7 +10,7 @@ import App from './App.jsx';
 import './index.css';
 
 const AppWithTheme = () => {
-  const themeMode = useSelector((state) => state.ui?.themeMode || 'dark');
+  const themeMode = useSelector((state) => state.ui?.themeMode || 'light');
   const appTheme = getAppTheme(themeMode);
 
   return (
@@ -20,6 +20,15 @@ const AppWithTheme = () => {
     </ThemeProvider>
   );
 };
+
+// feeds the cursor-following border light on every MUI Card
+document.addEventListener('pointermove', (e) => {
+  const card = e.target.closest?.('.MuiCard-root');
+  if (!card) return;
+  const r = card.getBoundingClientRect();
+  card.style.setProperty('--mx', `${e.clientX - r.left}px`);
+  card.style.setProperty('--my', `${e.clientY - r.top}px`);
+}, { passive: true });
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

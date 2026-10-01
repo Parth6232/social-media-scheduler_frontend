@@ -62,10 +62,9 @@ const DashboardPreview = () => {
               sx={{
                 p: { xs: 2, md: 3.5 },
                 borderRadius: 5,
-                backdropFilter: 'blur(20px)',
                 backgroundColor: isDark ? 'rgba(18, 14, 34, 0.6)' : 'rgba(255,255,255,0.85)',
                 border: isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.06)',
-                boxShadow: isDark ? '0 30px 80px rgba(0,0,0,0.5)' : '0 30px 80px rgba(139,92,246,0.16)',
+                boxShadow: isDark ? '0 24px 60px rgba(0,0,0,0.5)' : '0 24px 60px rgba(16,24,40,0.10)',
               }}
             >
               <Grid container spacing={2.5}>
@@ -73,22 +72,22 @@ const DashboardPreview = () => {
                 <Grid size={{ xs: 12 }}>
                   <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1.5 }}>
                     <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                      <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: '#22c55e', boxShadow: '0 0 8px #22c55e' }} />
+                      <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: '#12B76A' }} />
                       <Typography variant="body2" sx={{ fontWeight: 700 }}>
                         Automation active
                       </Typography>
                     </Stack>
                     <AvatarGroup max={4} sx={{ '& .MuiAvatar-root': { width: 28, height: 28, fontSize: 12 } }}>
-                      <Avatar sx={{ bgcolor: '#8B5CF6' }}><InstagramIcon sx={{ fontSize: 16 }} /></Avatar>
-                      <Avatar sx={{ bgcolor: '#D946EF' }}><YouTubeIcon sx={{ fontSize: 16 }} /></Avatar>
-                      <Avatar sx={{ bgcolor: '#22D3EE' }}><FacebookIcon sx={{ fontSize: 16 }} /></Avatar>
+                      <Avatar sx={{ bgcolor: '#2563EB' }}><InstagramIcon sx={{ fontSize: 16 }} /></Avatar>
+                      <Avatar sx={{ bgcolor: '#1D4ED8' }}><YouTubeIcon sx={{ fontSize: 16 }} /></Avatar>
+                      <Avatar sx={{ bgcolor: '#0EA5E9' }}><FacebookIcon sx={{ fontSize: 16 }} /></Avatar>
                     </AvatarGroup>
                   </Stack>
                 </Grid>
 
                 {/* Analytics chart */}
                 <Grid size={{ xs: 12, md: 7 }}>
-                  <Paper elevation={0} sx={{ p: 2.5, borderRadius: 4, background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(139,92,246,0.05)', border: '1px solid', borderColor: 'divider', height: '100%' }}>
+                  <Paper elevation={0} sx={{ p: 2.5, borderRadius: 4, background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(37,99,235,0.05)', border: '1px solid', borderColor: 'divider', height: '100%' }}>
                     <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                       <Typography variant="body2" sx={{ fontWeight: 700 }}>Engagement this week</Typography>
                       <Typography variant="caption" sx={{ color: '#22c55e', fontWeight: 700 }}>+18.2%</Typography>
@@ -105,7 +104,7 @@ const DashboardPreview = () => {
                           sx={{
                             flex: 1,
                             borderRadius: 1.5,
-                            background: 'linear-gradient(180deg, #D946EF, #8B5CF6)',
+                            background: '#2563EB',
                             opacity: 0.85,
                           }}
                         />
@@ -119,7 +118,7 @@ const DashboardPreview = () => {
                   <Stack spacing={2} sx={{ height: '100%' }}>
                     <Paper elevation={0} sx={{ p: 2, borderRadius: 4, border: '1px solid', borderColor: 'divider', background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.6)' }}>
                       <Stack direction="row" spacing={1.2} sx={{ alignItems: 'center', mb: 1 }}>
-                        <CalendarMonthIcon fontSize="small" sx={{ color: '#8B5CF6' }} />
+                        <CalendarMonthIcon fontSize="small" sx={{ color: '#2563EB' }} />
                         <Typography variant="body2" sx={{ fontWeight: 700 }}>Next scheduled</Typography>
                       </Stack>
                       <Typography variant="body2" sx={{ color: 'text.secondary' }}>
@@ -129,7 +128,7 @@ const DashboardPreview = () => {
 
                     <Paper elevation={0} sx={{ p: 2, borderRadius: 4, border: '1px solid', borderColor: 'divider', background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.6)' }}>
                       <Stack direction="row" spacing={1.2} alignItems="center" sx={{ mb: 1 }}>
-                        <BoltIcon fontSize="small" sx={{ color: '#D946EF' }} />
+                        <BoltIcon fontSize="small" sx={{ color: '#1D4ED8' }} />
                         <Typography variant="body2" sx={{ fontWeight: 700 }}>Automation status</Typography>
                       </Stack>
                       <LinearProgress
@@ -139,14 +138,14 @@ const DashboardPreview = () => {
                           height: 6,
                           borderRadius: 3,
                           backgroundColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
-                          '& .MuiLinearProgress-bar': { background: 'linear-gradient(90deg, #22D3EE, #D946EF)' },
+                          '& .MuiLinearProgress-bar': { backgroundColor: '#2563EB' },
                         }}
                       />
                     </Paper>
 
                     <Paper elevation={0} sx={{ p: 2, borderRadius: 4, border: '1px solid', borderColor: 'divider', background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.6)', flexGrow: 1 }}>
                       <Stack direction="row" spacing={1.2} alignItems="center">
-                        <NotificationsActiveIcon fontSize="small" sx={{ color: '#22D3EE' }} />
+                        <NotificationsActiveIcon fontSize="small" sx={{ color: '#0EA5E9' }} />
                         <Typography variant="body2" sx={{ fontWeight: 700 }}>3 new notifications</Typography>
                       </Stack>
                     </Paper>

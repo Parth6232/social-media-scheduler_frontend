@@ -63,7 +63,7 @@ const PlatformComparison = ({ platforms = [] }) => {
   const isDark = theme.palette.mode === 'dark';
 
   const chartData = platforms.map((p) => {
-    const config = PLATFORM_CONFIG[p.platform] || { label: p.platform, color: '#8B5CF6' };
+    const config = PLATFORM_CONFIG[p.platform] || { label: p.platform, color: '#2563EB' };
     return {
       name: config.label,
       platform: p.platform,
@@ -111,8 +111,8 @@ const PlatformComparison = ({ platforms = [] }) => {
                   wrapperStyle={{ fontSize: 11, paddingTop: 6 }}
                   formatter={(val) => <span style={{ color: isDark ? '#CBD5E1' : '#475569', fontWeight: 600 }}>{val}</span>}
                 />
-                <Bar dataKey="views" name={t('analytics_metricViews')} fill="#8B5CF6" radius={[4, 4, 0, 0]} maxBarSize={28} />
-                <Bar dataKey="likes" name={t('analytics_metricLikes')} fill="#D946EF" radius={[4, 4, 0, 0]} maxBarSize={28} />
+                <Bar dataKey="views" name={t('analytics_metricViews')} fill="#2563EB" radius={[4, 4, 0, 0]} maxBarSize={28} />
+                <Bar dataKey="likes" name={t('analytics_metricLikes')} fill="#1D4ED8" radius={[4, 4, 0, 0]} maxBarSize={28} />
               </BarChart>
             </ResponsiveContainer>
           </Box>
@@ -123,7 +123,7 @@ const PlatformComparison = ({ platforms = [] }) => {
           {platforms.map((p) => {
             const config = PLATFORM_CONFIG[p.platform] || {
               label: p.platform,
-              color: '#8B5CF6',
+              color: '#2563EB',
               icon: <PublicIcon sx={{ fontSize: 18 }} />,
             };
 

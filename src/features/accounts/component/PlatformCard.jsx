@@ -4,7 +4,6 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { useSelector } from 'react-redux';
 import { accountsApiAction } from '../accountsApiSlice';
 import { appConstants } from '../../../constant/appConstants';
@@ -18,8 +17,6 @@ const PLATFORM_ICONS = {
   facebook: <FacebookIcon sx={{ fontSize: 36 }} />,
   instagram: <InstagramIcon sx={{ fontSize: 36 }} />,
   linkedin: <LinkedInIcon sx={{ fontSize: 36 }} />,
-  twitter: <Box component="span" sx={{ fontSize: 28, fontWeight: 900, lineHeight: 1 }}>𝕏</Box>,
-  whatsapp: <WhatsAppIcon sx={{ fontSize: 36 }} />,
 };
 
 const PLATFORM_COLORS = {
@@ -27,8 +24,6 @@ const PLATFORM_COLORS = {
   facebook: '#1877F2',
   instagram: '#E1306C',
   linkedin: '#0A66C2',
-  twitter: '#1D9BF0',
-  whatsapp: '#25D366',
 };
 
 const PlatformCard = ({ platform, connectedAccount, isLoading }) => {
@@ -40,7 +35,7 @@ const PlatformCard = ({ platform, connectedAccount, isLoading }) => {
   const isMulti = platform === 'facebook' || platform === 'instagram';
   const accountsList = isMulti ? (Array.isArray(connectedAccount) ? connectedAccount : []) : [];
   const isConnected = isMulti ? accountsList.length > 0 : !!connectedAccount;
-  const color = PLATFORM_COLORS[platform] || '#7C3AED';
+  const color = PLATFORM_COLORS[platform] || '#2563EB';
 
   const handleConnect = () => {
     const userId = user?.userId || (isMulti
@@ -102,7 +97,7 @@ const PlatformCard = ({ platform, connectedAccount, isLoading }) => {
     if (accountsList.length === 0) return null;
     return (
       <Box sx={{ width: '100%', mb: 1 }}>
-        <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: 0.5, display: 'block', mb: 0.5 }}>
+        <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.65rem', textTransform: 'none', letterSpacing: 0.5, display: 'block', mb: 0.5 }}>
           {platform === 'facebook'
             ? `Facebook ${t('pages')} (${accountsList.length})`
             : `Instagram ${t('accounts')} (${accountsList.length})`}
@@ -189,7 +184,10 @@ const PlatformCard = ({ platform, connectedAccount, isLoading }) => {
         )}
 
         {/* Icon */}
-        <Box sx={{ display: 'flex', gap: 1, mb: 1.5, justifyContent: 'center', color: meta.isComingSoon ? 'text.secondary' : color }}>
+        <Box sx={{ position: 'relative', display: 'flex', gap: 1, mb: 1.5, justifyContent: 'center', alignItems: 'center', color: meta.isComingSoon ? 'text.secondary' : color }}>
+          {isConnected && [0, 1].map((n) => (
+            <Box key={n} aria-hidden sx={{ position: 'absolute', top: '50%', left: '50%', width: 36, height: 36, ml: '-18px', mt: '-18px', borderRadius: '50%', border: `1.5px solid ${color}`, opacity: 0, animation: `pp-ping 3s ${n * 1.5}s ease-out infinite` }} />
+          ))}
           {PLATFORM_ICONS[platform]}
         </Box>
 

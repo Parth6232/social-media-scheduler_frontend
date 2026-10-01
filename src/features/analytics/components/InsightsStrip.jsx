@@ -24,10 +24,10 @@ const TYPE_CONFIG = {
     icon: <WarningAmberIcon sx={{ fontSize: 18, color: '#F59E0B' }} />,
   },
   info: {
-    color: '#8B5CF6',
-    bg: 'rgba(139, 92, 246, 0.1)',
-    border: 'rgba(139, 92, 246, 0.25)',
-    icon: <LightbulbIcon sx={{ fontSize: 18, color: '#8B5CF6' }} />,
+    color: '#2563EB',
+    bg: 'rgba(37,99,235, 0.1)',
+    border: 'rgba(37,99,235, 0.25)',
+    icon: <LightbulbIcon sx={{ fontSize: 18, color: '#2563EB' }} />,
   },
 };
 

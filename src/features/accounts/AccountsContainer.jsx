@@ -4,10 +4,12 @@ import { accountsApiAction } from './accountsApiSlice';
 import PlatformCard from './component/PlatformCard';
 import { useTranslation } from '../../i18n/useTranslation';
 import AnimatedSection from '../../common/components/motion/AnimatedSection';
+import PageHeader from '../../common/components/motion/PageHeader';
+import Counter from '../../common/components/motion/Counter';
 // NEW: email notification settings
 import NotificationSettingsCard from './component/NotificationSettingsCard';
 
-const PLATFORMS = ['youtube', 'facebook', 'instagram', 'linkedin', 'twitter', 'whatsapp'];
+const PLATFORMS = ['youtube', 'facebook', 'instagram', 'linkedin'];
 
 const AccountsContainer = () => {
   const { t } = useTranslation();
@@ -39,21 +41,11 @@ const AccountsContainer = () => {
   return (
     <Box>
       {/* Header */}
-      <Box sx={{ mb: 4 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
-          <Box sx={{
-            width: 40, height: 40, borderRadius: 2,
-            background: 'linear-gradient(135deg, #7C3AED 0%, #2563EB 100%)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <LinkIcon sx={{ color: '#fff', fontSize: 20 }} />
-          </Box>
-          <Typography variant="h5" fontWeight={700}>{t('connectedAccounts')}</Typography>
-        </Box>
-        <Typography variant="body2" sx={{ color: 'text.secondary', ml: 7 }}>
-          {t('connectedAccountsSubtitle')}
-        </Typography>
-      </Box>
+      <PageHeader
+        icon={<LinkIcon />}
+        title={t('connectedAccounts')}
+        subtitle={t('connectedAccountsSubtitle')}
+      />
 
       {/* NEW: Email notification settings card — between header and stats banner */}
       <AnimatedSection delay={0.05} sx={{ mb: 1 }}>
@@ -62,22 +54,24 @@ const AccountsContainer = () => {
 
       {/* Stats banner */}
       {!isLoading && accounts && (
+        <AnimatedSection delay={0.1}>
         <Box sx={{
-          mb: 4, p: 2, borderRadius: 2,
+          mb: 4, p: 2, borderRadius: 3,
           background: (theme) => theme.palette.mode === 'dark'
-            ? 'linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(37, 99, 235, 0.1))'
-            : 'linear-gradient(135deg, rgba(124, 58, 237, 0.06), rgba(37, 99, 235, 0.06))',
+            ? 'rgba(37,99,235, 0.1)'
+            : 'rgba(37,99,235, 0.1)',
           border: '1px solid',
-          borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(124, 58, 237, 0.25)' : 'rgba(124, 58, 237, 0.15)',
+          borderColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(37,99,235, 0.25)' : 'rgba(37,99,235, 0.15)',
           display: 'flex', alignItems: 'center', gap: 2,
         }}>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             <Box component="span" sx={{ color: 'primary.main', fontWeight: 700, fontSize: '1.1rem' }}>
-              {uniqueConnectedPlatforms}
+              <Counter value={uniqueConnectedPlatforms} duration={1.2} />
             </Box>
             {' '}{t('of')} 3 {t('availablePlatformsConnected')}
           </Typography>
         </Box>
+        </AnimatedSection>
       )}
 
       {/* Platform Grid */}

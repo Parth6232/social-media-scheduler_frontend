@@ -76,7 +76,7 @@ const FailuresCard = ({ failures = { total: 0, byPlatform: [], reasons: [] } }) 
             {/* By Platform Mini Bars */}
             {byPlatform.length > 0 && (
               <Box>
-                <Typography variant="caption" fontWeight={700} sx={{ color: 'text.secondary', textTransform: 'uppercase', letterSpacing: 0.5, display: 'block', mb: 1 }}>
+                <Typography variant="caption" fontWeight={700} sx={{ color: 'text.secondary', textTransform: 'none', letterSpacing: 0.5, display: 'block', mb: 1 }}>
                   Failures by Platform
                 </Typography>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
@@ -118,7 +118,7 @@ const FailuresCard = ({ failures = { total: 0, byPlatform: [], reasons: [] } }) 
             {/* Top Error Reasons List */}
             {reasons.length > 0 && (
               <Box sx={{ mt: 1 }}>
-                <Typography variant="caption" fontWeight={700} sx={{ color: 'text.secondary', textTransform: 'uppercase', letterSpacing: 0.5, display: 'block', mb: 1 }}>
+                <Typography variant="caption" fontWeight={700} sx={{ color: 'text.secondary', textTransform: 'none', letterSpacing: 0.5, display: 'block', mb: 1 }}>
                   Top Failure Reasons
                 </Typography>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>

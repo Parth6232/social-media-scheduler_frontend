@@ -21,45 +21,45 @@ import { StaggerContainer, StaggerItem } from '../../common/components/motion/St
 const TYPE_CONFIG = {
   feed: {
     icon: <DynamicFeedIcon sx={{ fontSize: 26 }} />,
-    color: '#7C3AED',
-    gradient: 'linear-gradient(135deg, rgba(124,58,237,0.2) 0%, rgba(37,99,235,0.2) 100%)',
-    borderHover: '#7C3AED',
+    color: '#2563EB',
+    gradient: 'rgba(37,99,235,0.1)',
+    borderHover: '#2563EB',
   },
   text: {
     icon: <TextFieldsIcon sx={{ fontSize: 26 }} />,
     color: '#0D9488',
-    gradient: 'linear-gradient(135deg, rgba(13,148,136,0.2) 0%, rgba(20,184,166,0.2) 100%)',
+    gradient: 'rgba(13,148,136,0.1)',
     borderHover: '#0D9488',
   },
   photo: {
     icon: <PhotoLibraryIcon sx={{ fontSize: 26 }} />,
     color: '#F59E0B',
-    gradient: 'linear-gradient(135deg, rgba(245,158,11,0.2) 0%, rgba(234,88,12,0.2) 100%)',
+    gradient: 'rgba(245,158,11,0.1)',
     borderHover: '#F59E0B',
   },
   reel: {
     icon: <MovieCreationIcon sx={{ fontSize: 26 }} />,
     color: '#E1306C',
-    gradient: 'linear-gradient(135deg, rgba(225,48,108,0.2) 0%, rgba(168,85,247,0.2) 100%)',
+    gradient: 'rgba(225,48,108,0.1)',
     borderHover: '#E1306C',
   },
   video: {
     icon: <VideoLibraryIcon sx={{ fontSize: 26 }} />,
     color: '#FF0000',
-    gradient: 'linear-gradient(135deg, rgba(255,0,0,0.2) 0%, rgba(220,38,38,0.2) 100%)',
+    gradient: 'rgba(255,0,0,0.1)',
     borderHover: '#FF0000',
   },
   facebookVideo: {
     icon: <SlowMotionVideoIcon sx={{ fontSize: 26 }} />,
     color: '#1877F2',
-    gradient: 'linear-gradient(135deg, rgba(24,119,242,0.2) 0%, rgba(37,99,235,0.2) 100%)',
+    gradient: 'rgba(24,119,242,0.1)',
     borderHover: '#1877F2',
   },
   story: {
     icon: <ViewDayIcon sx={{ fontSize: 26 }} />,
-    color: '#D946EF',
-    gradient: 'linear-gradient(135deg, rgba(217,70,239,0.2) 0%, rgba(244,63,94,0.2) 100%)',
-    borderHover: '#D946EF',
+    color: '#1D4ED8',
+    gradient: 'rgba(37,99,235,0.1)',
+    borderHover: '#1D4ED8',
   },
 };
 
@@ -83,20 +83,18 @@ const PostTypeSelector = ({ onSelectType }) => {
       {/* Header */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3.5 }}>
         <motion.div
-          animate={{ rotateY: [0, 15, 0, -15, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-          style={{ perspective: 600 }}
+          
         >
           <Box
             sx={{
               width: 44,
               height: 44,
               borderRadius: 2.5,
-              background: 'linear-gradient(135deg, #7C3AED 0%, #2563EB 100%)',
+              background: '#2563EB',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 4px 14px rgba(124, 58, 237, 0.35)',
+              boxShadow: '0 4px 14px rgba(37,99,235, 0.35)',
             }}
           >
             <AddCircleIcon sx={{ color: '#fff', fontSize: 24 }} />
@@ -126,6 +124,7 @@ const PostTypeSelector = ({ onSelectType }) => {
               <Grid key={typeKey} size={{ xs: 12, sm: 6, md: 4 }}>
                 <StaggerItem>
                   <ButtonBase
+                    className="pp-type"
                     onClick={() => onSelectType(typeKey)}
                     sx={{
                       width: '100%',
@@ -156,10 +155,9 @@ const PostTypeSelector = ({ onSelectType }) => {
                         {/* Top Row: Icon & badges */}
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 2 }}>
                           <Box
-                            component={motion.div}
-                            whileHover={{ rotateY: 25, scale: 1.12 }}
-                            style={{ perspective: 500 }}
-                            sx={{
+                            className="pp-type-ico"
+                            data-type={typeKey}
+                            sx={{ perspective: 400,
                               width: 48,
                               height: 48,
                               borderRadius: 2.5,

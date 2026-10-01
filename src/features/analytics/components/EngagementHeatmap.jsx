@@ -31,17 +31,17 @@ const getCellLevel = (score, maxScore) => {
 const CELL_COLORS = {
   dark: {
     0: 'rgba(255, 255, 255, 0.04)',
-    1: 'rgba(139, 92, 246, 0.28)',
+    1: 'rgba(37,99,235, 0.28)',
     2: 'rgba(147, 51, 234, 0.52)',
-    3: 'rgba(192, 38, 211, 0.78)',
-    4: 'rgba(217, 70, 239, 1)',
+    3: 'rgba(37,99,235, 0.78)',
+    4: 'rgba(37,99,235, 1)',
   },
   light: {
     0: 'rgba(0, 0, 0, 0.04)',
-    1: 'rgba(139, 92, 246, 0.25)',
+    1: 'rgba(37,99,235, 0.25)',
     2: 'rgba(147, 51, 234, 0.48)',
-    3: 'rgba(192, 38, 211, 0.72)',
-    4: 'rgba(217, 70, 239, 0.95)',
+    3: 'rgba(37,99,235, 0.72)',
+    4: 'rgba(37,99,235, 0.95)',
   },
 };
 
@@ -161,7 +161,7 @@ const EngagementHeatmap = ({ heatmap = { cells: [], maxScore: 0, totalPosts: 0 }
                       bgcolor: palette[level],
                       cursor: 'pointer',
                       border: isBest
-                        ? '2px solid #22D3EE'
+                        ? '2px solid #0EA5E9'
                         : isDark
                         ? '1px solid rgba(255,255,255,0.06)'
                         : '1px solid rgba(0,0,0,0.06)',
@@ -169,7 +169,7 @@ const EngagementHeatmap = ({ heatmap = { cells: [], maxScore: 0, totalPosts: 0 }
                       transition: 'all 0.15s ease',
                       outline: 'none',
                       '&:focus-visible': {
-                        outline: '2px solid #8B5CF6',
+                        outline: '2px solid #2563EB',
                         zIndex: 10,
                       },
                     }}

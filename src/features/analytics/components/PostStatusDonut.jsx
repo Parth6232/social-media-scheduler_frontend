@@ -12,7 +12,7 @@ const STATUS_CONFIG = {
   published: { labelKey: 'statusPublished', color: '#10B981' },
   processing: { labelKey: 'statusProcessing', color: '#3B82F6' },
   pending: { labelKey: 'statusPending', color: '#F59E0B' },
-  partial: { labelKey: 'statusPartial', color: '#8B5CF6' },
+  partial: { labelKey: 'statusPartial', color: '#2563EB' },
   failed: { labelKey: 'statusFailed', color: '#EF4444' },
 };
 
@@ -52,7 +52,7 @@ const PostStatusDonut = ({ postStatus = {} }) => {
     return Object.entries(postStatus)
       .filter(([_, count]) => count > 0)
       .map(([statusKey, count]) => {
-        const config = STATUS_CONFIG[statusKey] || { labelKey: statusKey, color: '#8B5CF6' };
+        const config = STATUS_CONFIG[statusKey] || { labelKey: statusKey, color: '#2563EB' };
         const percent = total > 0 ? Math.round((count / total) * 100) : 0;
         return {
           name: t(config.labelKey) || statusKey,

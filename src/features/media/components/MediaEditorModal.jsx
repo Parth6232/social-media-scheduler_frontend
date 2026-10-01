@@ -375,7 +375,7 @@ const MediaEditorModal = ({ open, media, onClose, onApply }) => {
               minHeight: 36, mb: 1,
               '& .MuiTab-root': { minHeight: 36, textTransform: 'none', fontSize: '0.88rem', color: 'rgba(255,255,255,0.55)', px: 1 },
               '& .Mui-selected': { color: 'white', fontWeight: 700 },
-              '& .MuiTabs-indicator': { backgroundColor: '#7C3AED', height: 3, borderRadius: 3 }
+              '& .MuiTabs-indicator': { backgroundColor: '#2563EB', height: 3, borderRadius: 3 }
             }}
           >
             <Tab label={t('filters')} />
@@ -414,7 +414,7 @@ const MediaEditorModal = ({ open, media, onClose, onApply }) => {
                         <Box sx={{
                           width: 58, height: 58, borderRadius: '50%',
                           border: isSelected ? '3px solid white' : '2px solid rgba(255,255,255,0.15)',
-                          overflow: 'hidden', mb: 0.5, boxShadow: isSelected ? '0 0 0 2px #7C3AED' : 'none',
+                          overflow: 'hidden', mb: 0.5, boxShadow: isSelected ? '0 0 0 2px #2563EB' : 'none',
                           transition: 'border 0.15s, box-shadow 0.15s'
                         }}>
                           {isVideo ? (
@@ -445,8 +445,8 @@ const MediaEditorModal = ({ open, media, onClose, onApply }) => {
                           key={r.label} label={r.label} size="small"
                           onClick={() => setAspectRatio(r.value)}
                           sx={{
-                            bgcolor: aspectRatio === r.value ? '#7C3AED' : 'rgba(255,255,255,0.1)', color: 'white', fontWeight: 600,
-                            '&:hover': { bgcolor: aspectRatio === r.value ? '#6D28D9' : 'rgba(255,255,255,0.2)' }
+                            bgcolor: aspectRatio === r.value ? '#2563EB' : 'rgba(255,255,255,0.1)', color: 'white', fontWeight: 600,
+                            '&:hover': { bgcolor: aspectRatio === r.value ? '#2563EB' : 'rgba(255,255,255,0.2)' }
                           }}
                         />
                       ))}
@@ -464,7 +464,7 @@ const MediaEditorModal = ({ open, media, onClose, onApply }) => {
                       <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.6)', mb: 0.5, display: 'block' }}>{t('flip')}</Typography>
                       <IconButton
                         onClick={() => setFlip(f => f === 'horizontal' ? 'vertical' : (f === 'vertical' ? null : 'horizontal'))}
-                        sx={{ bgcolor: flip ? '#7C3AED' : 'rgba(255,255,255,0.1)', color: 'white' }}
+                        sx={{ bgcolor: flip ? '#2563EB' : 'rgba(255,255,255,0.1)', color: 'white' }}
                       >
                         <FlipIcon />
                       </IconButton>
@@ -477,7 +477,7 @@ const MediaEditorModal = ({ open, media, onClose, onApply }) => {
                         <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.6)', display: 'flex', justifyContent: 'space-between' }}>
                           {t('speed')} <span style={{ color: 'white', fontWeight: 700 }}>{speed === 0 ? '1x' : `${(1 + speed / 100).toFixed(1)}x`}</span>
                         </Typography>
-                        <Slider value={speed} onChange={(e, v) => setSpeed(v)} min={-50} max={100} step={10} sx={{ color: '#7C3AED' }} />
+                        <Slider value={speed} onChange={(e, v) => setSpeed(v)} min={-50} max={100} step={10} sx={{ color: '#2563EB' }} />
                       </Box>
                       <Box>
                         <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.6)', display: 'flex', justifyContent: 'space-between' }}>
@@ -491,7 +491,7 @@ const MediaEditorModal = ({ open, media, onClose, onApply }) => {
                             value={isMuted ? 0 : volume}
                             onChange={(e, v) => { setVolume(v); setIsMuted(false); }}
                             min={0} max={200}
-                            sx={{ color: '#7C3AED' }}
+                            sx={{ color: '#2563EB' }}
                             disabled={replaceOriginalAudio && !!selectedMusic}
                           />
                         </Box>
@@ -563,7 +563,7 @@ const MediaEditorModal = ({ open, media, onClose, onApply }) => {
                         const isInside = barTime >= musicStartOffset && barTime <= (musicStartOffset + clipDuration);
                         return (
                           <Box key={i} sx={{
-                            width: '1%', height: `${h}%`, bgcolor: isInside ? '#7C3AED' : 'rgba(255,255,255,0.2)',
+                            width: '1%', height: `${h}%`, bgcolor: isInside ? '#2563EB' : 'rgba(255,255,255,0.2)',
                             borderRadius: 1, transition: 'background-color 0.1s'
                           }} />
                         );
@@ -575,7 +575,7 @@ const MediaEditorModal = ({ open, media, onClose, onApply }) => {
                         left: `${(musicStartOffset / songDuration) * 100}%`,
                         width: `${(clipDuration / songDuration) * 100}%`,
                         border: '2px solid white', borderRadius: 2, pointerEvents: 'none',
-                        boxShadow: '0 0 10px rgba(124, 58, 237, 0.5)'
+                        boxShadow: '0 0 10px rgba(37,99,235, 0.5)'
                       }} />
                     </Box>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 0.5 }}>
@@ -593,7 +593,7 @@ const MediaEditorModal = ({ open, media, onClose, onApply }) => {
                     value={musicVolume}
                     onChange={(e, v) => setMusicVolume(v)}
                     min={0} max={200}
-                    sx={{ color: '#7C3AED' }}
+                    sx={{ color: '#2563EB' }}
                   />
                 </Box>
                 <FormControlLabel
@@ -603,8 +603,8 @@ const MediaEditorModal = ({ open, media, onClose, onApply }) => {
                       onChange={(e) => setReplaceOriginalAudio(e.target.checked)}
                       size="small"
                       sx={{
-                        '& .MuiSwitch-switchBase.Mui-checked': { color: '#7C3AED' },
-                        '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { backgroundColor: '#7C3AED' },
+                        '& .MuiSwitch-switchBase.Mui-checked': { color: '#2563EB' },
+                        '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { backgroundColor: '#2563EB' },
                       }}
                     />
                   }

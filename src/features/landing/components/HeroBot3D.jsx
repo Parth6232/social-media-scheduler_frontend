@@ -61,39 +61,39 @@ const BotCore = ({ reduced }) => {
         </mesh>
         <mesh position={[0, -0.02, 0.48]}>
           <boxGeometry args={[0.62, 0.16, 0.12]} />
-          <meshPhysicalMaterial {...glossy('#22D3EE', { emissive: '#22D3EE', emissiveIntensity: 1.4, roughness: 0.15 })} />
+          <meshPhysicalMaterial {...glossy('#0EA5E9', { emissive: '#0EA5E9', emissiveIntensity: 1.4, roughness: 0.15 })} />
         </mesh>
       </group>
 
       {/* Torso */}
       <RoundedBox args={[0.95, 1.05, 0.6]} radius={0.22} smoothness={6} position={[0, 0.05, 0]}>
-        <meshPhysicalMaterial {...glossy('#8B5CF6', { transmission: 0.08, roughness: 0.22 })} />
+        <meshPhysicalMaterial {...glossy('#2563EB', { transmission: 0.08, roughness: 0.22 })} />
       </RoundedBox>
 
       {/* Chest emblem */}
       <mesh position={[0, 0.15, 0.32]}>
         <torusGeometry args={[0.16, 0.045, 24, 48]} />
-        <meshPhysicalMaterial {...glossy('#E879F9', { emissive: '#D946EF', emissiveIntensity: 0.9 })} />
+        <meshPhysicalMaterial {...glossy('#3B82F6', { emissive: '#1D4ED8', emissiveIntensity: 0.9 })} />
       </mesh>
 
       {/* Shoulders */}
       {[-0.68, 0.68].map((x) => (
         <mesh key={x} position={[x, 0.4, 0]}>
           <sphereGeometry args={[0.22, 32, 32]} />
-          <meshPhysicalMaterial {...glossy('#C4B5FD')} />
+          <meshPhysicalMaterial {...glossy('#93C5FD')} />
         </mesh>
       ))}
 
       {/* Automation halo ring */}
       <mesh ref={ringRef} rotation={[Math.PI / 2.4, 0, 0]}>
         <torusGeometry args={[1.55, 0.02, 16, 100]} />
-        <meshPhysicalMaterial {...glossy('#67E8F9', { emissive: '#22D3EE', emissiveIntensity: 1.1 })} />
+        <meshPhysicalMaterial {...glossy('#67E8F9', { emissive: '#0EA5E9', emissiveIntensity: 1.1 })} />
       </mesh>
 
       {/* Orbiting data nodes */}
-      <OrbitNode radius={1.55} speed={0.35} offset={0} color="#22D3EE" y={0.1} reduced={reduced} />
-      <OrbitNode radius={1.55} speed={0.35} offset={2.1} color="#D946EF" y={-0.1} reduced={reduced} />
-      <OrbitNode radius={1.55} speed={0.35} offset={4.2} color="#A78BFA" y={0.2} reduced={reduced} />
+      <OrbitNode radius={1.55} speed={0.35} offset={0} color="#0EA5E9" y={0.1} reduced={reduced} />
+      <OrbitNode radius={1.55} speed={0.35} offset={2.1} color="#1D4ED8" y={-0.1} reduced={reduced} />
+      <OrbitNode radius={1.55} speed={0.35} offset={4.2} color="#93C5FD" y={0.2} reduced={reduced} />
     </group>
   );
 };
@@ -117,8 +117,8 @@ const HeroBot3D = ({ className }) => {
       >
         <ambientLight intensity={0.55} />
         <directionalLight position={[3, 4, 4]} intensity={1.1} color="#ffffff" />
-        <pointLight position={[-3, -1, -2]} intensity={18} color="#D946EF" />
-        <pointLight position={[3, 2, -1]} intensity={14} color="#22D3EE" />
+        <pointLight position={[-3, -1, -2]} intensity={18} color="#1D4ED8" />
+        <pointLight position={[3, 2, -1]} intensity={14} color="#0EA5E9" />
 
         <Suspense fallback={null}>
           <Float speed={reduced ? 0 : 1.4} rotationIntensity={reduced ? 0 : 0.25} floatIntensity={reduced ? 0 : 0.7}>

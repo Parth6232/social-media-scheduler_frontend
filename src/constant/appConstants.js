@@ -28,18 +28,6 @@ export const appConstants = {
       color: '#0A66C2',
       iconName: 'LinkedIn',
       isComingSoon: true,
-    },
-    twitter: {
-      name: 'X (Twitter)',
-      color: '#000000',
-      iconName: 'X',
-      isComingSoon: true,
-    },
-    whatsapp: {
-      name: 'WhatsApp',
-      color: '#25D366',
-      iconName: 'WhatsApp',
-      isComingSoon: true,
     }
   }
 };

@@ -20,7 +20,6 @@ import { StaggerContainer, StaggerItem } from '../../common/components/motion/St
 import { motion } from 'framer-motion';
 import postPilotIcon from '../../assets/brand/postpilot-icon-256.png';
 import AuthBackground from '../../common/components/auth/AuthBackground';
-import AuthFloatingChips from '../../common/components/auth/AuthFloatingChips';
 import usePrefersReducedMotion from '../../features/landing/hooks/usePrefersReducedMotion';
 
 const schema = z.object({
@@ -80,7 +79,7 @@ const SignupContainer = () => {
     alignItems: 'center',
     border: `1px solid ${hasError
       ? '#f44336'
-      : isDark ? 'rgba(255,255,255,0.1)' : 'rgba(139,92,246,0.18)'}`,
+      : isDark ? 'rgba(255,255,255,0.1)' : 'rgba(37,99,235,0.18)'}`,
     borderRadius: '12px',
     px: 1.5,
     py: 0.75,
@@ -90,10 +89,10 @@ const SignupContainer = () => {
     backdropFilter: 'blur(8px)',
     transition: 'border-color 0.25s, box-shadow 0.25s',
     '&:focus-within': {
-      borderColor: '#8B5CF6',
+      borderColor: '#2563EB',
       boxShadow: isDark
-        ? '0 0 0 3px rgba(139,92,246,0.18)'
-        : '0 0 0 3px rgba(139,92,246,0.12)',
+        ? '0 0 0 3px rgba(37,99,235,0.18)'
+        : '0 0 0 3px rgba(37,99,235,0.12)',
     },
   });
 
@@ -160,7 +159,7 @@ const SignupContainer = () => {
           fontSize: '0.8rem',
           fontWeight: 500,
           transition: 'color 0.2s',
-          '&:hover': { color: '#8B5CF6' },
+          '&:hover': { color: '#2563EB' },
         }}
       >
         <HomeIcon sx={{ fontSize: 16 }} />
@@ -169,7 +168,7 @@ const SignupContainer = () => {
 
       {/* Card wrapper — chips positioned relative to this */}
       <Box sx={{ width: '100%', maxWidth: 460, position: 'relative', zIndex: 1 }}>
-        <AuthFloatingChips />
+        
 
         <StaggerContainer>
 
@@ -188,14 +187,14 @@ const SignupContainer = () => {
                 width: 68,
                 height: 68,
                 borderRadius: '18px',
-                background: 'linear-gradient(135deg, #ffffff 0%, #eef2ff 100%)',
+                background: '#FFFFFF',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 mb: 2.5,
                 boxShadow: isDark
-                  ? '0 0 40px rgba(139,92,246,0.5), 0 8px 20px rgba(0,0,0,0.35)'
-                  : '0 0 32px rgba(139,92,246,0.28), 0 8px 20px rgba(0,0,0,0.1)',
+                  ? '0 0 40px rgba(37,99,235,0.5), 0 8px 20px rgba(0,0,0,0.35)'
+                  : '0 0 32px rgba(37,99,235,0.28), 0 8px 20px rgba(0,0,0,0.1)',
                 cursor: 'pointer',
                 p: 1,
                 perspective: '600px',
@@ -212,7 +211,7 @@ const SignupContainer = () => {
               fontWeight={700}
               sx={{
                 textAlign: 'center',
-                background: 'linear-gradient(90deg, #A78BFA 0%, #E879F9 50%, #67E8F9 100%)',
+                background: '#2563EB',
                 backgroundClip: 'text',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
@@ -314,16 +313,16 @@ const SignupContainer = () => {
                     mt: 0.5,
                     fontSize: '0.98rem',
                     borderRadius: '12px',
-                    background: 'linear-gradient(135deg, #7C3AED 0%, #C026D3 55%, #F472B6 100%)',
+                    background: '#2563EB',
                     backgroundSize: '160% 160%',
                     boxShadow: isDark
-                      ? '0 8px 24px rgba(192,38,211,0.38)'
-                      : '0 8px 24px rgba(139,92,246,0.3)',
+                      ? '0 8px 24px rgba(37,99,235,0.38)'
+                      : '0 8px 24px rgba(37,99,235,0.3)',
                     border: '1px solid rgba(255,255,255,0.15)',
                     '&:hover': {
                       boxShadow: isDark
-                        ? '0 12px 32px rgba(192,38,211,0.52)'
-                        : '0 12px 32px rgba(139,92,246,0.4)',
+                        ? '0 12px 32px rgba(37,99,235,0.52)'
+                        : '0 12px 32px rgba(37,99,235,0.4)',
                       backgroundPosition: '100% 0%',
                       transform: 'perspective(600px) rotateX(6deg) translateY(-2px)',
                     },

@@ -7,19 +7,19 @@ const TESTIMONIALS = [
     quote: 'PostPilot cut our content ops time in half. Scheduling across five platforms used to eat our whole morning — now it runs itself.',
     name: 'Ananya Rao',
     role: 'Founder, StudioBloom',
-    color: '#8B5CF6',
+    color: '#2563EB',
   },
   {
     quote: 'The analytics finally make sense. We know exactly which posts to double down on instead of guessing.',
     name: 'Karan Mehta',
     role: 'Growth Lead, Nimbus Labs',
-    color: '#D946EF',
+    color: '#1D4ED8',
   },
   {
     quote: 'Automation rules + AI captions is a genuinely great combo. It feels like having a social media manager on call 24/7.',
     name: 'Sara Fernandes',
     role: 'Creator, 240k followers',
-    color: '#22D3EE',
+    color: '#0EA5E9',
   },
 ];
 
@@ -55,10 +55,9 @@ const TestimonialsSection = () => {
                   p: 3.5,
                   borderRadius: 4,
                   transformStyle: 'preserve-3d',
-                  backdropFilter: 'blur(14px)',
                   backgroundColor: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.82)',
                   border: isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.06)',
-                  boxShadow: isDark ? '0 20px 45px rgba(0,0,0,0.35)' : '0 20px 45px rgba(139,92,246,0.1)',
+                  boxShadow: isDark ? '0 8px 24px rgba(0,0,0,0.35)' : '0 8px 24px rgba(16,24,40,0.06)',
                 }}
               >
                 <FormatQuoteIcon sx={{ fontSize: 32, color: t.color, opacity: 0.6, mb: 1 }} />

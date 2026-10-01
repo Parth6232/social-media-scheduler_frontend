@@ -15,7 +15,7 @@ import postPilotIcon from '../assets/brand/postpilot-icon-256.png';
 import { StaggerContainer, StaggerItem } from './components/motion/Stagger';
 
 const LogoBox = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(3),
+  padding: theme.spacing(2.5, 2.5, 1),
   display: 'flex',
   alignItems: 'center',
   gap: theme.spacing(1.25),
@@ -26,18 +26,15 @@ const StyledNavLink = styled(NavLink)(({ theme }) => ({
   color: theme.palette.text.secondary,
   display: 'block',
   '&.active': {
-    color: theme.palette.mode === 'dark' ? '#ffffff' : theme.palette.primary.main,
-    '& .MuiListItemIcon-root': {
-      color: theme.palette.primary.main,
-      filter: theme.palette.mode === 'dark' ? 'drop-shadow(0 0 8px rgba(124, 58, 237, 0.5))' : 'none',
-    },
+    color: theme.palette.primary.main,
   },
 }));
 
 const StyledListItem = styled(ListItem)(({ theme }) => ({
-  margin: '4px 16px',
-  width: 'calc(100% - 32px)',
-  borderRadius: 10,
+  margin: '2px 12px',
+  width: 'calc(100% - 24px)',
+  borderRadius: 8,
+  padding: '7px 10px',
   position: 'relative',
   overflow: 'hidden',
   transition: 'color 0.2s ease-in-out',
@@ -64,47 +61,14 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
     <Box 
       component={motion.div}
       initial={false}
-      animate={{ x: 0, rotateY: 0, opacity: 1 }}
-      transition={{ duration: 0.6, type: 'spring', bounce: 0.3 }}
-      style={{ transformOrigin: 'left', perspective: 1200 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.4 }}
       sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <LogoBox>
-        <motion.div
-          whileHover={{ rotateY: 18, scale: 1.08 }}
-          animate={{ y: [0, -3, 0] }}
-          transition={{
-            y: { duration: 3.2, repeat: Infinity, ease: 'easeInOut' },
-            default: { duration: 0.35 },
-          }}
-          style={{
-            width: 42,
-            height: 42,
-            flexShrink: 0,
-            borderRadius: 12,
-            background: 'linear-gradient(135deg, #ffffff 0%, #eef2ff 100%)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 0 22px rgba(124, 58, 237, 0.45), 0 4px 10px rgba(0, 0, 0, 0.3)',
-            padding: 6,
-            perspective: 600,
-          }}
-        >
+        <Box sx={{ width: 34, height: 34, flexShrink: 0, borderRadius: '9px', bgcolor: '#fff', border: '1px solid', borderColor: 'divider', display: 'flex', alignItems: 'center', justifyContent: 'center', p: 0.5 }}>
           <Box component="img" src={postPilotIcon} alt="PostPilot" sx={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-        </motion.div>
-        <Typography
-          variant="h6"
-          fontWeight={800}
-          sx={{
-            background: 'linear-gradient(135deg, #ffffff 0%, #A78BFA 100%)',
-            backgroundClip: 'text',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            letterSpacing: '-0.01em',
-          }}
-        >
-          PostPilot
-        </Typography>
+        </Box>
+        <Typography variant="h6" sx={{ fontWeight: 600, letterSpacing: '-0.02em' }}>PostPilot</Typography>
       </LogoBox>
 
       <StaggerContainer initial={false} sx={{ flexGrow: 1, pt: 2 }}>
@@ -119,7 +83,6 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
               <StyledNavLink to={item.path} onClick={() => { if (mobileOpen) handleDrawerToggle(); }}>
                 <StyledListItem
                   component={motion.div}
-                  whileHover={{ scale: 1.02, x: 4 }}
                   whileTap={{ scale: 0.98 }}
                 >
                   {isActive && (
@@ -129,25 +92,24 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
                       style={{
                         position: 'absolute',
                         inset: 0,
-                        borderRadius: 10,
-                        background: 'linear-gradient(120deg, rgba(124,58,237,0.28), rgba(37,99,235,0.16))',
-                        border: '1px solid rgba(124, 58, 237, 0.45)',
-                        boxShadow: '0 4px 18px rgba(124, 58, 237, 0.25)',
+                        borderRadius: 8,
+                        backgroundColor: 'rgba(37,99,235,0.1)',
+                        boxShadow: 'inset 2px 0 0 #2563EB',
                         zIndex: 0,
                       }}
                     />
                   )}
                   <ListItemIcon
                     component={motion.div}
-                    whileHover={{ rotateY: 20, scale: 1.18 }}
+                    whileHover={{ scale: 1.12 }}
                     style={{ perspective: 400, position: 'relative', zIndex: 1 }}
-                    sx={{ minWidth: 40, color: 'inherit', display: 'flex' }}
+                    sx={{ minWidth: 36, color: 'inherit', display: 'flex', '& svg': { fontSize: 20 } }}
                   >
                     {item.icon}
                   </ListItemIcon>
                   <ListItemText
                     primary={t(item.labelKey)}
-                    slotProps={{ primary: { fontWeight: 500, sx: { position: 'relative', zIndex: 1 } } }}
+                    slotProps={{ primary: { fontWeight: isActive ? 600 : 500, fontSize: '0.9rem', sx: { position: 'relative', zIndex: 1, color: 'inherit' } } }}
                   />
                 </StyledListItem>
               </StyledNavLink>
@@ -171,8 +133,8 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
           '& .MuiDrawer-paper': {
             boxSizing: 'border-box',
             width: 260,
-            background: (theme) => theme.palette.mode === 'dark' ? 'linear-gradient(180deg, rgba(15, 20, 40, 0.95) 0%, rgba(5, 10, 20, 0.98) 100%)' : theme.palette.background.paper,
-            borderRight: (theme) => `1px solid ${theme.palette.divider}`,
+            backgroundColor: 'background.paper',
+            borderRight: '1px solid', borderColor: 'divider',
           },
         }}
       >
@@ -185,10 +147,8 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
           '& .MuiDrawer-paper': {
             boxSizing: 'border-box',
             width: 260,
-            background: (theme) => theme.palette.mode === 'dark' ? 'linear-gradient(180deg, rgba(15, 20, 40, 0.85) 0%, rgba(5, 10, 20, 0.95) 100%)' : theme.palette.background.paper,
-            backdropFilter: 'blur(20px)',
-            borderRight: (theme) => `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : theme.palette.divider}`,
-            boxShadow: (theme) => theme.palette.mode === 'dark' ? '4px 0 24px rgba(0,0,0,0.2)' : 'none',
+            backgroundColor: 'background.paper',
+            borderRight: '1px solid', borderColor: 'divider',
           },
         }}
         open

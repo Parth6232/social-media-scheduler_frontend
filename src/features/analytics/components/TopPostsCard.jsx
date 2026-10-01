@@ -120,7 +120,7 @@ const TopPostsCard = ({ topPosts = [] }) => {
                   {/* Stats (Views + Likes) */}
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexShrink: 0 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.4 }}>
-                      <VisibilityIcon sx={{ fontSize: 15, color: '#D946EF' }} />
+                      <VisibilityIcon sx={{ fontSize: 15, color: '#1D4ED8' }} />
                       <Typography variant="caption" fontWeight={700} sx={{ color: 'text.primary' }}>
                         {formatCompactNumber(post.views)}
                       </Typography>
@@ -141,7 +141,7 @@ const TopPostsCard = ({ topPosts = [] }) => {
                           href={post.publishedUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          sx={{ color: 'text.secondary', '&:hover': { color: '#8B5CF6' } }}
+                          sx={{ color: 'text.secondary', '&:hover': { color: '#2563EB' } }}
                           aria-label="Open post"
                         >
                           <OpenInNewIcon sx={{ fontSize: 16 }} />

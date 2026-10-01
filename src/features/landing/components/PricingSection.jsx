@@ -52,7 +52,7 @@ const PricingSection = () => {
             <Typography variant="body2" sx={{ fontWeight: yearly ? 400 : 700 }}>Monthly</Typography>
             <Switch checked={yearly} onChange={(e) => setYearly(e.target.checked)} color="secondary" />
             <Typography variant="body2" sx={{ fontWeight: yearly ? 700 : 400 }}>Yearly</Typography>
-            <Chip size="small" label="Save 20%" sx={{ background: 'linear-gradient(90deg,#22D3EE,#D946EF)', color: '#fff', fontWeight: 700 }} />
+            <Chip size="small" label="Save 20%" sx={{ background: '#2563EB', color: '#fff', fontWeight: 700 }} />
           </Stack>
         </Stack>
 
@@ -74,24 +74,23 @@ const PricingSection = () => {
                   borderRadius: 5,
                   display: 'flex',
                   flexDirection: 'column',
-                  backdropFilter: 'blur(18px)',
                   backgroundColor: plan.highlighted
                     ? isDark
-                      ? 'rgba(139,92,246,0.12)'
-                      : 'rgba(139,92,246,0.07)'
+                      ? 'rgba(37,99,235,0.12)'
+                      : 'rgba(37,99,235,0.07)'
                     : isDark
                     ? 'rgba(255,255,255,0.04)'
                     : 'rgba(255,255,255,0.8)',
-                  border: plan.highlighted ? '1px solid rgba(217,70,239,0.4)' : '1px solid',
-                  borderColor: plan.highlighted ? 'rgba(217,70,239,0.4)' : 'divider',
-                  boxShadow: plan.highlighted ? '0 25px 60px rgba(139,92,246,0.25)' : 'none',
+                  border: plan.highlighted ? '1px solid rgba(37,99,235,0.4)' : '1px solid',
+                  borderColor: plan.highlighted ? 'rgba(37,99,235,0.4)' : 'divider',
+                  boxShadow: plan.highlighted ? '0 0 0 1px #2563EB, 0 16px 40px rgba(37,99,235,0.15)' : 'none',
                 }}
               >
                 {plan.highlighted && (
                   <Chip
                     label="Most Popular"
                     size="small"
-                    sx={{ position: 'absolute', top: -14, left: 24, background: 'linear-gradient(90deg,#8B5CF6,#D946EF)', color: '#fff', fontWeight: 700 }}
+                    sx={{ position: 'absolute', top: -14, left: 24, background: '#2563EB', color: '#fff', fontWeight: 700 }}
                   />
                 )}
                 <Typography variant="h5" sx={{ mb: 0.5 }}>{plan.name}</Typography>
@@ -105,7 +104,7 @@ const PricingSection = () => {
                 <Stack spacing={1.5} sx={{ mb: 4, flexGrow: 1 }}>
                   {plan.features.map((f) => (
                     <Stack direction="row" spacing={1.2} alignItems="center" key={f}>
-                      <CheckCircleIcon sx={{ fontSize: 18, color: plan.highlighted ? '#D946EF' : '#22D3EE' }} />
+                      <CheckCircleIcon sx={{ fontSize: 18, color: plan.highlighted ? '#1D4ED8' : '#0EA5E9' }} />
                       <Typography variant="body2">{f}</Typography>
                     </Stack>
                   ))}

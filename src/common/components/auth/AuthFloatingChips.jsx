@@ -17,7 +17,7 @@ const CHIPS = [
     icon: <ScheduleIcon sx={{ fontSize: 16 }} />,
     label: 'Smart Scheduling',
     value: 'Auto-publish',
-    color: '#8B5CF6',
+    color: '#2563EB',
     sx: { top: '8%', left: { xs: '-120%', md: '-185px' }, display: { xs: 'none', md: 'block' } },
     delay: 0,
     duration: 7,
@@ -26,7 +26,7 @@ const CHIPS = [
     icon: <BarChartIcon sx={{ fontSize: 16 }} />,
     label: 'Analytics',
     value: '↑ 38% reach',
-    color: '#22D3EE',
+    color: '#0EA5E9',
     sx: { top: '38%', left: { xs: '-120%', md: '-200px' }, display: { xs: 'none', md: 'block' } },
     delay: 0.8,
     duration: 8,
@@ -35,7 +35,7 @@ const CHIPS = [
     icon: <AutoAwesomeIcon sx={{ fontSize: 16 }} />,
     label: 'Automation',
     value: 'AI-powered',
-    color: '#D946EF',
+    color: '#1D4ED8',
     sx: { top: '12%', right: { xs: '-120%', md: '-195px' }, display: { xs: 'none', md: 'block' } },
     delay: 0.4,
     duration: 9,
@@ -44,7 +44,7 @@ const CHIPS = [
     icon: <ThumbUpAltIcon sx={{ fontSize: 16 }} />,
     label: 'Engagement',
     value: '92% avg',
-    color: '#F472B6',
+    color: '#3B82F6',
     sx: { top: '52%', right: { xs: '-120%', md: '-190px' }, display: { xs: 'none', md: 'block' } },
     delay: 1.2,
     duration: 6,
@@ -84,7 +84,7 @@ const Chip = ({ icon, label, value, color, sx, delay, duration }) => {
           border: isDark ? '1px solid rgba(255,255,255,0.09)' : `1px solid ${color}26`,
           boxShadow: isDark
             ? `0 8px 26px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06)`
-            : `0 8px 26px rgba(139,92,246,0.12), inset 0 1px 0 rgba(255,255,255,0.7)`,
+            : `0 8px 26px rgba(37,99,235,0.12), inset 0 1px 0 rgba(255,255,255,0.7)`,
           whiteSpace: 'nowrap',
           cursor: 'default',
         }}
@@ -97,7 +97,7 @@ const Chip = ({ icon, label, value, color, sx, delay, duration }) => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            background: `linear-gradient(135deg, ${color}33, ${color}12)`,
+            background: `${color}1F`,
             color,
             flexShrink: 0,
           }}

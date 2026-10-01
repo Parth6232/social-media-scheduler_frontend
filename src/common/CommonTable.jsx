@@ -47,21 +47,20 @@ const CommonTable = ({ columns, rows, isLoading, searchKeys = [], emptyMessage }
       </Box>
 
       <TableContainer sx={{
-        borderRadius: 3,
+        borderRadius: '20px',
         border: '1px solid',
         borderColor: 'divider',
-        backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(16, 24, 46, 0.4)' : theme.palette.background.paper,
-        backdropFilter: 'blur(14px)',
-        boxShadow: (theme) => theme.palette.mode === 'dark' ? '0 12px 40px rgba(0, 0, 0, 0.35)' : '0 2px 12px rgba(0, 0, 0, 0.04)',
+        backgroundColor: (theme) => theme.custom.panel,
+                boxShadow: (theme) => theme.custom.lift(1),
         overflowX: 'auto',
       }}>
         <Table sx={{ minWidth: { xs: 600, md: '100%' } }}>
           <TableHead>
-            <TableRow sx={{ backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.02)' }}>
+            <TableRow sx={{ backgroundColor: (theme) => (theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.03)' : '#F9FAFB'), '& th': { borderBottom: '1px solid', borderBottomColor: 'divider' } }}>
               {columns.map((col) => (
                 <TableCell
                   key={col.key}
-                  sx={{ borderColor: 'divider', color: 'text.secondary', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: 0.8, fontWeight: 600, py: 1.5 }}
+                  sx={{ color: 'text.secondary', fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.02em', py: 1.5 }}
                 >
                   {col.label}
                 </TableCell>
@@ -96,8 +95,7 @@ const CommonTable = ({ columns, rows, isLoading, searchKeys = [], emptyMessage }
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: i * 0.04, ease: [0.21, 0.47, 0.32, 0.98] }}
-                  whileHover={{ backgroundColor: 'rgba(124, 58, 237, 0.06)', scale: 1.003 }}
-                  sx={{ transition: 'background 0.15s' }}
+                  sx={{ transition: 'background-color .15s', '&:hover': { backgroundColor: 'action.hover' }, '&:hover td:first-of-type': { boxShadow: 'inset 3px 0 0 #2563EB' }, '& td:first-of-type': { transition: 'box-shadow .2s' } }}
                 >
                   {columns.map((col) => (
                     <TableCell key={col.key} sx={{ borderColor: 'divider', py: 1.5, color: 'text.primary' }}>

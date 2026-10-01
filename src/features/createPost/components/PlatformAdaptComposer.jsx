@@ -65,10 +65,10 @@ const HashtagEditor = ({ tags, onChange }) => {
           sx={{
             fontSize: '0.72rem',
             fontWeight: 600,
-            backgroundColor: 'rgba(139,92,246,0.1)',
-            border: '1px solid rgba(139,92,246,0.3)',
-            color: '#A78BFA',
-            '& .MuiChip-deleteIcon': { color: 'rgba(167,139,250,0.6)' },
+            backgroundColor: 'rgba(37,99,235,0.1)',
+            border: '1px solid rgba(37,99,235,0.3)',
+            color: '#93C5FD',
+            '& .MuiChip-deleteIcon': { color: 'rgba(37,99,235,0.6)' },
           }}
         />
       ))}
@@ -86,7 +86,7 @@ const HashtagEditor = ({ tags, onChange }) => {
           aria-label="Add hashtag"
         />
         <IconButton size="small" onClick={addTag} aria-label="Add hashtag">
-          <AddIcon sx={{ fontSize: 14, color: '#A78BFA' }} />
+          <AddIcon sx={{ fontSize: 14, color: '#93C5FD' }} />
         </IconButton>
       </Box>
     </Box>
@@ -212,10 +212,10 @@ const PlatformAdaptComposer = ({ selectedPlatforms, setContent, aiTopic }) => {
             '& .MuiToggleButton-root': {
               px: 1.5, py: 0.4, fontSize: '0.7rem', fontWeight: 600,
               borderRadius: '8px !important',
-              border: '1px solid rgba(139,92,246,0.25) !important',
+              border: '1px solid rgba(37,99,235,0.25) !important',
               color: 'text.secondary',
               '&.Mui-selected': {
-                background: 'linear-gradient(135deg, #7C3AED 0%, #D946EF 100%)',
+                background: '#2563EB',
                 color: '#fff',
                 border: '1px solid transparent !important',
               },
@@ -236,10 +236,10 @@ const PlatformAdaptComposer = ({ selectedPlatforms, setContent, aiTopic }) => {
         loading={isLoading}
         startIcon={<AutoAwesomeIcon sx={{ fontSize: 16 }} />}
         sx={{
-          borderColor: '#A78BFA40',
-          color: '#A78BFA',
+          borderColor: '#93C5FD40',
+          color: '#93C5FD',
           mb: 2,
-          '&:hover': { borderColor: '#A78BFA', backgroundColor: '#A78BFA10' },
+          '&:hover': { borderColor: '#93C5FD', backgroundColor: '#93C5FD10' },
         }}
       >
         {t('adapt_generateBtn')}
@@ -291,7 +291,7 @@ const PlatformAdaptComposer = ({ selectedPlatforms, setContent, aiTopic }) => {
                 mb: 2,
                 minHeight: 40,
                 '& .MuiTabs-indicator': {
-                  background: 'linear-gradient(90deg, #7C3AED, #D946EF)',
+                  background: '#2563EB',
                   height: 3,
                   borderRadius: 2,
                 },
@@ -404,7 +404,7 @@ const PlatformAdaptComposer = ({ selectedPlatforms, setContent, aiTopic }) => {
                             startIcon={<CheckCircleIcon sx={{ fontSize: 16 }} />}
                             onClick={() => handleUseVersion(p)}
                             sx={{
-                              background: `linear-gradient(135deg, ${meta.color}, ${meta.color}cc)`,
+                              background: meta.color,
                               boxShadow: `0 4px 14px ${meta.color}40`,
                               borderRadius: 2,
                               textTransform: 'none',

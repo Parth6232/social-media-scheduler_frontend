@@ -3,7 +3,7 @@
 const uiSlice = createSlice({
   name: 'ui',
   initialState: {
-    themeMode: 'dark',   // default dark — existing UI na tute
+    themeMode: 'light',
     language: 'en',
   },
   reducers: {

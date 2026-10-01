@@ -27,15 +27,15 @@ const AnalyticsEmptyState = ({ isFiltered = false, onResetFilters }) => {
           width: 80,
           height: 80,
           borderRadius: 4,
-          background: 'linear-gradient(135deg, rgba(124, 58, 237, 0.2) 0%, rgba(217, 70, 239, 0.2) 100%)',
-          border: '1px solid rgba(124, 58, 237, 0.35)',
+          background: 'rgba(37,99,235, 0.1)',
+          border: '1px solid rgba(37,99,235, 0.35)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           mx: 'auto',
           mb: 2.5,
-          color: '#8B5CF6',
-          boxShadow: '0 8px 30px rgba(124, 58, 237, 0.25)',
+          color: '#2563EB',
+          boxShadow: '0 8px 30px rgba(37,99,235, 0.25)',
         }}
       >
         <BarChartIcon sx={{ fontSize: 44 }} />
@@ -60,8 +60,8 @@ const AnalyticsEmptyState = ({ isFiltered = false, onResetFilters }) => {
             borderRadius: 2.5,
             textTransform: 'none',
             fontWeight: 700,
-            background: 'linear-gradient(135deg, #7C3AED 0%, #D946EF 100%)',
-            boxShadow: '0 4px 14px rgba(124, 58, 237, 0.4)',
+            background: '#2563EB',
+            boxShadow: '0 4px 14px rgba(37,99,235, 0.4)',
           }}
         >
           {t('analytics_createFirstPost')}
@@ -81,8 +81,8 @@ const AnalyticsEmptyState = ({ isFiltered = false, onResetFilters }) => {
               borderColor: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)',
               color: 'text.primary',
               '&:hover': {
-                borderColor: '#8B5CF6',
-                color: '#8B5CF6',
+                borderColor: '#2563EB',
+                color: '#2563EB',
               },
             }}
           >

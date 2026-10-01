@@ -37,8 +37,8 @@ const LandingFooter = () => {
         borderColor: 'divider',
         py: { xs: 8, md: 10 },
         background: isDark 
-          ? 'linear-gradient(180deg, rgba(10, 8, 20, 0) 0%, rgba(10, 8, 20, 0.8) 100%)' 
-          : 'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(248, 250, 252, 1) 100%)',
+          ? 'transparent' 
+          : 'transparent',
       }}
     >
       <Container maxWidth="lg">
@@ -62,7 +62,7 @@ const LandingFooter = () => {
                       color: 'text.secondary',
                       bgcolor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)',
                       transition: 'background-color 0.2s',
-                      '&:hover': { bgcolor: isDark ? 'rgba(124, 58, 237, 0.1)' : 'rgba(124, 58, 237, 0.1)', color: theme.palette.primary.main }
+                      '&:hover': { bgcolor: isDark ? 'rgba(37,99,235, 0.1)' : 'rgba(37,99,235, 0.1)', color: theme.palette.primary.main }
                     }}
                   >
                     <Icon fontSize="small" />

@@ -1,61 +1,54 @@
 import { CardContent, Box, Typography, Skeleton } from '@mui/material';
+import { motion } from 'framer-motion';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import GlassCard from './components/motion/GlassCard';
-import Counter from './components/motion/Counter';
+import FlapNumber from './components/motion/FlapNumber';
 
-const CommonKpiCard = ({ label, value, icon, color = '#7C3AED', isLoading = false, subtitle, onClick, isActive = false }) => {
+/** `total` (optional) drives the thin progress bar: value / total. */
+const CommonKpiCard = ({ label, value, total, icon, color = '#2563EB', isLoading = false, subtitle, onClick, isActive = false }) => {
+  const fraction = total ? Math.min(1, (value || 0) / total) : 1;
   return (
     <GlassCard
       onClick={onClick}
       hoverEffect={!!onClick}
       sx={{
-        borderRadius: 3,
-        border: isActive ? `2px solid ${color}` : `1px solid ${color}30`,
-        position: 'relative',
-        overflow: 'hidden',
         cursor: onClick ? 'pointer' : 'default',
-        boxShadow: isActive ? `0 0 0 3px ${color}25` : undefined,
-        '&::before': {
-          content: '""',
-          position: 'absolute', top: 0, left: 0, right: 0, height: 3,
-          background: `linear-gradient(90deg, ${color}, transparent)`,
-        }
+        borderColor: isActive ? color : undefined,
+        boxShadow: isActive ? `0 0 0 3px color-mix(in srgb, ${color} 18%, transparent)` : undefined,
       }}
     >
-      <CardContent sx={{ p: 2.5 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+      <CardContent sx={{ p: 2.5, '&:last-child': { pb: 2.5 } }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 2 }}>
           <Box>
             {isLoading ? (
               <>
                 <Skeleton variant="text" width={80} height={16} />
-                <Skeleton variant="text" width={60} height={40} sx={{ mt: 0.5 }} />
+                <Skeleton variant="text" width={60} height={44} />
               </>
             ) : (
               <>
-                <Typography variant="caption" sx={{ color: 'text.secondary', textTransform: 'uppercase', letterSpacing: 0.8 }}>
-                  {label}
-                </Typography>
-                <Typography variant="h4" fontWeight={800} sx={{ color: 'text.primary', lineHeight: 1.2, mt: 0.5 }}>
-                  {value != null ? <Counter value={value} /> : '—'}
+                <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>{label}</Typography>
+                <Typography variant="h3" sx={{ mt: 0.5, fontSize: '2.2rem', fontVariantNumeric: 'tabular-nums' }}>
+                  {value != null ? <FlapNumber value={value} /> : '—'}
                 </Typography>
                 {subtitle && (
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.5 }}>
-                    <TrendingUpIcon sx={{ fontSize: 14, color: '#4ade80' }} />
-                    <Typography variant="caption" sx={{ color: '#4ade80' }}>{subtitle}</Typography>
+                    <TrendingUpIcon sx={{ fontSize: 14, color: 'success.main' }} />
+                    <Typography variant="caption" sx={{ color: 'success.main', fontWeight: 600 }}>{subtitle}</Typography>
                   </Box>
                 )}
               </>
             )}
           </Box>
-
-          <Box sx={{
-            width: 48, height: 48, borderRadius: 2,
-            backgroundColor: `${color}15`,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color,
-          }}>
+          <Box sx={{ width: 38, height: 38, borderRadius: '10px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color, bgcolor: `color-mix(in srgb, ${color} 12%, transparent)`, '& svg': { fontSize: 20 } }}>
             {icon}
           </Box>
+        </Box>
+        <Box sx={{ mt: 2, height: 4, borderRadius: 4, overflow: 'hidden', bgcolor: 'action.hover' }}>
+          <Box component={motion.div} initial={{ width: 0 }} animate={{ width: `${(isLoading ? 0 : fraction) * 100}%` }}
+            transition={{ duration: 0.9, ease: [0.2, 0.8, 0.2, 1], delay: 0.15 }}
+            sx={{ height: '100%', borderRadius: 4, bgcolor: color }} />
         </Box>
       </CardContent>
     </GlassCard>

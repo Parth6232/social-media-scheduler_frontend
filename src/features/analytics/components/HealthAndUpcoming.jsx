@@ -151,9 +151,9 @@ const HealthAndUpcoming = ({
                 label={`${upcoming.count || 0} Queued`}
                 size="small"
                 sx={{
-                  bgcolor: 'rgba(139, 92, 246, 0.15)',
-                  color: '#8B5CF6',
-                  border: '1px solid rgba(139, 92, 246, 0.3)',
+                  bgcolor: 'rgba(37,99,235, 0.15)',
+                  color: '#2563EB',
+                  border: '1px solid rgba(37,99,235, 0.3)',
                   fontWeight: 700,
                   fontSize: '0.72rem',
                 }}
@@ -172,11 +172,11 @@ const HealthAndUpcoming = ({
                   sx={{
                     borderRadius: 2.5,
                     textTransform: 'none',
-                    borderColor: '#8B5CF6',
-                    color: '#8B5CF6',
+                    borderColor: '#2563EB',
+                    color: '#2563EB',
                     '&:hover': {
-                      borderColor: '#7C3AED',
-                      bgcolor: 'rgba(124, 58, 237, 0.08)',
+                      borderColor: '#2563EB',
+                      bgcolor: 'rgba(37,99,235, 0.08)',
                     },
                   }}
                 >
@@ -236,7 +236,7 @@ const HealthAndUpcoming = ({
                         </Box>
                       </Box>
 
-                      <Typography variant="caption" fontWeight={700} sx={{ color: '#8B5CF6', whiteSpace: 'nowrap', flexShrink: 0 }}>
+                      <Typography variant="caption" fontWeight={700} sx={{ color: '#2563EB', whiteSpace: 'nowrap', flexShrink: 0 }}>
                         {dateStr}
                       </Typography>
                     </Box>

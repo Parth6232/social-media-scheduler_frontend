@@ -15,8 +15,8 @@ export const downloadAnalyticsPdf = async ({ data = {}, range = '30d', platform 
     format: 'a4',
   });
 
-  const primaryColor = [124, 58, 237]; // #7C3AED (Purple)
-  const secondaryColor = [217, 70, 239]; // #D946EF (Pink/Magenta)
+  const primaryColor = [124, 58, 237]; // #2563EB (Purple)
+  const secondaryColor = [217, 70, 239]; // #1D4ED8 (Pink/Magenta)
   const darkTextColor = [30, 27, 75]; // #1E1B4B
   const grayTextColor = [100, 116, 139]; // #64748B
   const lightBgColor = [248, 250, 252]; // #F8FAFC

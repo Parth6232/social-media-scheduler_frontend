@@ -45,7 +45,7 @@ const LandingNavbar = () => {
         sx={{
           background: scrolled
             ? isDark
-              ? 'rgba(10, 8, 20, 0.65)'
+              ? 'rgba(10,11,14, 0.65)'
               : 'rgba(255, 255, 255, 0.7)'
             : 'transparent',
           backdropFilter: scrolled ? 'blur(18px)' : 'none',

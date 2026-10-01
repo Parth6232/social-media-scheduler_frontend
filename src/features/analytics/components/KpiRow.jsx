@@ -34,7 +34,7 @@ const KpiRow = ({ totals = {}, comparison = null, timelinePoints = [] }) => {
               label={t('analytics_totalPosts')}
               value={totals.posts || 0}
               icon={<PostAddIcon sx={{ fontSize: 20 }} />}
-              color="#8B5CF6"
+              color="#2563EB"
               comparison={comparison?.posts}
               sparklineData={postsSpark}
             />
@@ -78,7 +78,7 @@ const KpiRow = ({ totals = {}, comparison = null, timelinePoints = [] }) => {
               value={totals.successRate != null ? totals.successRate : (totals.published + totals.failed === 0 ? 100 : 0)}
               isPercentage={true}
               icon={<TrendingUpIcon sx={{ fontSize: 20 }} />}
-              color="#22D3EE"
+              color="#0EA5E9"
               progressValue={totals.successRate != null ? totals.successRate : 0}
             />
           </StaggerItem>
@@ -91,7 +91,7 @@ const KpiRow = ({ totals = {}, comparison = null, timelinePoints = [] }) => {
               label={t('analytics_totalViews')}
               value={totals.views || 0}
               icon={<VisibilityIcon sx={{ fontSize: 20 }} />}
-              color="#D946EF"
+              color="#1D4ED8"
               comparison={comparison?.views}
               subtext={avgViewsText}
               sparklineData={viewsSpark}

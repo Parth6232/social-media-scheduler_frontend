@@ -48,7 +48,7 @@ const Waveform = ({ active, reduced }) => {
           key={i}
           style={{
             width: 3,
-            backgroundColor: '#A78BFA',
+            backgroundColor: '#93C5FD',
             borderRadius: 2,
             height: active ? undefined : `${h * 0.5}px`,
           }}
@@ -84,7 +84,7 @@ const MicOrb = ({ listening, reduced }) => (
               width: 80,
               height: 80,
               borderRadius: '50%',
-              border: '2px solid rgba(139,92,246,0.4)',
+              border: '2px solid rgba(37,99,235,0.4)',
             }}
             animate={{ scale: [1, 1.5 + ring * 0.3], opacity: [0.5, 0] }}
             transition={{ repeat: Infinity, duration: 1.5, delay: ring * 0.3, ease: 'easeOut' }}
@@ -98,18 +98,18 @@ const MicOrb = ({ listening, reduced }) => (
         height: 80,
         borderRadius: '50%',
         background: listening
-          ? 'linear-gradient(135deg, #7C3AED 0%, #D946EF 100%)'
-          : 'rgba(139,92,246,0.15)',
+          ? '#2563EB'
+          : 'rgba(37,99,235,0.15)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         border: '2px solid',
-        borderColor: listening ? 'transparent' : 'rgba(139,92,246,0.3)',
+        borderColor: listening ? 'transparent' : 'rgba(37,99,235,0.3)',
         transition: 'all 0.3s ease',
-        boxShadow: listening ? '0 0 30px rgba(139,92,246,0.5)' : 'none',
+        boxShadow: listening ? '0 0 30px rgba(37,99,235,0.5)' : 'none',
       }}
     >
-      <MicIcon sx={{ fontSize: 36, color: listening ? '#fff' : '#A78BFA' }} />
+      <MicIcon sx={{ fontSize: 36, color: listening ? '#fff' : '#93C5FD' }} />
     </Box>
   </Box>
 );
@@ -217,11 +217,11 @@ const VoiceCommandDialog = ({
   const glassSx = {
     background: isDark ? 'rgba(10,14,30,0.90)' : 'rgba(255,255,255,0.92)',
     backdropFilter: 'blur(24px)',
-    border: isDark ? '1px solid rgba(139,92,246,0.25)' : '1px solid rgba(139,92,246,0.15)',
+    border: isDark ? '1px solid rgba(37,99,235,0.25)' : '1px solid rgba(37,99,235,0.15)',
     borderRadius: 4,
     boxShadow: isDark
-      ? '0 24px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(139,92,246,0.1)'
-      : '0 24px 60px rgba(139,92,246,0.15)',
+      ? '0 24px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(37,99,235,0.1)'
+      : '0 24px 60px rgba(37,99,235,0.15)',
   };
 
   return (
@@ -270,9 +270,9 @@ const VoiceCommandDialog = ({
                       fontWeight: 600,
                       fontSize: '0.72rem',
                       border: '1px solid',
-                      borderColor: lang === l ? '#8B5CF6' : 'divider',
+                      borderColor: lang === l ? '#2563EB' : 'divider',
                       background: lang === l
-                        ? 'linear-gradient(135deg, #7C3AED 0%, #D946EF 100%)'
+                        ? '#2563EB'
                         : 'transparent',
                       color: lang === l ? '#fff' : 'text.secondary',
                     }}
@@ -343,9 +343,9 @@ const VoiceCommandDialog = ({
                     startIcon={<MicIcon sx={{ fontSize: 16 }} />}
                     onClick={handleStartListening}
                     sx={{
-                      borderColor: '#A78BFA40',
-                      color: '#A78BFA',
-                      '&:hover': { borderColor: '#A78BFA', backgroundColor: '#A78BFA10' },
+                      borderColor: '#93C5FD40',
+                      color: '#93C5FD',
+                      '&:hover': { borderColor: '#93C5FD', backgroundColor: '#93C5FD10' },
                       flex: 1,
                     }}
                   >
@@ -375,10 +375,10 @@ const VoiceCommandDialog = ({
                   onClick={() => handleParse(editableText)}
                   disabled={!editableText.trim()}
                   sx={{
-                    background: 'linear-gradient(135deg, #7C3AED 0%, #D946EF 100%)',
-                    boxShadow: '0 4px 14px rgba(139,92,246,0.35)',
+                    background: '#2563EB',
+                    boxShadow: '0 4px 14px rgba(37,99,235,0.35)',
                     flex: 1,
-                    '&:hover': { boxShadow: '0 6px 18px rgba(139,92,246,0.5)' },
+                    '&:hover': { boxShadow: '0 6px 18px rgba(37,99,235,0.5)' },
                   }}
                 >
                   {t('voice_understand')}
@@ -397,7 +397,7 @@ const VoiceCommandDialog = ({
               transition={{ duration: 0.2 }}
             >
               <Box sx={{ textAlign: 'center', py: 4 }}>
-                <CircularProgress size={40} sx={{ color: '#A78BFA', mb: 2 }} />
+                <CircularProgress size={40} sx={{ color: '#93C5FD', mb: 2 }} />
                 <Typography variant="body1" fontWeight={600}>{t('voice_parsing')}</Typography>
                 <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                   {t('voice_parsingSubtitle')}
@@ -444,7 +444,7 @@ const VoiceCommandDialog = ({
                   size="small"
                   sx={{
                     fontWeight: 600,
-                    background: 'linear-gradient(135deg, #7C3AED 0%, #2563EB 100%)',
+                    background: '#2563EB',
                     color: '#fff',
                   }}
                 />
@@ -556,9 +556,9 @@ const VoiceCommandDialog = ({
                         fontWeight: 600,
                         fontSize: '0.72rem',
                         border: '1px solid',
-                        borderColor: (opt === 'now') === postNow ? '#8B5CF6' : 'divider',
+                        borderColor: (opt === 'now') === postNow ? '#2563EB' : 'divider',
                         background: (opt === 'now') === postNow
-                          ? 'linear-gradient(135deg, #7C3AED 0%, #D946EF 100%)'
+                          ? '#2563EB'
                           : 'transparent',
                         color: (opt === 'now') === postNow ? '#fff' : 'text.secondary',
                       }}
@@ -590,7 +590,7 @@ const VoiceCommandDialog = ({
                   id="voice-autofill-ai"
                   checked={autoFillAI}
                   onChange={(e) => setAutoFillAI(e.target.checked)}
-                  style={{ accentColor: '#7C3AED', width: 16, height: 16 }}
+                  style={{ accentColor: '#2563EB', width: 16, height: 16 }}
                 />
                 <label htmlFor="voice-autofill-ai">
                   <Typography variant="caption" sx={{ cursor: 'pointer', color: 'text.secondary' }}>
@@ -627,9 +627,9 @@ const VoiceCommandDialog = ({
                       fullWidth
                       sx={{
                         background: canConfirm
-                          ? 'linear-gradient(135deg, #7C3AED 0%, #D946EF 100%)'
-                          : 'rgba(139,92,246,0.3)',
-                        boxShadow: canConfirm ? '0 4px 14px rgba(139,92,246,0.35)' : 'none',
+                          ? '#2563EB'
+                          : 'rgba(37,99,235,0.3)',
+                        boxShadow: canConfirm ? '0 4px 14px rgba(37,99,235,0.35)' : 'none',
                         textTransform: 'none',
                         fontWeight: 600,
                       }}

@@ -46,6 +46,49 @@ const getPasswordStrength = (password) => {
 const strengthColors = ['#f44336', '#ff9800', '#ff9800', '#4caf50', '#2196f3', '#2196f3'];
 const strengthKeys = ['', 'strengthWeak', 'strengthFair', 'strengthFair', 'strengthGood', 'strengthStrong'];
 
+// NOTE: Ye dono component ke BAHAR hain, taaki har render par naya component na bane
+// (warna password type karte waqt input ka focus chala jata tha).
+const inputBoxSx = (hasError, isDark) => ({
+  display: 'flex',
+  alignItems: 'center',
+  border: `1px solid ${hasError
+    ? '#f44336'
+    : isDark ? 'rgba(255,255,255,0.1)' : 'rgba(37,99,235,0.18)'}`,
+  borderRadius: '12px',
+  px: 1.5,
+  py: 0.75,
+  backgroundColor: isDark
+    ? 'rgba(255,255,255,0.04)'
+    : 'rgba(255,255,255,0.65)',
+  backdropFilter: 'blur(8px)',
+  transition: 'border-color 0.25s, box-shadow 0.25s',
+  '&:focus-within': {
+    borderColor: '#2563EB',
+    boxShadow: isDark
+      ? '0 0 0 3px rgba(37,99,235,0.18)'
+      : '0 0 0 3px rgba(37,99,235,0.12)',
+  },
+});
+
+const FieldBox = ({ icon, label, children, error, isDark }) => (
+  <Box sx={{ mb: 2.25 }}>
+    <Typography variant="caption" sx={{ color: 'text.secondary', mb: 0.75, display: 'block', fontWeight: 500, letterSpacing: '0.02em' }}>
+      {label}
+    </Typography>
+    <Box sx={inputBoxSx(!!error, isDark)}>
+      <Box sx={{ color: error ? '#f44336' : 'text.secondary', mr: 1, display: 'flex', flexShrink: 0 }}>
+        {icon}
+      </Box>
+      {children}
+    </Box>
+    {error && (
+      <Typography variant="caption" color="error" sx={{ ml: 0.5, mt: 0.4, display: 'block' }}>
+        {error.message}
+      </Typography>
+    )}
+  </Box>
+);
+
 const SignupContainer = () => {
   const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
@@ -74,28 +117,6 @@ const SignupContainer = () => {
 
   // ── Shared field styles ────────────────────────────────────────────────────
 
-  const inputBoxSx = (hasError) => ({
-    display: 'flex',
-    alignItems: 'center',
-    border: `1px solid ${hasError
-      ? '#f44336'
-      : isDark ? 'rgba(255,255,255,0.1)' : 'rgba(37,99,235,0.18)'}`,
-    borderRadius: '12px',
-    px: 1.5,
-    py: 0.75,
-    backgroundColor: isDark
-      ? 'rgba(255,255,255,0.04)'
-      : 'rgba(255,255,255,0.65)',
-    backdropFilter: 'blur(8px)',
-    transition: 'border-color 0.25s, box-shadow 0.25s',
-    '&:focus-within': {
-      borderColor: '#2563EB',
-      boxShadow: isDark
-        ? '0 0 0 3px rgba(37,99,235,0.18)'
-        : '0 0 0 3px rgba(37,99,235,0.12)',
-    },
-  });
-
   const nativeInputSx = {
     flex: 1,
     border: 'none',
@@ -106,27 +127,6 @@ const SignupContainer = () => {
     py: 0.5,
     '&::placeholder': { color: (t) => t.palette.text.secondary, opacity: 0.65 },
   };
-
-  // ── FieldBox sub-component ─────────────────────────────────────────────────
-
-  const FieldBox = ({ icon, label, children, error }) => (
-    <Box sx={{ mb: 2.25 }}>
-      <Typography variant="caption" sx={{ color: 'text.secondary', mb: 0.75, display: 'block', fontWeight: 500, letterSpacing: '0.02em' }}>
-        {label}
-      </Typography>
-      <Box sx={inputBoxSx(!!error)}>
-        <Box sx={{ color: error ? '#f44336' : 'text.secondary', mr: 1, display: 'flex', flexShrink: 0 }}>
-          {icon}
-        </Box>
-        {children}
-      </Box>
-      {error && (
-        <Typography variant="caption" color="error" sx={{ ml: 0.5, mt: 0.4, display: 'block' }}>
-          {error.message}
-        </Typography>
-      )}
-    </Box>
-  );
 
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
@@ -231,7 +231,7 @@ const SignupContainer = () => {
               <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
 
                 {/* Full Name */}
-                <FieldBox label={t('fullName')} icon={<PersonOutlinedIcon sx={{ fontSize: 18 }} />} error={errors.name}>
+                <FieldBox isDark={isDark} label={t('fullName')} icon={<PersonOutlinedIcon sx={{ fontSize: 18 }} />} error={errors.name}>
                   <Box
                     component="input"
                     {...register('name')}
@@ -241,7 +241,7 @@ const SignupContainer = () => {
                 </FieldBox>
 
                 {/* Email */}
-                <FieldBox label={t('emailAddress')} icon={<EmailOutlinedIcon sx={{ fontSize: 18 }} />} error={errors.email}>
+                <FieldBox isDark={isDark} label={t('emailAddress')} icon={<EmailOutlinedIcon sx={{ fontSize: 18 }} />} error={errors.email}>
                   <Box
                     component="input"
                     {...register('email')}
@@ -252,7 +252,7 @@ const SignupContainer = () => {
                 </FieldBox>
 
                 {/* Password */}
-                <FieldBox label={t('password')} icon={<LockOutlinedIcon sx={{ fontSize: 18 }} />} error={errors.password}>
+                <FieldBox isDark={isDark} label={t('password')} icon={<LockOutlinedIcon sx={{ fontSize: 18 }} />} error={errors.password}>
                   <Box
                     component="input"
                     type={showPassword ? 'text' : 'password'}
@@ -289,7 +289,7 @@ const SignupContainer = () => {
                 )}
 
                 {/* Confirm Password */}
-                <FieldBox label={t('confirmPassword')} icon={<LockOutlinedIcon sx={{ fontSize: 18 }} />} error={errors.confirmPassword}>
+                <FieldBox isDark={isDark} label={t('confirmPassword')} icon={<LockOutlinedIcon sx={{ fontSize: 18 }} />} error={errors.confirmPassword}>
                   <Box
                     component="input"
                     type={showConfirm ? 'text' : 'password'}

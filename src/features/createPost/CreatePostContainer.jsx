@@ -5,7 +5,7 @@ import {
 } from '@mui/material';
 import { useState, useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -100,6 +100,7 @@ const CreatePostContainer = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   // ─── Step management ───────────────────────────────────────────────
   const [step, setStep] = useState('chooseType'); // 'chooseType' | 'compose'
@@ -108,6 +109,7 @@ const CreatePostContainer = () => {
   // ─── Compose form state ────────────────────────────────────────────
   const [content, setContent] = useState('');
   const [file, setFile] = useState(null);
+  const [fileKind, setFileKind] = useState('image'); // NAYA: track 'video' | 'image'
   const [preview, setPreview] = useState(null);
   const [selectedPlatforms, setSelectedPlatforms] = useState([]);
   const [scheduleEnabled, setScheduleEnabled] = useState(false);
@@ -146,6 +148,22 @@ const CreatePostContainer = () => {
   // NEW: AI composer mode toggle
   const [aiMode, setAiMode] = useState('quick'); // 'quick' | 'adapt'
 
+  // NAYA: AI Shorts se "Create Post" preset data handle karo
+  useEffect(() => {
+    const preset = location.state?.shortsPreset;
+    if (preset) {
+      const { mediaUrl, mediaDuration, suggestedCaption } = preset;
+      setPostType('reel');
+      setStep('compose');
+      setFile(mediaUrl);
+      setFileKind('video');
+      setPreview(mediaUrl);
+      if (mediaDuration) setVideoDuration(mediaDuration);
+      if (suggestedCaption) setContent(suggestedCaption);
+      navigate('/create', { replace: true, state: null });
+    }
+  }, [location.state, navigate]);
+
   // ─── Derived rule values ───────────────────────────────────────────
   const rule = postType ? POST_RULES[postType] : null;
   const mediaType = rule?.mediaType ?? null;
@@ -156,7 +174,13 @@ const CreatePostContainer = () => {
   const allowedPlatforms = rule?.allowedPlatforms ?? [];
 
   // NAYA: currently uploaded media ka "kind" -- isse platform chips filter honge
-  const currentMediaKind = !file ? 'none' : file.type?.startsWith('video/') ? 'video' : 'image';
+  const currentMediaKind = !file
+    ? 'none'
+    : typeof file === 'string'
+      ? fileKind
+      : file.type?.startsWith('video/')
+        ? 'video'
+        : 'image';
 
   // Duration warning: exceeded?
   const isDurationExceeded =
@@ -168,6 +192,7 @@ const CreatePostContainer = () => {
     setPostType(null);
     setContent('');
     setFile(null);
+    setFileKind('image');
     setPreview(null);
     setSelectedPlatforms([]);
     setScheduleEnabled(false);
@@ -187,6 +212,7 @@ const CreatePostContainer = () => {
     // Reset form fields in case user came back and changed type
     setContent('');
     setFile(null);
+    setFileKind('image');
     setPreview(null);
     setSelectedPlatforms([]);
     setSelectedFbPageId('');
@@ -218,6 +244,9 @@ const CreatePostContainer = () => {
       const f = acceptedFiles[0];
       if (!f) return;
       
+      const isVid = f.type?.startsWith('video/');
+      setFileKind(isVid ? 'video' : 'image');
+
       if (postType === 'reel' || postType === 'photo') {
         const formData = new FormData();
         formData.append('media', f);
@@ -226,6 +255,7 @@ const CreatePostContainer = () => {
           setRawMediaData(res);
           // Removed setEditorOpen(true) to fix UX flow
           setFile(f);
+          setFileKind(res.resourceType === 'video' ? 'video' : isVid ? 'video' : 'image');
           setPreview(res.url); // use Cloudinary URL or local preview
         } catch (err) {
           dispatch(showToast({ message: 'Media upload failed.', variant: 'error' }));
@@ -406,6 +436,10 @@ const CreatePostContainer = () => {
     if (file) {
       if (typeof file === 'string') {
         formData.append('mediaUrl', file);
+        formData.append('mediaType', fileKind);
+        if (videoDuration) {
+          formData.append('mediaDuration', String(videoDuration));
+        }
       } else {
         formData.append('media', file);
       }
@@ -459,6 +493,7 @@ const CreatePostContainer = () => {
     try {
       const res = await editMedia(editParams).unwrap();
       setFile(res.url); // Store the returned URL instead of local File
+      setFileKind(rawMediaData?.resourceType === 'video' ? 'video' : 'image');
       setPreview(res.url);
       setEditorOpen(false);
     } catch (err) {
@@ -734,7 +769,7 @@ const CreatePostContainer = () => {
                     transition={{ type: "spring", stiffness: 300, damping: 20 }}
                     sx={{ position: 'relative', borderRadius: 2, overflow: 'hidden', backgroundColor: '#000', display: 'flex', justifyContent: 'center', perspective: 1000 }}
                   >
-                    {((file instanceof File && file.type.startsWith('video/')) || rawMediaData?.resourceType === 'video' || (typeof preview === 'string' && preview.match(/\.(mp4|mov)$/i))) ? (
+                    {((file instanceof File && file.type.startsWith('video/')) || rawMediaData?.resourceType === 'video' || fileKind === 'video' || (typeof preview === 'string' && preview.match(/\.(mp4|mov)$/i))) ? (
                       <video
                         src={preview}
                         controls
@@ -772,7 +807,7 @@ const CreatePostContainer = () => {
                     )}
 
                     <Box
-                      onClick={() => { setFile(null); setPreview(null); setVideoDuration(null); setRawMediaData(null); }}
+                      onClick={() => { setFile(null); setPreview(null); setVideoDuration(null); setRawMediaData(null); setFileKind('image'); }}
                       sx={{
                         position: 'absolute', top: 8, right: 8,
                         width: 28, height: 28, borderRadius: '50%',

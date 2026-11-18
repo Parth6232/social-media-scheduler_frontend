@@ -9,6 +9,8 @@ import { aiApiReducer, aiApiAction } from '../../features/ai/aiApiSlice';
 import { mediaApiReducer, mediaApiAction } from '../../features/media/mediaApiSlice';
 // NEW: Analytics
 import { analyticsApiReducer, analyticsApiAction } from '../../features/analytics/analyticsApiSlice';
+// NAYA: AI Shorts
+import { shortsApiReducer, shortsApiAction } from '../../features/shorts/shortsApiSlice';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -20,6 +22,7 @@ const rootReducer = combineReducers({
   [aiApiAction.reducerPath]: aiApiReducer,
   [mediaApiAction.reducerPath]: mediaApiReducer,
   [analyticsApiAction.reducerPath]: analyticsApiReducer,
+  [shortsApiAction.reducerPath]: shortsApiReducer,
 });
 
 export default rootReducer;

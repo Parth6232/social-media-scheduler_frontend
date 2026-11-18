@@ -13,6 +13,8 @@ import ForgotPasswordPage from '../pages/ForgotPasswordPage';
 import PolicyPage from '../pages/PolicyPage';
 // NEW: Analytics
 import AnalyticsPage from '../pages/AnalyticsPage';
+// NAYA: AI Shorts
+import ShortsPage from '../pages/ShortsPage';
 
 const AppRoutes = () => {
   return (
@@ -38,6 +40,8 @@ const AppRoutes = () => {
           <Route path="/posts/:platform" element={<PostsPage />} />
           {/* NEW: Analytics */}
           <Route path="/analytics" element={<AnalyticsPage />} />
+          {/* NAYA: AI Shorts */}
+          <Route path="/shorts" element={<ShortsPage />} />
         </Route>
       </Route>
 

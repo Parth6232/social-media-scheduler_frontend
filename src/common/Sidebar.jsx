@@ -7,6 +7,8 @@ import HistoryIcon from '@mui/icons-material/History';
 import HomeIcon from '@mui/icons-material/Home';
 // NEW: Analytics
 import InsightsIcon from '@mui/icons-material/Insights';
+// NAYA: AI Shorts
+import MovieFilterIcon from '@mui/icons-material/MovieFilter';
 import { styled } from '@mui/material/styles';
 import { motion } from 'framer-motion';
 
@@ -51,6 +53,8 @@ const navItems = [
   { path: '/posts', labelKey: 'postsHistory', icon: <HistoryIcon /> },
   // NEW: Analytics
   { path: '/analytics', labelKey: 'analytics', icon: <InsightsIcon /> },
+  // NAYA: AI Shorts
+  { path: '/shorts', labelKey: 'shorts', icon: <MovieFilterIcon /> },
 ];
 
 const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {

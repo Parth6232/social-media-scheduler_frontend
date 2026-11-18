@@ -8,6 +8,8 @@ import { aiApiAction } from '../features/ai/aiApiSlice';
 import { mediaApiAction } from '../features/media/mediaApiSlice';
 // NEW: Analytics
 import { analyticsApiAction } from '../features/analytics/analyticsApiSlice';
+// NAYA: AI Shorts
+import { shortsApiAction } from '../features/shorts/shortsApiSlice';
 
 // Custom storage wrapper for Vite / redux-persist compatibility
 const storage = {
@@ -37,7 +39,8 @@ export const store = configureStore({
     .concat(postApiAction.middleware)
     .concat(aiApiAction.middleware)
     .concat(mediaApiAction.middleware)
-    .concat(analyticsApiAction.middleware),
+    .concat(analyticsApiAction.middleware)
+    .concat(shortsApiAction.middleware),
 });
 
 export const persistor = persistStore(store);

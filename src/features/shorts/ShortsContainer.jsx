@@ -40,13 +40,15 @@ const ShortsContainer = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   // NAYA: state management
-  const [sourceData, setSourceData] = useState(null); // { url, info }
+  const [sourceData, setSourceData] = useState(null); // { mode, url, file, title, info }
   const [options, setOptions] = useState(DEFAULT_OPTIONS);
   const [activeJobId, setActiveJobId] = useState(() => searchParams.get('job') || null);
   const [isCreatingJob, setIsCreatingJob] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
 
   // NAYA: RTK Query hooks
   const [createJob] = shortsApiAction.useCreateJobMutation();
+  const [createUploadJob] = shortsApiAction.useCreateUploadJobMutation();
   const [regenerate, { isLoading: isRegenerating }] = shortsApiAction.useRegenerateMutation();
   const { data: jobsList = [], refetch: refetchListJobs } = shortsApiAction.useListJobsQuery();
 
@@ -80,42 +82,89 @@ const ShortsContainer = () => {
     setSourceData(data);
   }, []);
 
-  // NAYA: FormData build karo aur job create karo
+  // NAYA: FormData build karo aur job create karo (YouTube link ya Direct Upload)
   const handleGenerate = async () => {
-    if (!sourceData?.url) {
-      dispatch(showToast({ message: 'Please fetch a video first.', variant: 'warning' }));
+    if (!sourceData) {
+      dispatch(showToast({ message: 'Please provide a video source first.', variant: 'warning' }));
       return;
     }
 
-    setIsCreatingJob(true);
-    try {
-      const fd = new FormData();
-      fd.append('url', sourceData.url);
-      fd.append('facecamCrop', String(options.facecamCrop));
-      fd.append('captions', String(options.captions));
-      fd.append('originalAudio', String(options.originalAudio));
-      fd.append('musicVolume', String(options.musicVolume));
-      fd.append('voiceoverVolume', String(options.voiceoverVolume));
-      fd.append('minSec', String(options.minSec));
-      fd.append('maxSec', String(options.maxSec));
-      if (options.musicTrack?._id) fd.append('musicTrackId', options.musicTrack._id);
-      if (options.voiceoverFile) fd.append('voiceover', options.voiceoverFile);
-
-      const result = await createJob(fd).unwrap();
-      const newId = result.id || result._id || result.jobId;
-      setActiveJobId(newId);
-    } catch (err) {
-      // NAYA: 409 = already running — existing job resume karo
-      if (err?.status === 409) {
-        dispatch(showToast({ message: 'A job is already running. Resuming it.', variant: 'info' }));
-        const running = jobsList.find((j) => ACTIVE_STATUSES.has(j.status));
-        if (running) {
-          setActiveJobId(running.id);
-        }
+    if (sourceData.mode === 'upload') {
+      if (!sourceData.file) {
+        dispatch(showToast({ message: 'Please select a video file first.', variant: 'warning' }));
+        return;
       }
-      // Error toast already shown by interceptor for other errors
-    } finally {
-      setIsCreatingJob(false);
+
+      setIsCreatingJob(true);
+      try {
+        const fd = new FormData();
+        fd.append('video', sourceData.file);
+        if (sourceData.title?.trim()) {
+          fd.append('title', sourceData.title.trim());
+        }
+        fd.append('facecamCrop', String(options.facecamCrop));
+        fd.append('captions', String(options.captions));
+        fd.append('originalAudio', String(options.originalAudio));
+        fd.append('musicVolume', String(options.musicVolume));
+        fd.append('voiceoverVolume', String(options.voiceoverVolume));
+        fd.append('minSec', String(options.minSec));
+        fd.append('maxSec', String(options.maxSec));
+        if (options.musicTrack?._id) fd.append('musicTrackId', options.musicTrack._id);
+        if (options.voiceoverFile) fd.append('voiceover', options.voiceoverFile);
+
+        const result = await createUploadJob(fd).unwrap();
+        const newId = result.id || result._id || result.jobId;
+        setActiveJobId(newId);
+      } catch (err) {
+        // NAYA: 409 = already running — existing job resume karo
+        if (err?.status === 409) {
+          dispatch(showToast({ message: 'A job is already running. Resuming it.', variant: 'info' }));
+          const running = jobsList.find((j) => ACTIVE_STATUSES.has(j.status));
+          if (running) {
+            setActiveJobId(running.id);
+          }
+        }
+        // Error toast already shown by interceptor for other errors
+      } finally {
+        setIsCreatingJob(false);
+      }
+    } else {
+      // YouTube mode (default)
+      if (!sourceData.url) {
+        dispatch(showToast({ message: 'Please fetch a video first.', variant: 'warning' }));
+        return;
+      }
+
+      setIsCreatingJob(true);
+      try {
+        const fd = new FormData();
+        fd.append('url', sourceData.url);
+        fd.append('facecamCrop', String(options.facecamCrop));
+        fd.append('captions', String(options.captions));
+        fd.append('originalAudio', String(options.originalAudio));
+        fd.append('musicVolume', String(options.musicVolume));
+        fd.append('voiceoverVolume', String(options.voiceoverVolume));
+        fd.append('minSec', String(options.minSec));
+        fd.append('maxSec', String(options.maxSec));
+        if (options.musicTrack?._id) fd.append('musicTrackId', options.musicTrack._id);
+        if (options.voiceoverFile) fd.append('voiceover', options.voiceoverFile);
+
+        const result = await createJob(fd).unwrap();
+        const newId = result.id || result._id || result.jobId;
+        setActiveJobId(newId);
+      } catch (err) {
+        // NAYA: 409 = already running — existing job resume karo
+        if (err?.status === 409) {
+          dispatch(showToast({ message: 'A job is already running. Resuming it.', variant: 'info' }));
+          const running = jobsList.find((j) => ACTIVE_STATUSES.has(j.status));
+          if (running) {
+            setActiveJobId(running.id);
+          }
+        }
+        // Error toast already shown by interceptor for other errors
+      } finally {
+        setIsCreatingJob(false);
+      }
     }
   };
 
@@ -136,6 +185,7 @@ const ShortsContainer = () => {
     setActiveJobId(null);
     setSourceData(null);
     setOptions(DEFAULT_OPTIONS);
+    setResetKey((k) => k + 1);
   };
 
   // NAYA: Create Post — navigate to /create with shorts preset
@@ -152,7 +202,7 @@ const ShortsContainer = () => {
   const showProgress = activeJob && !['done'].includes(activeJob.status) && activeJob.status !== undefined;
   const showClips = activeJob && (activeJob.clips?.length > 0 || activeJob.status === 'done' || activeJob.status === 'rendering');
 
-  const authorized = sourceData?.info?.authorized;
+  const authorized = sourceData?.mode === 'upload' ? true : sourceData?.info?.authorized;
 
   return (
     <AnimatedSection direction="none" sx={{ width: '100%' }}>
@@ -165,10 +215,11 @@ const ShortsContainer = () => {
       <Grid container spacing={3}>
         {/* Left column — setup */}
         <Grid size={{ xs: 12, lg: 5 }}>
-          {/* Source URL card */}
+          {/* Source URL / Upload card */}
           <SourceCard
             onSourceReady={handleSourceReady}
             disabled={isJobRunning || isCreatingJob}
+            resetKey={resetKey}
           />
 
           {/* Options + Generate */}
@@ -215,7 +266,7 @@ const ShortsContainer = () => {
             >
               <MovieFilterIcon sx={{ fontSize: 56, color: 'text.disabled' }} />
               <Typography variant="body2" sx={{ color: 'text.secondary', textAlign: 'center' }}>
-                Paste a YouTube URL and click Generate to create AI-powered Shorts.
+                Paste a YouTube URL or upload a video file and click Generate to create AI-powered Shorts.
               </Typography>
             </Box>
           )}

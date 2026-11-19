@@ -1,7 +1,7 @@
 // NAYA: ClipCard — 9:16 video player + clip metadata + Download/CreatePost buttons
 import { useRef, useState } from 'react';
 import {
-  Box, Typography, Chip, Tooltip, Skeleton
+  Box, Typography, Chip, Tooltip, Skeleton, FormControlLabel, Switch
 } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import DownloadIcon from '@mui/icons-material/Download';
@@ -42,6 +42,7 @@ const ClipCard = ({ clip, jobId, isSkeleton, onPlayStart, onCreatePost }) => {
   const [isDownloading, setIsDownloading] = useState(false);
   const [clipToPost] = shortsApiAction.useClipToPostMutation();
   const [isCreatingPost, setIsCreatingPost] = useState(false);
+  const [includeCredit, setIncludeCredit] = useState(true);
 
   // NAYA: video play shuru hone par doosre videos pause karo
   const handlePlay = () => {
@@ -79,7 +80,7 @@ const ClipCard = ({ clip, jobId, isSkeleton, onPlayStart, onCreatePost }) => {
     if (!jobId || clip?.index == null) return;
     setIsCreatingPost(true);
     try {
-      const result = await clipToPost({ jobId, index: clip.index }).unwrap();
+      const result = await clipToPost({ jobId, index: clip.index, includeCredit }).unwrap();
       onCreatePost(result);
     } catch {
       dispatch(showToast({ message: 'Failed to prepare clip for posting.', variant: 'error' }));
@@ -186,6 +187,54 @@ const ClipCard = ({ clip, jobId, isSkeleton, onPlayStart, onCreatePost }) => {
               sx={{ fontSize: '0.7rem', height: 22, color: 'text.secondary' }}
             />
           )}
+        </Box>
+
+        {/* Creator credit toggle */}
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            mb: 1.5,
+            p: 1,
+            borderRadius: 2,
+            bgcolor: (th) => th.palette.mode === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
+            border: '1px solid',
+            borderColor: 'divider',
+          }}
+        >
+          <FormControlLabel
+            control={
+              <Switch
+                size="small"
+                checked={includeCredit}
+                onChange={(e) => setIncludeCredit(e.target.checked)}
+                sx={{
+                  mr: 0.5,
+                  '& .MuiSwitch-switchBase.Mui-checked': {
+                    color: '#2563EB',
+                  },
+                  '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                    backgroundColor: '#2563EB',
+                  },
+                }}
+              />
+            }
+            label={
+              <Typography
+                variant="caption"
+                sx={{
+                  fontSize: '0.74rem',
+                  color: 'text.secondary',
+                  fontWeight: 500,
+                  userSelect: 'none',
+                  lineHeight: 1.25,
+                }}
+              >
+                {t('shorts_includeCredit') || 'Include original creator credit in caption'}
+              </Typography>
+            }
+            sx={{ m: 0, width: '100%', alignItems: 'center' }}
+          />
         </Box>
 
         {/* Action buttons */}

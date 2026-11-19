@@ -16,10 +16,21 @@ const shortsApi = createApi({
       }),
     }),
 
-    // POST /shorts/jobs — multipart FormData se job create karo
+    // POST /shorts/jobs — multipart FormData se job create karo (YouTube)
     createJob: builder.mutation({
       query: (formData) => ({
         url: '/shorts/jobs',
+        method: 'POST',
+        body: formData,
+        formData: true,
+      }),
+      invalidatesTags: ['SHORTS_JOBS'],
+    }),
+
+    // POST /shorts/upload-job — direct video upload karke job create karo
+    createUploadJob: builder.mutation({
+      query: (formData) => ({
+        url: '/shorts/upload-job',
         method: 'POST',
         body: formData,
         formData: true,
@@ -59,9 +70,10 @@ const shortsApi = createApi({
 
     // POST /shorts/jobs/:id/clips/:index/to-post — clip ko create-post me transfer
     clipToPost: builder.mutation({
-      query: ({ jobId, index }) => ({
+      query: ({ jobId, index, includeCredit = true }) => ({
         url: `/shorts/jobs/${jobId}/clips/${index}/to-post`,
         method: 'POST',
+        body: { includeCredit },
       }),
     }),
   }),
@@ -73,6 +85,7 @@ export const shortsApiAction = {
   reducerPath: shortsApi.reducerPath,
   useGetSourceInfoMutation: shortsApi.useGetSourceInfoMutation,
   useCreateJobMutation: shortsApi.useCreateJobMutation,
+  useCreateUploadJobMutation: shortsApi.useCreateUploadJobMutation,
   useGetJobQuery: shortsApi.useGetJobQuery,
   useListJobsQuery: shortsApi.useListJobsQuery,
   useRegenerateMutation: shortsApi.useRegenerateMutation,

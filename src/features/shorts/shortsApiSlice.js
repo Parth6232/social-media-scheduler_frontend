@@ -41,12 +41,14 @@ const shortsApi = createApi({
     // GET /shorts/jobs/:id — single job fetch (polling ke liye)
     getJob: builder.query({
       query: (id) => ({ url: `/shorts/jobs/${id}` }),
+      extraOptions: { silent: true }, // polling: loader/blink nahi
       providesTags: (_res, _err, id) => [{ type: 'SHORTS_JOBS', id }],
     }),
 
     // GET /shorts/jobs — last 20 jobs list
     listJobs: builder.query({
       query: () => ({ url: '/shorts/jobs' }),
+      extraOptions: { silent: true },
       providesTags: ['SHORTS_JOBS'],
     }),
 

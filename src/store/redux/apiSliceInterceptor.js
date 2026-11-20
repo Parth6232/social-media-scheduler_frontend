@@ -18,9 +18,13 @@ const baseQuery = fetchBaseQuery({
 let activeRequests = 0;
 
 const baseQueryWithInterceptor = async (args, api, extraOptions) => {
-  activeRequests++;
-  if (activeRequests === 1) {
-    api.dispatch(setGlobalLoading(true));
+  // silent = background polling: full-page loader (blink) aur error toast nahi dikhana
+  const silent = Boolean(extraOptions?.silent);
+  if (!silent) {
+    activeRequests++;
+    if (activeRequests === 1) {
+      api.dispatch(setGlobalLoading(true));
+    }
   }
 
   try {
@@ -30,7 +34,7 @@ const baseQueryWithInterceptor = async (args, api, extraOptions) => {
       if (result.error.status === 401) {
         api.dispatch(logout());
         api.dispatch(showToast({ message: 'Session expired. Please log in again.', variant: 'error' }));
-      } else {
+      } else if (!silent) {
         const errMsg = result.error.data?.message || result.error.error || 'An unexpected error occurred';
         api.dispatch(showToast({ message: errMsg, variant: 'error' }));
       }
@@ -38,9 +42,11 @@ const baseQueryWithInterceptor = async (args, api, extraOptions) => {
 
     return result;
   } finally {
-    activeRequests = Math.max(0, activeRequests - 1);
-    if (activeRequests === 0) {
-      api.dispatch(setGlobalLoading(false));
+    if (!silent) {
+      activeRequests = Math.max(0, activeRequests - 1);
+      if (activeRequests === 0) {
+        api.dispatch(setGlobalLoading(false));
+      }
     }
   }
 };

@@ -58,7 +58,7 @@ const ShortsContainer = () => {
   const isJobActive = Boolean(activeJobId && (!activeJob || ACTIVE_STATUSES.has(activeJob.status)));
   shortsApiAction.endpoints.getJob.useQuerySubscription(activeJobId, {
     skip: !activeJobId,
-    pollingInterval: isJobActive ? 3000 : 0,
+    pollingInterval: isJobActive ? 4000 : 0,
   });
 
   // NAYA: job done/failed hone par listJobs refetch karo

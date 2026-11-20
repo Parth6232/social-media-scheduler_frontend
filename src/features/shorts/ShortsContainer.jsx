@@ -15,6 +15,7 @@ import SourceCard from './components/SourceCard';
 import OptionsPanel from './components/OptionsPanel';
 import ProgressCard from './components/ProgressCard';
 import ClipsGrid from './components/ClipsGrid';
+import RangeSelector from './components/RangeSelector';
 import JobHistory from './components/JobHistory';
 
 // NAYA: active status check — polling ke liye
@@ -33,6 +34,8 @@ const DEFAULT_OPTIONS = {
   maxSec: 60,
 };
 
+const DEFAULT_RANGE = { enabled: false, startSec: null, endSec: null, valid: true, required: false };
+
 const ShortsContainer = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -45,6 +48,8 @@ const ShortsContainer = () => {
   const [activeJobId, setActiveJobId] = useState(() => searchParams.get('job') || null);
   const [isCreatingJob, setIsCreatingJob] = useState(false);
   const [resetKey, setResetKey] = useState(0);
+  const [range, setRange] = useState(DEFAULT_RANGE); // timestamp range (lambi video ya user ka chuna hissa)
+  const handleRangeChange = useCallback((r) => setRange(r), []);
 
   // NAYA: RTK Query hooks
   const [createJob] = shortsApiAction.useCreateJobMutation();
@@ -82,10 +87,21 @@ const ShortsContainer = () => {
     setSourceData(data);
   }, []);
 
+  // Video ki lambai (YouTube: API se, upload: browser ke video metadata se)
+  const sourceDurationSec = sourceData?.mode === 'upload' ? sourceData?.durationSec : sourceData?.info?.durationSec;
+  const rangeShown = Boolean(sourceDurationSec);
+  const rangeActive = rangeShown && range.enabled;
+  const rangeBlocked = rangeActive && !range.valid;
+
   // NAYA: FormData build karo aur job create karo (YouTube link ya Direct Upload)
   const handleGenerate = async () => {
     if (!sourceData) {
       dispatch(showToast({ message: 'Please provide a video source first.', variant: 'warning' }));
+      return;
+    }
+
+    if (rangeActive && !range.valid) {
+      dispatch(showToast({ message: 'Please fix the timestamp range first.', variant: 'warning' }));
       return;
     }
 
@@ -109,6 +125,10 @@ const ShortsContainer = () => {
         fd.append('voiceoverVolume', String(options.voiceoverVolume));
         fd.append('minSec', String(options.minSec));
         fd.append('maxSec', String(options.maxSec));
+        if (rangeActive) {
+          fd.append('rangeStart', String(range.startSec));
+          fd.append('rangeEnd', String(range.endSec));
+        }
         if (options.musicTrack?._id) fd.append('musicTrackId', options.musicTrack._id);
         if (options.voiceoverFile) fd.append('voiceover', options.voiceoverFile);
 
@@ -146,6 +166,10 @@ const ShortsContainer = () => {
         fd.append('voiceoverVolume', String(options.voiceoverVolume));
         fd.append('minSec', String(options.minSec));
         fd.append('maxSec', String(options.maxSec));
+        if (rangeActive) {
+          fd.append('rangeStart', String(range.startSec));
+          fd.append('rangeEnd', String(range.endSec));
+        }
         if (options.musicTrack?._id) fd.append('musicTrackId', options.musicTrack._id);
         if (options.voiceoverFile) fd.append('voiceover', options.voiceoverFile);
 
@@ -185,6 +209,7 @@ const ShortsContainer = () => {
     setActiveJobId(null);
     setSourceData(null);
     setOptions(DEFAULT_OPTIONS);
+    setRange(DEFAULT_RANGE);
     setResetKey((k) => k + 1);
   };
 
@@ -222,6 +247,17 @@ const ShortsContainer = () => {
             resetKey={resetKey}
           />
 
+          {/* Timestamp range: lambi video (>60 min) me zaroori, baaki me optional */}
+          {rangeShown && (
+            <RangeSelector
+              key={`${resetKey}-${sourceData?.mode}-${sourceData?.url || sourceData?.file?.name}-${sourceData?.file?.size || 0}`}
+              durationSec={sourceDurationSec}
+              limits={sourceData?.info?.limits}
+              disabled={isJobRunning || isCreatingJob}
+              onChange={handleRangeChange}
+            />
+          )}
+
           {/* Options + Generate */}
           <OptionsPanel
             options={options}
@@ -230,6 +266,8 @@ const ShortsContainer = () => {
             isGenerating={isCreatingJob}
             isDisabled={isJobRunning || isCreatingJob}
             authorized={authorized}
+            generateBlocked={rangeBlocked}
+            blockedReason="Fix the timestamp range above to continue."
           />
         </Grid>
 

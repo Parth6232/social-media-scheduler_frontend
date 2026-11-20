@@ -20,7 +20,7 @@ import { showToast } from '../../../store/redux/slices/toastSlice';
 
 const MAX_VOICEOVER_MB = 20;
 
-const OptionsPanel = ({ options, onChange, onGenerate, isGenerating, isDisabled, authorized }) => {
+const OptionsPanel = ({ options, onChange, onGenerate, isGenerating, isDisabled, authorized, generateBlocked = false, blockedReason = '' }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const [musicSheetOpen, setMusicSheetOpen] = useState(false);
@@ -86,7 +86,7 @@ const OptionsPanel = ({ options, onChange, onGenerate, isGenerating, isDisabled,
     onGenerate();
   };
 
-  const isGenerateDisabled = isDisabled || isGenerating || authorized === false;
+  const isGenerateDisabled = isDisabled || isGenerating || authorized === false || generateBlocked;
 
   return (
     <GlassCard sx={{ mb: 3, borderRadius: 3, position: 'relative', overflow: 'visible' }}>
@@ -334,6 +334,11 @@ const OptionsPanel = ({ options, onChange, onGenerate, isGenerating, isDisabled,
           >
             {t('shorts_generate')}
           </Button>
+          {generateBlocked && blockedReason && (
+            <Typography variant="caption" sx={{ color: 'warning.main', display: 'block', textAlign: 'center', mt: 1 }}>
+              {blockedReason}
+            </Typography>
+          )}
           {authorized === false && (
             <Typography variant="caption" sx={{ color: 'warning.main', display: 'block', textAlign: 'center', mt: 1 }}>
               Generation is disabled — video not authorized for use.

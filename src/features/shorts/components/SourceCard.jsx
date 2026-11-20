@@ -68,6 +68,7 @@ const SourceCard = ({ onSourceReady, disabled, resetKey }) => {
   const [videoTitle, setVideoTitle] = useState('');
   const [videoPreviewUrl, setVideoPreviewUrl] = useState(null);
   const previewUrlRef = useRef(null);
+  const durationRef = useRef(null); // upload ki video ki lambai (seconds) — range check ke liye
 
   // RTK Query source-info mutation
   const [getSourceInfo] = shortsApiAction.useGetSourceInfoMutation();
@@ -115,6 +116,7 @@ const SourceCard = ({ onSourceReady, disabled, resetKey }) => {
           title: videoTitle || videoFile.name.replace(/\.[^/.]+$/, ''),
           previewUrl: videoPreviewUrl,
           size: videoFile.size,
+          durationSec: durationRef.current,
         });
       } else {
         onSourceReady(null);
@@ -179,6 +181,7 @@ const SourceCard = ({ onSourceReady, disabled, resetKey }) => {
       URL.revokeObjectURL(previewUrlRef.current);
     }
     const preview = URL.createObjectURL(file);
+    durationRef.current = null;
     previewUrlRef.current = preview;
 
     const defaultTitle = file.name.replace(/\.[^/.]+$/, '');
@@ -192,6 +195,7 @@ const SourceCard = ({ onSourceReady, disabled, resetKey }) => {
       title: defaultTitle,
       previewUrl: preview,
       size: file.size,
+      durationSec: null,
     });
   }, [dispatch, onSourceReady]);
 
@@ -233,8 +237,24 @@ const SourceCard = ({ onSourceReady, disabled, resetKey }) => {
         title: val,
         previewUrl: videoPreviewUrl,
         size: videoFile.size,
+          durationSec: durationRef.current,
       });
     }
+  };
+
+  // Browser ne video ki lambai bata di => parent ko do (60 min se lambi ho to range zaroori)
+  const handleVideoMeta = (e) => {
+    const d = e.target.duration;
+    if (!videoFile || !Number.isFinite(d)) return;
+    durationRef.current = d;
+    onSourceReady({
+      mode: 'upload',
+      file: videoFile,
+      title: videoTitle || videoFile.name.replace(/\.[^/.]+$/, ''),
+      previewUrl: videoPreviewUrl,
+      size: videoFile.size,
+      durationSec: d,
+    });
   };
 
   // Permission badge for YouTube video
@@ -546,6 +566,7 @@ const SourceCard = ({ onSourceReady, disabled, resetKey }) => {
                       controls
                       playsInline
                       preload="metadata"
+                      onLoadedMetadata={handleVideoMeta}
                       sx={{
                         width: '100%',
                         maxHeight: 220,
